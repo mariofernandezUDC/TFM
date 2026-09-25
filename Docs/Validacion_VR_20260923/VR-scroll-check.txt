@@ -1,0 +1,4 @@
+PiezaBlanca fullyInsideViewport=True
+PiezaRoja fullyInsideViewport=True
+PiezaAzul fullyInsideViewport=True
+content=974 viewport=747,3149 mode=Clamped

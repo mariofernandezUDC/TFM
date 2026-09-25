@@ -1,0 +1,132 @@
+TFM VR diagnostic 2026-09-23T19:09:18
+Project: C:/Users/Mario Fernández/Desktop/UNITY-TFM/AdrianTFM/Unity/Assets
+Unity: 6000.3.6f1 Play: True
+Build target: StandaloneWindows64
+COMPILE ASSEMBLY: VIVE.OpenXR sources=149
+COMPILE ASSEMBLY: Unity.XR.Hands sources=35
+COMPILE ASSEMBLY: Unity.XR.Hands.Editor sources=4
+COMPILE ASSEMBLY: VIVE.OpenXR.Editor sources=12
+LOADED ASSEMBLY: Unity.XR.Hands
+LOADED ASSEMBLY: Unity.XR.Hands.Editor
+LOADED ASSEMBLY: VIVE.OpenXR
+LOADED ASSEMBLY: VIVE.OpenXR.Editor
+Scene: Assets/Scenes/GemeloDigital_LearningFactory.unity Unsaved: False
+GPU: NVIDIA GeForce GTX 1050 VRAM MB: 2981
+API: Direct3D11 Quality: PC
+OpenXR runtime: SteamVR/OpenXR
+XR eye texture: 1456 x 1456
+Enabled OpenXR feature: VIVE.OpenXR.VIVECosmosProfile
+ROOT: Main Camera active=False position=(1.50, 0.79, 2.93)
+ROOT: Directional Light active=True position=(0.00, 3.00, 0.00)
+ROOT: Global Volume active=True position=(0.00, 0.00, 0.00)
+ROOT: LearningFactory_modelo3D active=True position=(1.38, 0.00, 1.43)
+ROOT: MQTT_Client active=True position=(1.21, 0.00, 1.94)
+ROOT: Controladores_MQTT active=True position=(1.21, 0.00, 1.94)
+ROOT: MQTT_InterfaceClient active=True position=(1.28, 0.07, 2.51)
+ROOT: InfluxDBClient active=True position=(1.21, 0.00, 1.94)
+ROOT: Canvas_interfaz_v1 active=True position=(2.15, 0.60, 3.15)
+ROOT: Simulacion active=True position=(960.00, 540.00, 0.00)
+ROOT: EventSystem active=True position=(0.00, 0.00, 0.00)
+ROOT: PuntosDeVista_Camara active=True position=(0.00, 0.00, 0.00)
+ROOT: XR Origin - Vive XR Elite active=True position=(0.75, -1.00, 2.02)
+  XR Origin - Vive XR Elite / XROrigin enabled=True active=True
+  XR Origin - Vive XR Elite / InputActionManager enabled=True active=True
+  XR Origin - Vive XR Elite / XRInputModalityManager enabled=True active=True
+  XR Origin - Vive XR Elite / XRGazeAssistance enabled=False active=True
+  XR Origin - Vive XR Elite / VRPlantRig enabled=True active=True
+  Main Camera / Camera enabled=True active=True
+  Main Camera / AudioListener enabled=True active=True
+  Main Camera / TrackedPoseDriver enabled=True active=True
+  Main Camera / UniversalAdditionalCameraData enabled=True active=True
+  Gaze Interactor / XRGazeInteractor enabled=True active=False
+  Gaze Interactor / GazeInputManager enabled=True active=False
+  Gaze Interactor / TrackedPoseDriver enabled=True active=False
+  Gaze Stabilized / XRTransformStabilizer enabled=True active=False
+  Left Controller / ControllerInputActionManager enabled=True active=True
+  Left Controller / XRInteractionGroup enabled=True active=True
+  Left Controller / HapticImpulsePlayer enabled=True active=True
+  Left Controller / TrackedPoseDriver enabled=True active=True
+  Poke Interactor / XRPokeInteractor enabled=True active=True
+  Poke Interactor / SimpleHapticFeedback enabled=True active=True
+  Poke / XRInteractorAffordanceStateProvider enabled=True active=True
+  Poke / MaterialPropertyBlockHelper enabled=True active=True
+  Poke / ColorMaterialPropertyAffordanceReceiver enabled=True active=True
+  NearFar / XRInteractorAffordanceStateProvider enabled=True active=True
+  NearFar / MaterialPropertyBlockHelper enabled=True active=True
+  NearFar / ColorMaterialPropertyAffordanceReceiver enabled=True active=True
+  Near-Far Interactor / NearFarInteractor enabled=True active=True
+  Near-Far Interactor / InteractionAttachController enabled=True active=True
+  Near-Far Interactor / SphereInteractionCaster enabled=True active=True
+  Near-Far Interactor / CurveInteractionCaster enabled=True active=True
+  Near-Far Interactor / SimpleHapticFeedback enabled=True active=True
+  LineVisual / CurveVisualController enabled=True active=True
+  LineVisual / SortingGroup enabled=True active=True
+  Teleport Interactor / XRRayInteractor enabled=True active=False
+  Teleport Interactor / XRInteractorLineVisual enabled=True active=False
+  Teleport Interactor / SortingGroup enabled=True active=False
+  Teleport Interactor / SimpleHapticFeedback enabled=True active=False
+  Left Controller Visual / ControllerAnimator enabled=True active=True
+  Left Controller Teleport Stabilized Origin / XRTransformStabilizer enabled=True active=True
+  Right Controller / ControllerInputActionManager enabled=True active=True
+  Right Controller / XRInteractionGroup enabled=True active=True
+  Right Controller / HapticImpulsePlayer enabled=True active=True
+  Right Controller / TrackedPoseDriver enabled=True active=True
+  Poke Interactor / XRPokeInteractor enabled=True active=True
+  Poke Interactor / SimpleHapticFeedback enabled=True active=True
+  Poke / XRInteractorAffordanceStateProvider enabled=True active=True
+  Poke / MaterialPropertyBlockHelper enabled=True active=True
+  Poke / ColorMaterialPropertyAffordanceReceiver enabled=True active=True
+  NearFar / XRInteractorAffordanceStateProvider enabled=True active=True
+  NearFar / MaterialPropertyBlockHelper enabled=True active=True
+  NearFar / ColorMaterialPropertyAffordanceReceiver enabled=True active=True
+  Near-Far Interactor / NearFarInteractor enabled=True active=True
+  Near-Far Interactor / InteractionAttachController enabled=True active=True
+  Near-Far Interactor / SphereInteractionCaster enabled=True active=True
+  Near-Far Interactor / CurveInteractionCaster enabled=True active=True
+  Near-Far Interactor / SimpleHapticFeedback enabled=True active=True
+  LineVisual / CurveVisualController enabled=True active=True
+  LineVisual / SortingGroup enabled=True active=True
+  Teleport Interactor / XRRayInteractor enabled=True active=False
+  Teleport Interactor / XRInteractorLineVisual enabled=True active=False
+  Teleport Interactor / SortingGroup enabled=True active=False
+  Teleport Interactor / SimpleHapticFeedback enabled=True active=False
+  Right Controller Visual / ControllerAnimator enabled=True active=True
+  Right Controller Teleport Stabilized Origin / XRTransformStabilizer enabled=True active=True
+  Locomotion / LocomotionMediator enabled=False active=True
+  Locomotion / XRBodyTransformer enabled=False active=True
+  Turn / SnapTurnProvider enabled=False active=True
+  Turn / ContinuousTurnProvider enabled=False active=True
+  Move / DynamicMoveProvider enabled=False active=True
+  Grab Move / GrabMoveProvider enabled=False active=False
+  Grab Move / GrabMoveProvider enabled=False active=False
+  Grab Move / TwoHandedGrabMoveProvider enabled=False active=False
+  Teleportation / TeleportationProvider enabled=False active=True
+  Climb / ClimbProvider enabled=False active=True
+  Climb Teleport / ClimbTeleportInteractor enabled=False active=True
+  Climb Teleport / ClimbTeleportDestinationIndicator enabled=True active=True
+  Gravity / GravityProvider enabled=False active=True
+  Jump / JumpProvider enabled=False active=True
+ROOT: XR Interaction Manager active=True position=(0.00, 0.00, 0.00)
+ROOT: New Game Object active=True position=(0.00, 0.00, 0.00)
+CAMERA: Main Camera active=True parent=Camera Offset
+CAMERA: Main Camera active=False parent=
+INPUT DEVICE: Keyboard layout=Keyboard interface=RawInput product= usages=
+INPUT DEVICE: Mouse layout=Mouse interface=RawInput product= usages=
+INPUT DEVICE: HeadTrackingOpenXR layout=XRInputV1::OpenXR::HeadTrackingOpenXR interface=XRInputV1 product=Head Tracking - OpenXR usages=
+INPUT DEVICE: VIVECosmosControllerOpenXR layout=XRInputV1::HTC::VIVECosmosControllerOpenXR interface=XRInputV1 product=VIVE Cosmos Controller OpenXR usages=LeftHand
+INPUT DEVICE: VIVECosmosControllerOpenXR1 layout=XRInputV1::HTC::VIVECosmosControllerOpenXR interface=XRInputV1 product=VIVE Cosmos Controller OpenXR usages=RightHand
+XR NODE: Head valid=True name=Head Tracking - OpenXR tracked=True position=(0.3842, 0.1323, -0.4534) rotation=(0.4307, 0.1932, -0.5688, 0.6735) trigger=0 axis=(0.00, 0.00)
+XR NODE: LeftHand valid=True name=VIVE Cosmos Controller OpenXR tracked=True position=(0.0000, 0.0000, 0.0000) rotation=(-0.4126, 0.4882, -0.2120, 0.7392) trigger=0 axis=(0.00, 0.00)
+XR NODE: RightHand valid=True name=VIVE Cosmos Controller OpenXR tracked=True position=(0.0000, 0.0000, 0.0000) rotation=(-0.3957, 0.4463, -0.3728, 0.7108) trigger=0 axis=(0.00, 0.00)
+ACTION: XRI Head/Position enabled=True controls=/HeadTrackingOpenXR/centereyeposition
+ACTION: XRI Head/Rotation enabled=True controls=/HeadTrackingOpenXR/centereyerotation
+ACTION: XRI Left/Position enabled=True controls=/VIVECosmosControllerOpenXR/pointerPosition,/VIVECosmosControllerOpenXR/devicePosition
+ACTION: XRI Left/Rotation enabled=True controls=/VIVECosmosControllerOpenXR/pointerRotation,/VIVECosmosControllerOpenXR/deviceRotation
+ACTION: XRI Left Interaction/Select enabled=True controls=/VIVECosmosControllerOpenXR/grippressed
+ACTION: XRI Left Locomotion/Snap Turn enabled=False controls=/VIVECosmosControllerOpenXR/thumbstick
+ACTION: XRI Left Locomotion/Move enabled=True controls=/VIVECosmosControllerOpenXR/thumbstick
+ACTION: XRI Right/Position enabled=True controls=/VIVECosmosControllerOpenXR1/pointerPosition,/VIVECosmosControllerOpenXR1/devicePosition
+ACTION: XRI Right/Rotation enabled=True controls=/VIVECosmosControllerOpenXR1/pointerRotation,/VIVECosmosControllerOpenXR1/deviceRotation
+ACTION: XRI Right Interaction/Select enabled=True controls=/VIVECosmosControllerOpenXR1/grippressed
+ACTION: XRI Right Locomotion/Snap Turn enabled=False controls=/VIVECosmosControllerOpenXR1/thumbstick
+ACTION: XRI Right Locomotion/Move enabled=True controls=/VIVECosmosControllerOpenXR1/thumbstick

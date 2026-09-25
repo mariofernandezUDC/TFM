@@ -11,9 +11,14 @@ using UnityEngine.UI;
 /// padre, para que la lista se pueda seguir desplazando con normalidad aunque el cursor
 /// esté encima de uno de sus botones.
 /// </summary>
-public class UI_ScrollButtons : MonoBehaviour, IScrollHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class UI_ScrollButtons : MonoBehaviour, IScrollHandler, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     private ScrollRect scrollRectPadre;
+
+    public void OnInitializePotentialDrag(PointerEventData eventData)
+    {
+        if (scrollRectPadre != null) scrollRectPadre.OnInitializePotentialDrag(eventData);
+    }
 
     void Awake()
     {

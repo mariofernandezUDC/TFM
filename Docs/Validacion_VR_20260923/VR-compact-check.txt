@@ -1,0 +1,9 @@
+Compact VR popup validation
+Exactly three order buttons=True
+AZUL tracked ray=True
+ROJA tracked ray=True
+BLANCA tracked ray=True
+Other menus hidden and noninteractive=True
+Floor enforced=True
+Full view cycle completed; eye above floor=True
+Previous/next returns to same view=True

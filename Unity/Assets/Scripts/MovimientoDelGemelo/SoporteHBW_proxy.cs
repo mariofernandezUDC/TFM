@@ -48,9 +48,12 @@ public class SoporteHBW_proxy : MonoBehaviour
                 // 5. ESTABILIZACIÓN FÍSICA INMEDIATA
                 if (contenedorTransform.TryGetComponent<Rigidbody>(out Rigidbody rb))
                 {
+                    if (!rb.isKinematic)
+                    {
+                        rb.linearVelocity = Vector3.zero;
+                        rb.angularVelocity = Vector3.zero;
+                    }
                     rb.isKinematic = true;
-                    rb.linearVelocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
                 }
             }
         }

@@ -115,7 +115,13 @@ public class UI_StockController : MonoBehaviour
 
         ConfigurarDetectoresHover();
 
-        if (panelTooltip != null) panelTooltip.SetActive(false);
+        if (panelTooltip != null)
+        {
+            var tooltipGroup = panelTooltip.GetComponent<CanvasGroup>();
+            if (tooltipGroup == null) tooltipGroup = panelTooltip.AddComponent<CanvasGroup>();
+            tooltipGroup.blocksRaycasts = false;
+            panelTooltip.SetActive(false);
+        }
         ReevaluarTodosLosBotones();
     }
 
@@ -139,6 +145,16 @@ public class UI_StockController : MonoBehaviour
     {
         if (panelTooltip != null && panelTooltip.activeSelf)
         {
+            if (VRPlantRig.Instance != null && VRPlantRig.Instance.IsVR)
+            {
+                if (slotBajoElCursor != null && slotBajoElCursor.imagenComponente != null)
+                {
+                    var slotRect = slotBajoElCursor.imagenComponente.rectTransform;
+                    panelTooltip.transform.position = slotRect.TransformPoint(new Vector3(slotRect.rect.xMax + 16f, 0f, -2f));
+                    panelTooltip.transform.rotation = slotRect.rotation;
+                }
+                return;
+            }
             if (UnityEngine.InputSystem.Mouse.current != null)
             {
                 Vector2 posicionRaton = UnityEngine.InputSystem.Mouse.current.position.ReadValue();

@@ -1,0 +1,53 @@
+Synthetic XR ray test (not a hardware test)
+WorldSpace=True
+Vistas/Btn_Vistas Button ray=True
+Vistas/Button Button ray=True
+Vistas/Button Button ray=True
+Vistas/Button Button ray=True
+Vistas/Button Button ray=True
+Vistas/Button Button ray=True
+Vistas/Button Button ray=True
+Vistas/Button Button ray=True
+Vistas/Button Button ray=True
+Camara/Btn_Camara Button ray=True
+Camara/Toggle_ONOFF Toggle ray=True
+Camara/FPS_slideBar Slider ray=True
+Camara/PasoCamara_dropdown TMP_Dropdown ray=True
+Camara/TopButton Button ray=True
+Camara/BottomButton Button ray=True
+Camara/LeftButton Button ray=True
+Camara/RightButton Button ray=True
+Camara/CentralButton Button ray=True
+Dropdown PasoCamara_dropdown created=True itemRay=True
+Pedidos/Btn_Pedidos Button ray=True
+Pedidos/Button Button ray=True
+Pedidos/Button Button ray=True
+Pedidos/Button Button ray=True
+Sensores/Btn_Sensores Button ray=True
+Sensores/Toggle_ONOFF Toggle ray=True
+Sensores/Dropdown TMP_Dropdown ray=True
+Dropdown Dropdown created=True itemRay=True
+BBDD/Btn_BBDD Button ray=True
+BBDD/Toggle_BBDD Toggle ray=True
+BBDD/FechaIni Button ray=True
+BBDD/HoraIni TMP_Dropdown ray=True
+BBDD/MinsIni TMP_Dropdown ray=True
+BBDD/SegsIni TMP_Dropdown ray=True
+BBDD/FechaFin Button ray=True
+BBDD/HoraFin TMP_Dropdown ray=True
+BBDD/MinsFin TMP_Dropdown ray=True
+BBDD/SegsFin TMP_Dropdown ray=True
+Dropdown HoraIni created=True itemRay=True
+Dropdown MinsIni created=True itemRay=True
+Dropdown SegsIni created=True itemRay=True
+Dropdown HoraFin created=True itemRay=True
+Dropdown MinsFin created=True itemRay=True
+Dropdown SegsFin created=True itemRay=True
+Calendar FechaIni world=True dayRay=True
+Calendar FechaFin world=True dayRay=True
+Simulacion/Btn_Simulacion Button ray=True
+Simulacion/Toggle_Simulacion Toggle ray=True
+Simulacion/Button Button ray=True
+Simulacion/Button Button ray=True
+Simulacion/Button Button ray=True
+Hidden menu keeps controller active=True

@@ -540,19 +540,14 @@ public class UI_ControladorMenu : MonoBehaviour
     /// <param name="color">Color de la pieza pedida ("WHITE", "RED" o "BLUE").</param>
     public void PedirPiezaSimulacion(string color)
     {
-        if (modoEnEjecucion != ModoOrigen.Simulacion_Offline)
-        {
-            autoStartPendiente = true;
-            autoStartModo = ModoOrigen.Simulacion_Offline;
-            autoStartPiezaSimulacion = color;
-            RecargarEscenaLimpia();
-            return;
-        }
-
-        if (SimuladorOffline.Instance != null && modoSeleccionado == ModoOrigen.Simulacion_Offline)
-        {
-            SimuladorOffline.Instance.PedirPieza(color);
-        }
+        if (color != "WHITE" && color != "RED" && color != "BLUE") return;
+        if (autoStartPendiente || (SimuladorOffline.Instance != null && SimuladorOffline.Instance.EnEjecucion)) return;
+        // Cada grabación parte de la misma planta limpia: no heredar piezas, agarres,
+        // cajones desplazados ni sensores del pedido anterior.
+        autoStartPendiente = true;
+        autoStartModo = ModoOrigen.Simulacion_Offline;
+        autoStartPiezaSimulacion = color;
+        RecargarEscenaLimpia();
     }
 
     /// <summary>

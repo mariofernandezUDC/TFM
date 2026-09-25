@@ -1,0 +1,5 @@
+UI/flight report 2026-09-23T19:08:43
+Rig=True Play=True VR=True
+Canvas Canvas_interfaz_v1 root=Canvas_interfaz_v1 mode=WorldSpace tracked=True
+Input XRUIInputModule enabled=True
+Input InputSystemUIInputModule enabled=False

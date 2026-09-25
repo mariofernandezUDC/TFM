@@ -65,6 +65,8 @@ public class SimuladorOffline : MonoBehaviour
         // Nos aseguramos de que solo exista una instancia de este script en toda la escena.
         if (Instance == null) Instance = this;
         else { Destroy(gameObject); return; }
+        // El autoarranque del menú puede pedir una pieza antes de nuestro Start.
+        CargarDatosHistoricos();
     }
 
     private void Start()
@@ -256,7 +258,8 @@ public class SimuladorOffline : MonoBehaviour
         // Ejecutamos SIEMPRE la reproducción local cuando se pide desde la sección Simulación
         // Normalizamos el texto recibido (que puede venir en español o inglés) a la clave interna
         // que usamos en el diccionario de secuencias: "WHITE", "RED" o "BLUE".
-        string claveUpper = tipoPieza.ToUpper();
+        if (string.IsNullOrWhiteSpace(tipoPieza)) return;
+        string claveUpper = tipoPieza.ToUpperInvariant();
         string claveMap = claveUpper.Contains("WHITE") || claveUpper.Contains("BLANC") ? "WHITE" :
                          claveUpper.Contains("RED") || claveUpper.Contains("ROJ") ? "RED" :
                          claveUpper.Contains("BLUE") || claveUpper.Contains("AZUL") ? "BLUE" : claveUpper;
@@ -272,7 +275,7 @@ public class SimuladorOffline : MonoBehaviour
             }
 
             Debug.Log($"🚀 [SimuladorOffline] Preparando simulación offline para: {tipoPieza}");
-            StartCoroutine(SecuenciaPreparacionYArrancar(secuencia));
+            corrutinaSimulacion = StartCoroutine(SecuenciaPreparacionYArrancar(secuencia));
         }
         else
         {
@@ -286,16 +289,22 @@ public class SimuladorOffline : MonoBehaviour
     private IEnumerator SecuenciaPreparacionYArrancar(SecuenciaPiezaData secuencia)
     {
         EnEjecucion = true;
+        // Dejar terminar todos los Start (offsets de cajones y suscripciones MQTT)
+        // antes de rellenar el almacén y emitir el primer estado de la grabación.
+        yield return null;
         OnEstadoSimulacionOfflineCambiado?.Invoke(true);
 
         ResetearTurntable();
         LimpiarPlataformaDSO();
 
         yield return StartCoroutine(ResetearYRefrescarAlmacen3DCorrutina());
+        // El spawner aplica el stock en Update; la reproducción empieza después.
+        yield return null;
 
         EnviarEstadosInicialesPrepedido();
 
-        corrutinaSimulacion = StartCoroutine(ReproducirSecuencia(secuencia));
+        yield return ReproducirSecuencia(secuencia);
+        corrutinaSimulacion = null;
     }
 
     /// <summary>

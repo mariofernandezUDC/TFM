@@ -1,0 +1,29 @@
+[
+  {
+    "Node": "Head",
+    "Samples": 93,
+    "Tracked": 93,
+    "Positions": 93,
+    "Rotations": 93,
+    "MaxTrigger": 0.0,
+    "AxisSamples": 0
+  },
+  {
+    "Node": "LeftHand",
+    "Samples": 93,
+    "Tracked": 93,
+    "Positions": 1,
+    "Rotations": 1,
+    "MaxTrigger": 0.0,
+    "AxisSamples": 0
+  },
+  {
+    "Node": "RightHand",
+    "Samples": 93,
+    "Tracked": 93,
+    "Positions": 1,
+    "Rotations": 1,
+    "MaxTrigger": 0.0,
+    "AxisSamples": 0
+  }
+]

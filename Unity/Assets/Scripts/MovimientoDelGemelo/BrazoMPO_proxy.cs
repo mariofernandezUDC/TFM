@@ -138,9 +138,12 @@ public class BrazoMPO_proxy : MonoBehaviour
         Rigidbody rb = pieza.GetComponent<Rigidbody>();
         if (rb != null)
         {
+            if (!rb.isKinematic)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
             rb.isKinematic = true;
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
         }
 
         Debug.Log($"<color=lime><b>[Brazo MPO]:</b> Pieza '{pieza.name}' acoplada FÍSICAMENTE al ras.</color>");
@@ -166,9 +169,12 @@ public class BrazoMPO_proxy : MonoBehaviour
         Rigidbody rb = piezaADevolver.GetComponent<Rigidbody>();
         if (rb != null)
         {
+            if (!rb.isKinematic)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
             rb.isKinematic = true;
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
         }
 
         BoxCollider[] colliders = piezaADevolver.GetComponentsInChildren<BoxCollider>();

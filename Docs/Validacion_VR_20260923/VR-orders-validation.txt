@@ -1,0 +1,17 @@
+Start three orders at normal simulation speed: 2026-09-23T19:54:22
+REQUEST BLUE via popup button; previous simulator=119394
+BLUE started; clean scene=True
+BLUE warehouse full: 9/9
+BLUE physical piece reached correct ramp at 105,8 s
+BLUE END: fullStock=True; correctRamp=True; XR colliders disabled=True; max visible piece renderers=9
+REQUEST RED via popup button; previous simulator=761258
+RED started; clean scene=True
+RED warehouse full: 9/9
+RED physical piece reached correct ramp at 97,7 s
+RED END: fullStock=True; correctRamp=True; XR colliders disabled=True; max visible piece renderers=9
+REQUEST WHITE via popup button; previous simulator=790372
+WHITE started; clean scene=True
+WHITE warehouse full: 9/9
+WHITE physical piece reached correct ramp at 89,5 s
+WHITE END: fullStock=True; correctRamp=True; XR colliders disabled=True; max visible piece renderers=9
+PASS: all three complete orders, including consecutive scene resets.

@@ -1,0 +1,7 @@
+{
+  "baseline": "da3765cf4f021cb635a4973d75f3062bf1c21b14",
+  "changed_original_transforms_or_physics_objects": [],
+  "new_xr_collisions": "Disabled by VRPlantRig.Awake; checked during each complete order",
+  "original_recordings_unchanged": true,
+  "network_clients_unchanged": true
+}

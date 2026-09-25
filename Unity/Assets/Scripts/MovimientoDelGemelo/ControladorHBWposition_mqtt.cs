@@ -145,9 +145,12 @@ public class ControladorHBWposition_mqtt : MonoBehaviour
         // Apagamos la física normal del cajón y anulamos cualquier velocidad previa, para que viaje sin temblores ni caídas.
         if (contenedor.TryGetComponent<Rigidbody>(out Rigidbody rb))
         {
+            if (!rb.isKinematic)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
             rb.isKinematic = true;
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
         }
     }
 

@@ -95,6 +95,11 @@ public class UI_ViewController : MonoBehaviour
         if (listaVistas == null || index < 0 || index >= listaVistas.Length) return;
 
         Transform destino = listaVistas[index].transformObjetivo;
+        if (VRPlantRig.Instance != null && VRPlantRig.Instance.IsVR)
+        {
+            VRPlantRig.Instance.GoToView(destino);
+            return;
+        }
         if (destino != null && camaraPrincipal != null)
         {
             // Si ya había un movimiento de cámara en marcha, lo cancelamos antes de
