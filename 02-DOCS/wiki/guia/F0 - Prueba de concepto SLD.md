@@ -29,13 +29,15 @@ tags: [guía, F0]
 - **Comprobación:** con el modo Simulación en marcha, ves los mensajes `dt/sld/*` en MQTT Explorer… ❓ ¿Los ves? ¿Por qué sí o por qué no? (Pista: `SimuladorOffline` inyecta los mensajes *dentro* de Unity.)
 - **Entregable:** commit "rama planta-virtual creada" + diario.
 
-## F0.3 · Diseñar el protocolo de E/S (solo TXT 5) · ⏳
+## F0.3 · Diseñar el protocolo de E/S (solo TXT 5) · ✅ 2026-11-05
 - **Objetivo:** definir los mensajes entre la [[Librería fischertechnik virtual]] y Unity. Ver [[Imagen de E-S]].
-- **Qué hacer (💻 te propongo opciones y decides tú):**
-  - Topics: `vio/txt5/in` (Unity → Python: I1, I2 en voltios, I3, I6, I7, I8 y el estado de C1) y `vio/txt5/out` (Python → Unity: M1 velocidad, sentido y marcha; O5–O8).
-  - Formato JSON, tasa de refresco y qué pasa si Unity no está conectado.
-- **❓** ¿Un mensaje con toda la imagen o un topic por cada E/S? Ventajas e inconvenientes.
-- **Entregable:** nota nueva `conceptos/Protocolo vio.md` + decisión `D006` (D005 ya es la gestión del repositorio).
+- **Resultado:** [[D006 Protocolo vio]] y [[Protocolo vio]].
+  - Topics: `vio/txt5/in` (Unity → Python, imagen completa de entradas: I1, I2, I3, I6, I7, I8 y el estado de C1, periódico a 100 Hz configurable) y `vio/txt5/out` (Python → Unity, imagen completa de salidas: M1 `{speed, dir, running}` y O5–O8, se envía cuando cambia).
+  - Valores iguales a los de la API real, sin conversión. `I2` en la escala de `get_voltage()` (unidad pendiente de confirmar).
+  - Datos de más de 0,5 s → la librería espera y avisa. Sin órdenes → Unity pone las salidas en estado seguro.
+- **❓** ¿Un mensaje con toda la imagen o un topic por cada E/S? → Imagen completa: con un topic por borne, las entradas llegarían sueltas y de instantes distintos (D006.1).
+- **Quedan pendientes** (en [[D006 Protocolo vio]]): medidas de la cinta y de `C1` (🔧), validar los 100 Hz con las grabaciones reales, la unidad de `get_voltage()`, la autoría de `SLD.py` (licencia) y cómo sabe Unity que Python sigue vivo.
+- **Entregable:** ✅ [[Protocolo vio]] + ✅ [[D006 Protocolo vio]].
 
 ## F0.4 · Librería virtual mínima · ⏳
 - **Objetivo:** que `import lib.controller` funcione en el PC sin hardware.
@@ -43,9 +45,16 @@ tags: [guía, F0]
   1. 💻 Crear `Github/TFM/virtual/fischertechnik/…` con las fábricas (`init_*`, `create_*`). Todas las E/S de los 6 TXT se crean, pero **solo las de la SLD se conectan** a MQTT; el resto son "tontas".
   2. Simular lo que importa `SLD.py`: `fischertechnik.controller.Motor`, `fischertechnik.mqtt.Constants` y `FTCloudClient` (desactivado), `lib.display` y los niveles de log propios (`TRACE`, `TRACE0`…).
   3. Script `run_sld_virtual.py` que solo lanza `thread_SLD`.
-- **Comprobación:** sin Unity, publicas a mano en MQTT Explorer `I1 = oscuro` y ves en la consola que la SLD arranca la cinta (`vio/txt5/out` con M1 = 512).
+- **Comprobación:** sin Unity, publicas a mano en MQTT Explorer `I1 = oscuro` y ves en la consola que la SLD arranca la cinta (`vio/txt5/out` con `M1` = `{"speed": 512, "dir": …, "running": true}`, ver [[Protocolo vio]]).
 - **❓** ¿Por qué hay que crear también las E/S de los otros TXT aunque no se usen? (Pista: `lib/controller.py`.)
 - **Entregable:** commit + nota de lo aprendido.
+
+### 🏁 Hito 1 · ⏳
+> **`SLD.py` original piensa en mi PC sin maqueta, probado a mano con MQTT Explorer.**
+>
+> Se alcanza al terminar F0.4: publicas a mano `vio/txt5/in` en MQTT Explorer y ves la respuesta de `SLD.py` en `vio/txt5/out`, sin Unity y sin cambiar una línea de `SLD.py`. Formato de los mensajes: [[Protocolo vio]].
+>
+> ⚠️ Con D006.3, una imagen publicada una sola vez caduca a los 0,5 s y la librería se queda esperando. Para la prueba a mano hay que resolver antes el punto abierto 2 de [[D006 Protocolo vio]].
 
 ## F0.5 · Puente de E/S en Unity · ⏳
 - **Objetivo:** un componente de Unity que reciba `vio/txt5/out` y publique `vio/txt5/in`.
