@@ -12,7 +12,7 @@ Es el idioma en el que se hablan la [[Librería fischertechnik virtual]] (Python
 | Topic | Sentido | Qué lleva | Cuándo se envía |
 |---|---|---|---|
 | `vio/txt5/in` | maqueta (Unity) → Python | Todas las entradas | Periódico, 100 Hz por defecto (configurable) |
-| `vio/txt5/out` | Python → maqueta (Unity) | Todas las salidas | Cuando cambia alguna salida |
+| `vio/txt5/out` | Python → maqueta (Unity) | Todas las salidas | Cuando cambia alguna salida **y además cada 100 ms** (latido) |
 
 Son topics nuevos. **No sustituyen** al [[Contrato MQTT]] `dt/*`, que sigue igual.
 
@@ -43,9 +43,18 @@ Se lee así: la cinta va a velocidad 350 en sentido CW, las tres válvulas de ex
 1. **Instantes coherentes:** un mensaje lleva la imagen entera. Nunca hay entradas sueltas de momentos distintos.
 2. **La imagen va más rápida que `C1`:** si no, se pierden cuentas y la pieza se pasa. Ver [[Contador por pulsos]].
 3. **Nada de datos viejos:** si la última imagen tiene más de 0,5 s, la librería espera a una nueva y avisa por consola.
-4. **Estado seguro:** si Unity deja de recibir órdenes, para el motor y cierra las válvulas.
+4. **Latido:** Python reenvía `vio/txt5/out` cada 100 ms aunque no cambie. No hay topic de latido aparte: el propio mensaje de salidas sirve de latido.
+5. **Estado seguro:** si Unity no recibe nada por `vio/txt5/out` durante más de 0,5 s, para el motor y cierra las válvulas.
 
-⚠️ Dos puntos abiertos, apuntados en [[D006 Protocolo vio]]: la regla 4 choca con "`out` solo cuando cambia", y la regla 3 impide probar a mano con un único mensaje publicado en MQTT Explorer.
+> Analogía: es el hombre muerto de un tren. Mientras Python «pisa el pedal» cada 100 ms, la cinta sigue. Si deja de pisarlo durante medio segundo, todo se para.
+
+## Probar sin Unity: `maqueta_manual.py`
+La regla 3 no se desactiva nunca, ni en pruebas. Por eso no basta con publicar un mensaje a mano en MQTT Explorer: caducaría a los 0,5 s. En su lugar se usa `maqueta_manual.py`, una maqueta de mentira manejada desde el teclado:
+- publica `vio/txt5/in` a 100 Hz, igual que hará Unity;
+- permite cambiar `I1`, `I3`, `I6`–`I8`, `C1` e `I2` con el teclado;
+- muestra lo que llega por `vio/txt5/out`.
+
+Con ella se prueba el hito 1 de [[F0 - Prueba de concepto SLD]]. Ver [[D006 Protocolo vio]] (D006.6).
 
 ## ❓ Pregunta de comprensión
 Con la cinta a velocidad 350, ¿cuántos cambios por segundo de `C1` aguantan los 100 Hz con margen? ¿Qué medida de la maqueta te hace falta para responder? (Pista: los mm de cinta por cuenta de `C1`.)
