@@ -53,3 +53,6 @@ Thumbs.db
 .claude/*
 !.claude/rsc-bootstrap.mjs
 !.claude/settings.json
+
+# Configuración local de Obsidian (la bóveda vive en 02-DOCS/wiki)
+.obsidian/
