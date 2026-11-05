@@ -24,12 +24,17 @@ tags: [contexto, claude]
 9. Al final de cada sesión: nota en `diario/`, actualizar esta nota y el [[Plan de trabajo]], y crear o enlazar las notas nuevas.
 
 ## Estado actual (2026-11-05)
-- **Fase:** F0 sin empezar. Siguiente paso: [[F0 - Prueba de concepto SLD]] F0.1. De [[Rutina Git]] apartado A, el A3 (crear la rama) ya está hecho.
+- **Fase:** F0 en curso. F0.3 ✅ (protocolo `vio`, [[D006 Protocolo vio]]). F0.1 y F0.2 siguen ⏳. Siguiente meta: F0.4 → 🏁 hito 1 ("`SLD.py` original piensa en mi PC sin maqueta, probado a mano con MQTT Explorer"). De [[Rutina Git]] apartado A, el A3 (crear la rama) ya está hecho.
 - **Repositorio:** `origin` = fork de Mario (`mariofernandezUDC/TFM`), `upstream` = Adrián (`AdrianRomeroUDC/TFM`, sin permiso de push). Rama de trabajo: `planta-virtual` (existe en local y en `origin`). Pendiente: de quién es `adaptacion-vr`.
 - **Harness del asistente:** instalado el 2026-11-05 (commit `671f715`). `main` está bloqueada: el asistente trabaja en `planta-virtual` y no hace push. Configuración en `harness/`.
-- **Decisiones tomadas:** [[D001 Sustituir el hardware, no la lógica]], [[D002 Modo operador y modo programador]], [[D003 Forma de trabajo con Claude]], [[D004 Paquete autónomo para el alumno]], [[D005 Gestión del repositorio]] (revisada el 2026-11-05).
-- **Próximas decisiones:** D006 = protocolo `vio` (F0.3), D007 = quién mueve la escena (F0.7).
-- **Abierto:** [[Preguntas para el tutor]] y "doble fuente de movimiento" (ver [[Riesgos]]).
+- **Decisiones tomadas:** [[D001 Sustituir el hardware, no la lógica]], [[D002 Modo operador y modo programador]], [[D003 Forma de trabajo con Claude]], [[D004 Paquete autónomo para el alumno]], [[D005 Gestión del repositorio]] (revisada el 2026-11-05), [[D006 Protocolo vio]] (2026-11-05, solo TXT 5).
+- **Próxima decisión:** D007 = quién mueve la escena (F0.7).
+- **Abierto:**
+  - [[Preguntas para el tutor]].
+  - "Doble fuente de movimiento" (ver [[Riesgos]]).
+  - Los dos puntos abiertos de [[D006 Protocolo vio]]: cómo detecta Unity que Python sigue vivo, y cómo probar el hito 1 a mano con la regla de 0,5 s.
+  - Pendientes de D006: medidas 🔧 de la cinta y de `C1`, tiempo T en las grabaciones, unidad de `get_voltage()`, autoría de `SLD.py` (licencia).
+- **Formato del protocolo:** [[Protocolo vio]]. Valores iguales a los de la API real, sin conversión.
 
 ## Al empezar una sesión, leer
 [[index]] → esta nota → el último diario → [[Plan de trabajo]] → la nota de la fase en curso.

@@ -20,4 +20,4 @@ Si la [[Imagen de E-S]] se refresca a 100 Hz (cada 10 ms) y el interruptor cambi
 3. Que la planta virtual "sirva" un historial de cambios en lugar de solo el último estado.
 4. Que la librería virtual entregue cada cambio de estado a `get_state()` en orden.
 
-→ La decisión se registra en `decisiones/` cuando toque (F0.4–F0.6).
+→ Primera parte decidida en [[D006 Protocolo vio]] (D006.2): `C1` viaja como estado, la imagen va a 100 Hz por defecto (configurable) y `SLD.py` cuenta él mismo. Eso es la opción 1, con la 2 disponible porque la frecuencia es configurable. Las opciones 3 y 4 quedan en reserva hasta medir la frecuencia real de `C1` (F0.6).
