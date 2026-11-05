@@ -1,5 +1,9 @@
 # Log
 
+## [2026-11-05] decision | D006.5 latido y D006.6 prueba sin Unity
+- Cierran los dos puntos abiertos de [D006](decisiones/D006%20Protocolo%20vio.md).
+- Actualizadas: Protocolo vio (latido, `maqueta_manual.py`), guía F0 (F0.3, tarea 4 de F0.4, hito 1, comprobación de F0.5), diario 2026-11-05, 00 Contexto para Claude.
+
 ## [2026-11-05] decision | D006 protocolo vio (TXT 5)
 - Nuevas: [D006 Protocolo vio](decisiones/D006%20Protocolo%20vio.md), [Protocolo vio](conceptos/Protocolo%20vio.md).
 - Actualizadas: guía F0 (F0.3 ✅, hito 1), Contador por pulsos (enlace a D006.2), diario 2026-11-05, 00 Contexto para Claude.
