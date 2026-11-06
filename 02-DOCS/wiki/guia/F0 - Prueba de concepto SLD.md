@@ -60,14 +60,14 @@ tags: [guía, F0]
   - Además: latido de unos 10 mensajes por segundo y `in` a 100 Hz reales.
 - **Entregable:** ✅ commit + [[Librería fischertechnik virtual]] (sección "Lo que se aprendió al hacerla").
 
-### 🏁 Hito 1 · ✅ 2026-11-06 (con el test automático; falta que Mario lo pruebe a mano con el teclado)
+### 🏁 Hito 1 · ✅ 2026-11-06 (test automático y prueba a mano de Mario con `maqueta_manual.py`)
 > **`SLD.py` original piensa en mi PC sin maqueta, probado a mano con `maqueta_manual.py`.**
 >
 > Se alcanza al terminar F0.4: con `maqueta_manual.py` cambias las entradas desde el teclado (se publican a 100 Hz en `vio/txt5/in`) y ves la respuesta de `SLD.py` en `vio/txt5/out`, sin Unity y sin cambiar una línea de `SLD.py`. Formato de los mensajes: [[Protocolo vio]].
 >
 > Antes se iba a probar con MQTT Explorer. Se cambió porque un mensaje publicado a mano caduca a los 0,5 s (D006.3), y esa regla no se desactiva en pruebas ([[D006 Protocolo vio]], D006.6). MQTT Explorer sigue sirviendo para mirar los mensajes.
 
-## F0.5 · Puente de E/S en Unity · 🟡 2026-11-06 (código hecho y medido; falta la prueba a mano de Mario)
+## F0.5 · Puente de E/S en Unity · ✅ 2026-11-06 (código, medidas y prueba a mano desde el Inspector)
 - **Objetivo:** un componente de Unity que reciba `vio/txt5/out` y publique `vio/txt5/in`.
 - **Dónde:** carpeta nueva `Assets/Scripts/PlantaVirtual/` → `VirtualIO_TXT.cs`. `MQTTClient.cs` de Adrián no se puede copiar ni envolver: su conexión es privada, se suscribe a una lista fija de `dt/*` y entrega los mensajes en `Update()`, al ritmo de los FPS. Se reutiliza **su librería**, `Assets/Plugins/M2Mqtt.Net.dll`, con una conexión propia.
 - **Comprobación:** en el Inspector se ven las salidas cambiar cuando la SLD manda, y las entradas se pueden cambiar a mano. Si paras Python con la cinta en marcha, en menos de 0,5 s Unity para el motor y cierra las válvulas ([[D006 Protocolo vio]], D006.5). Si dejas de publicar `in`, Python deja de enviar `out` (D006.7), y en menos de 1 s Unity también pasa a estado seguro.
@@ -84,13 +84,25 @@ tags: [guía, F0]
   - c) Python parado con la cinta a 512: **estado seguro a los 505 ms** del último `out`. El criterio es "edad del último `out` ≤ 0,51 s" porque Unity cuenta desde el último latido, no desde que se para Python.
   - d) Al volver a arrancar Python, Unity sale solo del estado seguro.
   - D006.8: con Unity en pausa 3 s, Python ve las entradas caducadas, deja de enviar `out` y Unity pasa a estado seguro a los 503 ms. Al quitar la pausa, todo se recupera.
-- **Falta (Mario):** repetir a) a mano desde el Inspector, y medir b) con el editor en primer plano.
+- **Hecho (Mario, 2026-11-06):** a) repetido a mano desde el Inspector. Sin registrar: b) con el editor en primer plano.
 - **Cómo probarlo:** abre `PlantaVirtual.unity` y dale a Play. Arranca `py -3.12 virtual/run_sld_virtual.py` y selecciona `VirtualIO_TXT5`. Cambia las entradas en el Inspector con los mismos pasos que en la tabla del [README de virtual/](../../../virtual/README.md). Para medir: `py -3.12 virtual/medir_vio.py`.
 - **Avisos:**
   - Los errores `Could not resolve host 'CHANGE_ME'` son de los clientes MQTT de Adrián, que no tienen broker configurado. Son normales.
   - El menú de la interfaz recarga la escena por su número en la lista de compilación (`UI_ControladorMenu.cs:882`). `PlantaVirtual.unity` no está en esa lista (añadirla toca `ProjectSettings/`, regla 3 de [[D005 Gestión del repositorio]]). Según el código, en esta escena el número es -1 y la recarga fallaría. No está probado. Mientras tanto, **no uses los botones de modo del menú** en esta escena.
 
-## F0.6 · Modelo físico de la SLD · ⏳ · 🔧 **Diseño de Mario**
+## F0.6 · Modelo físico de la SLD · 🟡 2026-11-06 (pasos 1 a 3 hechos; faltan las medidas reales) · 🔧 **Diseño de Mario**
+- **Hecho (2026-11-06):** paso 1, pieza y cinta (`3b95fb7`). Paso 2, barreras `I1` e `I3`, `C1`, sensor de color, modo Planta y registro (`34ce739`, Codex). Paso 3, expulsión y barreras de rampa (`eb10ee5`, Codex). `SLD.py` original clasifica las tres piezas solas. El sesgo de la roja y el efecto del GIL están en el diario [[2026-11-06]].
+- **Falta (🔧 Mario):** decidir la tolerancia de captura. Medir en la maqueta `v_max`, los mm por cuenta de `C1`, las distancias de `I3` a cada cilindro y la inercia del motor al parar (el modelo para en seco). Va **por detrás** del prototipo de "cargar código" que pidió el tutor.
+
+![[2026-11-06_paso1_pieza_en_tope.png]]
+*Paso 1: pieza blanca al principio de la cinta, el único sitio por el que entra una pieza (D007).*
+
+![[2026-11-06_paso2_azul_ante_cilindro.png]]
+*Paso 2: la cinta para la pieza azul delante de su cilindro, contando solo pulsos de `C1`.*
+
+![[2026-11-06_azul_en_su_rampa.png]]
+*Paso 3: pieza azul en reposo en su rampa, expulsada por la planta virtual con `SLD.py` sin tocar.*
+
 - **Objetivo:** que la cinta, la pieza, los sensores y los cilindros se comporten como los reales.
 - **Preguntas que debes resolver tú** (ver [[SLD - Clasificadora]]):
   - Cinta: velocidad del motor → mm/s. Cómo arrastra la pieza.
@@ -110,7 +122,7 @@ tags: [guía, F0]
 - **Decisión:** (a). En modo virtual manda la planta. Ver [[D007 Quién mueve la escena]].
 - **Entregable:** ✅ [[D007 Quién mueve la escena]].
 
-## F0.8 · Prueba integrada · ⏳
+## F0.8 · Prueba integrada · ⏳ (versión corta, después del prototipo de "cargar código")
 - **Casos:**
   - [ ] Pieza blanca → rampa blanca, estado vuelve a 1.
   - [ ] Pieza roja → rampa roja.

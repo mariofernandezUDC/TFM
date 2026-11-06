@@ -1,5 +1,12 @@
 # Log
 
+## [2026-11-06] guía | Cierre de sesión: F0.5 ✅, F0.6 pasos 1–3, nueva prioridad "cargar código"
+- Probado a mano: hito 1 (con `maqueta_manual.py`, y el experimento sin `I6` confirma el comportamiento raro nº 1) y F0.5 (desde el Inspector).
+- F0.6 pasos 1 a 3 (`3b95fb7`, `34ce739`, `eb10ee5`; los pasos 2 y 3 los hizo Codex): `SLD.py` clasifica las tres piezas solas. Sensor rojo +15 mm en X solo en `PlantaVirtual.unity` (`e765709`). GIL: p95 de 105 a 5 ms con `sys.setswitchinterval(0.001)` (`cf1a692`), y deja a la vista el sesgo de la roja (−8,4 mm).
+- Mensaje del tutor: la próxima prioridad es el prototipo de "cargar código". F0.8 pasa a versión corta.
+- Decisión: D003 ampliada con "Capturas para la memoria". Nueva carpeta `02-DOCS/attachments/F0/` (3 PNG y 3 CSV).
+- Actualizadas: D003, diario 2026-11-06, guía F0 (hito 1, F0.5 ✅, F0.6 🟡, F0.8), Preguntas para el tutor, 00 Contexto para Claude.
+
 ## [2026-11-06] guía | F0.5 código hecho y medido; F0.7 cerrado
 - Código nuevo fuera de la wiki: `Unity/Assets/Scripts/PlantaVirtual/VirtualIO_TXT.cs`, escena `PlantaVirtual.unity`, `virtual/medir_vio.py`.
 - Decisiones: D006.8 en [D006](decisiones/D006%20Protocolo%20vio.md); [D007](decisiones/D007%20Qui%C3%A9n%20mueve%20la%20escena.md).
