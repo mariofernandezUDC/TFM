@@ -3,8 +3,7 @@
 // Lee las salidas del TXT 5 de VirtualIO_TXT (lo recibido por vio/txt5/out, o el
 // estado seguro) y mueve la planta con ellas. Después mide los sensores y, si
 // VirtualIO_TXT está en modo Planta, escribe las entradas del TXT 5.
-// Paso 1: cinta y piezas. Paso 2: I1, I2, I3 y C1. Los cilindros, las rampas
-// e I6–I8 llegan en el paso 3.
+// Pasos 1 a 3: cinta y piezas, sensores, cilindros, compresor y rampas.
 //
 // Las piezas SOLO aparecen al principio de la cinta, con los botones del
 // Inspector o con las teclas 1 (blanca), 2 (roja) y 3 (azul). La tecla 0 las
@@ -48,7 +47,16 @@ namespace PlantaVirtual
         public SensorColorVirtual I2 = new SensorColorVirtual("I2 color");
         public BarreraLuzVirtual I3 = new BarreraLuzVirtual("I3 cilindros");
         public ContadorPulsosVirtual C1 = new ContadorPulsosVirtual("C1 contador");
-        [SoloLectura, Tooltip("Barreras de las rampas: llegan en el paso 3")] public bool I6, I7, I8;
+        [SoloLectura, Tooltip("Barreras de las rampas blanca, roja y azul")] public bool I6, I7, I8;
+
+        [Header("Cilindros y rampas")]
+        public EstacionExpulsion blanca = new EstacionExpulsion();
+        [Tooltip("I7 puede quedar libre tras el paso: el centro de la placa roja está a 15 mm del haz y el radio actual de la pieza es 12,5 mm.")]
+        public EstacionExpulsion roja = new EstacionExpulsion();
+        public EstacionExpulsion azul = new EstacionExpulsion();
+        [SoloLectura] public bool hayPresion;
+        private float tiempoCompresor;
+        private EstacionExpulsion[] estaciones;
 
         [Header("Diagnóstico")]
         [SoloLectura, Tooltip("Tiempo simulado de la planta, s")] public double tiempoPlanta_s;
@@ -75,6 +83,17 @@ namespace PlantaVirtual
             cinta.Configurar(parametros.longitudCinta, parametros.anchoCinta, parametros.vMax, fase);
             _contenedor = new GameObject("PiezasPlanta").transform;
             _contenedor.SetParent(transform, false);
+            estaciones = new[] { blanca, roja, azul };
+            foreach (var e in estaciones)
+            {
+                if (!e.vastago || !e.placa || !e.lampara || !e.fototransistor)
+                {
+                    Debug.LogError("[SLD_Planta] Faltan enlaces de cilindro, placa o barrera.");
+                    enabled = false;
+                    return;
+                }
+                e.Configurar(cinta, parametros);
+            }
             ColocarSensores();
         }
 
@@ -95,6 +114,9 @@ namespace PlantaVirtual
             I3.Medir();
             I2.Medir(_piezas, parametros.posI2, parametros);
             C1.Medir(cinta.recorrido_mm, parametros.mmPorCambioC1);
+            I6 = blanca.barrera.Medir();
+            I7 = roja.barrera.Medir();
+            I8 = azul.barrera.Medir();
             io.EscribirEntradas(I1.oscura, I2.tension, I3.oscura, I6, I7, I8, C1.estado);
         }
 
@@ -103,6 +125,8 @@ namespace PlantaVirtual
             if (!Application.isPlaying) return;
             I1.DibujarGizmo();
             I3.DibujarGizmo();
+            if (estaciones != null)
+                foreach (var e in estaciones) e.barrera.DibujarGizmo();
         }
 
         void Update()
@@ -118,7 +142,17 @@ namespace PlantaVirtual
             int pasos = Mathf.Max(1, Mathf.CeilToInt(dt / PasoMaximo_s));
             float h = dt / pasos;
             for (int i = 0; i < pasos; i++)
+            {
                 cinta.Avanzar(h, s.M1_speed, s.M1_dir, s.M1_running, _piezas, parametros.RadioPieza);
+                tiempoCompresor = s.O8 ? Mathf.Min(tiempoCompresor + h, parametros.tiempoPresion) : 0f;
+                hayPresion = s.O8 && tiempoCompresor >= parametros.tiempoPresion;
+                blanca.Avanzar(h, hayPresion && s.O5, ColorPieza.Blanca, parametros.posCilindroBlanco, this);
+                roja.Avanzar(h, hayPresion && s.O6, ColorPieza.Roja, parametros.posCilindroRojo, this);
+                azul.Avanzar(h, hayPresion && s.O7, ColorPieza.Azul, parametros.posCilindroAzul, this);
+                foreach (var p in _piezas)
+                    if (p != null && p.estado == EstadoPieza.EnRampa)
+                        estaciones[(int)p.cilindroIntentado].Bajar(p, parametros.velocidadRampa * h);
+            }
 
             _piezas.RemoveAll(p => p == null);
             foreach (var p in _piezas) ColocarEnMundo(p);
@@ -142,7 +176,7 @@ namespace PlantaVirtual
             _cintaEnMarchaAntes = enMarcha;
         }
 
-        private void Evento(string detalle) =>
+        internal void Evento(string detalle) =>
             registro.Evento(tiempoPlanta_s, io.entradas, io.Salidas, io.estadoSeguro, detalle);
 
         /// <summary>Posición (mm desde el inicio de la cinta) del cilindro que corresponde a un color.</summary>

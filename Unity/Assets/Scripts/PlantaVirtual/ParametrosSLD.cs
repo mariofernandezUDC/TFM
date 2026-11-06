@@ -34,6 +34,8 @@ namespace PlantaVirtual
         public static implicit operator float(Parametro p) => p.valor;
     }
 
+    public enum PoliticaDescentrado { PermanecerEnCinta, CapturarSiElEjeCruzaLaPieza }
+
     [CreateAssetMenu(fileName = "ParametrosSLD", menuName = "Planta virtual/Parámetros SLD")]
     public class ParametrosSLD : ScriptableObject
     {
@@ -83,6 +85,9 @@ namespace PlantaVirtual
             "Suposición: O8 encendido este tiempo antes de que haya presión. SLD.py lo enciende > 1 s antes de abrir la válvula.");
 
         [Header("Rampas")]
+        [Tooltip("PROVISIONAL · Unidad: opción sin dimensión. Origen: indicación de Mario para F0.6. Por defecto, una pieza fuera de tolerancia queda en la cinta.")]
+        public PoliticaDescentrado fueraDeTolerancia;
+        [SoloLectura] public string fichaFueraDeTolerancia = "PROVISIONAL | Unidad: sin dimensión | Origen: Mario, F0.6 paso 3.";
         public Parametro velocidadRampa = new Parametro(150f, "mm/s",
             "Suposición: la pieza baja por la rampa a esta velocidad (≈ 0,45 s). Debe llegar a la barrera antes de la comprobación de SLD.py (~1,0 s tras abrir la válvula).");
         public Parametro toleranciaCaptura = new Parametro(8f, "mm",

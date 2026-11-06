@@ -125,6 +125,9 @@ MonoBehaviour:
     provisional: 1
     origen: "Suposici\xF3n: O8 encendido este tiempo antes de que haya presi\xF3n.
       SLD.py lo enciende > 1 s antes de abrir la v\xE1lvula."
+  fueraDeTolerancia: 0
+  fichaFueraDeTolerancia: "PROVISIONAL | Unidad: sin dimensi\xF3n | Origen: Mario,
+    F0.6 paso 3."
   velocidadRampa:
     valor: 150
     unidad: mm/s

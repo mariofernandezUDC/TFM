@@ -27554,6 +27554,47 @@ MonoBehaviour:
   I6: 0
   I7: 0
   I8: 0
+  blanca:
+    vastago: {fileID: 1991905256}
+    placa: {fileID: 4530855719811020606}
+    lampara: {fileID: 3835733793448735414}
+    fototransistor: {fileID: 5423017472792130324}
+    barrera:
+      nombre: I6 rampa Blanca
+      oscura: 0
+      emisor: {x: 0, y: 0, z: 0}
+      receptor: {x: 0, y: 0, z: 0}
+    extension_mm: 0
+  roja:
+    vastago: {fileID: 1381773752}
+    placa: {fileID: 3119810687478298315}
+    lampara: {fileID: 3484118600848215333}
+    fototransistor: {fileID: 1500978335392816206}
+    barrera:
+      nombre: I7 rampa Roja
+      oscura: 0
+      emisor: {x: 0, y: 0, z: 0}
+      receptor: {x: 0, y: 0, z: 0}
+    extension_mm: 0
+  azul:
+    vastago: {fileID: 1583995213}
+    placa: {fileID: 1497027064849123623}
+    lampara: {fileID: 4374000177951976698}
+    fototransistor: {fileID: 1578650666888412947}
+    barrera:
+      nombre: I8 rampa Azul
+      oscura: 0
+      emisor: {x: 0, y: 0, z: 0}
+      receptor: {x: 0, y: 0, z: 0}
+    extension_mm: 0
+  hayPresion: 0
+  tiempoPlanta_s: 0
+  framesRecortados: 0
+  peorFrame_ms: 0
+  registro:
+    activo: 1
+    lineas: 0
+    ultimoEvento: '-'
 --- !u!114 &1332950608
 MonoBehaviour:
   m_ObjectHideFlags: 0

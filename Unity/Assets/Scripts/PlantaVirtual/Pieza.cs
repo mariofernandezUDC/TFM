@@ -8,6 +8,7 @@
 // cinta, los cilindros y las rampas, que cambian su estado y su posición.
 //
 //   EnCinta ──(la empuja un cilindro)──▶ Empujada ──(cae en una rampa)──▶ EnRampa
+//      Empujada retorna a EnCinta si el empuje termina antes de alcanzar el borde.
 //      cualquier estado ──(Quitar todas)──▶ se destruye
 
 using UnityEngine;
@@ -15,6 +16,8 @@ using UnityEngine;
 namespace PlantaVirtual
 {
     public enum ColorPieza { Blanca, Roja, Azul }
+
+    public enum ResultadoCaptura { SinIntento, EnCurso, Capturada, NoCapturada }
 
     public enum EstadoPieza { EnCinta, Empujada, EnRampa }
 
@@ -30,6 +33,10 @@ namespace PlantaVirtual
         public float lateral_mm;
         [SoloLectura, Tooltip("Altura del centro de la pieza sobre la superficie de la cinta, en mm")]
         public float altura_mm;
+
+        [SoloLectura] public ResultadoCaptura resultadoCaptura;
+        [SoloLectura] public ColorPieza cilindroIntentado;
+        [SoloLectura] public float descentrado_mm;
 
         private bool _inicializada;
 
@@ -62,7 +69,7 @@ namespace PlantaVirtual
         {
             bool permitido =
                 (estado == EstadoPieza.EnCinta && nuevo == EstadoPieza.Empujada) ||
-                (estado == EstadoPieza.Empujada && nuevo == EstadoPieza.EnRampa);
+                (estado == EstadoPieza.Empujada && (nuevo == EstadoPieza.EnRampa || nuevo == EstadoPieza.EnCinta));
             if (!permitido)
             {
                 Debug.LogWarning($"[Pieza] {name}: paso no permitido {estado} → {nuevo}.");
