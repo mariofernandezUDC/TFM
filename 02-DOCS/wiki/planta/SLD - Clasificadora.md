@@ -67,6 +67,7 @@ El rango no se comprueba al leer el color. Se comprueba al final del posicionami
 ### El código hace algo distinto de lo que parece (útil para la memoria y para F4)
 1. **El error de rampa nunca se publica.** En `ejectWhite`, `ejectRed` y `ejectBlue`, si la barrera de la rampa no ve la pieza, el código pone `state_code = 4`. Pero `thread_SLD` llama justo después a `_set_state_SLD(1, 0)` (línea 125), y eso lo sobrescribe con 1. Además, `eject*` cambia `state_code` directamente, sin pasar por `_set_state_SLD`, así que no fuerza una publicación inmediata. Solo podría verse si la publicación periódica de cada 10 s (`thread_update_SLD`) cayera justo en ese instante.
 2. **El motor puede quedarse en marcha.** Con un color fuera de rango, el bucle de posicionamiento cae siempre en `else: pass`. Nadie en `SLD.py` llama a `stop()` de `M1`, así que la cinta sigue a 350 al pasar a error. ⏳ Falta comprobar si otro módulo lo para al entrar en error.
+3. **El compresor puede quedarse encendido.** `thread_SLD` enciende `O8` antes de posicionar (línea 79). Solo lo apagan `ejectWhite`, `ejectRed` y `ejectBlue`. Con un color fuera de rango no se llama a ninguna `eject*`, así que `O8` sigue encendido al pasar a error. En `vscode/` ningún otro módulo usa `O8`.
 
 ### Decisión de diseño: dónde se detecta la rampa equivocada
 La detección de "pieza en la rampa equivocada" va en la **planta virtual (Unity)**, no en la [[Librería fischertechnik virtual]]. La librería imita los bornes y no conoce el color real de la pieza. La planta sí lo conoce.
