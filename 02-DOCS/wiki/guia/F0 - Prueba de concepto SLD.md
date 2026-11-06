@@ -41,7 +41,7 @@ tags: [guía, F0]
 - **Quedan pendientes** (en [[D006 Protocolo vio]]): medidas de la cinta y de `C1` (🔧), validar los 100 Hz con las grabaciones reales, la unidad de `get_voltage()` y la autoría de `SLD.py` (licencia).
 - **Entregable:** ✅ [[Protocolo vio]] + ✅ [[D006 Protocolo vio]].
 
-## F0.4 · Librería virtual mínima · ⏳
+## F0.4 · Librería virtual mínima · ✅ 2026-11-06
 - **Objetivo:** que `import lib.controller` funcione en el PC sin hardware.
 - **Qué hacer:**
   1. 💻 Crear `Github/TFM/virtual/fischertechnik/…` con las fábricas (`init_*`, `create_*`). Todas las E/S de los 6 TXT se crean, pero **solo las de la SLD se conectan** a MQTT; el resto son "tontas".
@@ -50,9 +50,17 @@ tags: [guía, F0]
   4. 💻 Herramienta `maqueta_manual.py`, junto a `run_sld_virtual.py` ([[D006 Protocolo vio]], D006.6): publica `vio/txt5/in` a 100 Hz, permite cambiar `I1`, `I3`, `I6`–`I8`, `C1` e `I2` desde el teclado y muestra lo que llega por `vio/txt5/out`. Sustituye a MQTT Explorer para las pruebas sin Unity, porque un mensaje publicado a mano caduca a los 0,5 s.
 - **Comprobación:** sin Unity, con `maqueta_manual.py` pones `I1` a oscuro y ves en la consola que la SLD arranca la cinta (`vio/txt5/out` con `M1` = `{"speed": 512, "dir": …, "running": true}`, ver [[Protocolo vio]]).
 - **❓** ¿Por qué hay que crear también las E/S de los otros TXT aunque no se usen? (Pista: `lib/controller.py`.)
-- **Entregable:** commit + nota de lo aprendido.
+  - **Respuesta:** `SLD.py` hace `from lib.controller import *`, y `controller.py` crea las E/S de los 6 TXT en cuanto se importa. Si faltara un solo `create_*`, por ejemplo la cámara del TXT 0, la importación fallaría antes de llegar a la SLD. Por eso existen todos, aunque solo el TXT 5 esté conectado a `vio`.
+- **Resultado:** carpeta `virtual/` (cómo usarla: `virtual/README.md`). Qué hay y qué se aprendió: [[Librería fischertechnik virtual]]. Decisión nueva: D006.7 en [[D006 Protocolo vio]] (sin entradas frescas no se envía `out`).
+- **Criterio de hecho** (con los dos avisos del plan), demostrado con `py -3.12 -m unittest discover -s virtual/tests -v` (11 tests, 5 pasadas seguidas sin fallos):
+  - a) `I1` oscuro → `M1` speed 512, running true.
+  - b) `I2` en blanco **antes** de `I3`, porque el color solo se lee entre `I1` e `I3`. `I3` oscuro → `M1` speed **0 con running true** (`setConvBeltSpeedSLD(0)` hace `set_speed(0)` + `start()`), `O8` true, y después `M1` speed 350 running true.
+  - c) 6 cambios de `C1` → `M1` running false, `O5` true durante 0,500 s y después false, y `O8` false (en un segundo mensaje).
+  - d) Cierras la maqueta → la librería avisa y `out` deja de enviarse (D006.7). La vuelves a abrir → se recupera sola y la cinta vuelve a arrancar con `I1`.
+  - Además: latido de unos 10 mensajes por segundo y `in` a 100 Hz reales.
+- **Entregable:** ✅ commit + [[Librería fischertechnik virtual]] (sección "Lo que se aprendió al hacerla").
 
-### 🏁 Hito 1 · ⏳
+### 🏁 Hito 1 · ✅ 2026-11-06 (con el test automático; falta que Mario lo pruebe a mano con el teclado)
 > **`SLD.py` original piensa en mi PC sin maqueta, probado a mano con `maqueta_manual.py`.**
 >
 > Se alcanza al terminar F0.4: con `maqueta_manual.py` cambias las entradas desde el teclado (se publican a 100 Hz en `vio/txt5/in`) y ves la respuesta de `SLD.py` en `vio/txt5/out`, sin Unity y sin cambiar una línea de `SLD.py`. Formato de los mensajes: [[Protocolo vio]].
@@ -62,7 +70,8 @@ tags: [guía, F0]
 ## F0.5 · Puente de E/S en Unity · ⏳
 - **Objetivo:** un componente de Unity que reciba `vio/txt5/out` y publique `vio/txt5/in`.
 - **Dónde:** carpeta nueva `Assets/Scripts/PlantaVirtual/` → `VirtualIO_TXT.cs` (💻 te explico cómo reutilizar la conexión de `MQTTClient.cs`).
-- **Comprobación:** en el Inspector se ven las salidas cambiar cuando la SLD manda, y las entradas se pueden cambiar a mano. Si paras Python con la cinta en marcha, en menos de 0,5 s Unity para el motor y cierra las válvulas ([[D006 Protocolo vio]], D006.5).
+- **Comprobación:** en el Inspector se ven las salidas cambiar cuando la SLD manda, y las entradas se pueden cambiar a mano. Si paras Python con la cinta en marcha, en menos de 0,5 s Unity para el motor y cierra las válvulas ([[D006 Protocolo vio]], D006.5). Si dejas de publicar `in`, Python deja de enviar `out` (D006.7), y en menos de 1 s Unity también pasa a estado seguro.
+- ⚠️ `in` tiene que salir a **100 Hz reales**, no solo configurados. En F0.4, a 40–60 Hz se perdían cambios de `C1` (ver [[Librería fischertechnik virtual]]). Mide la frecuencia real en Unity.
 
 ## F0.6 · Modelo físico de la SLD · ⏳ · 🔧 **Diseño de Mario**
 - **Objetivo:** que la cinta, la pieza, los sensores y los cilindros se comporten como los reales.
