@@ -7387,7 +7387,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -30}
+  m_AnchoredPosition: {x: 10, y: -29.999939}
   m_SizeDelta: {x: 450, y: -80}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &320874811
@@ -9143,7 +9143,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1673345604}
   m_HandleRect: {fileID: 1673345603}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -27495,6 +27495,76 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1331323811}
   m_CullTransparentMesh: 1
+--- !u!1 &1332950606
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1332950609}
+  - component: {fileID: 1332950608}
+  - component: {fileID: 1332950607}
+  m_Layer: 0
+  m_Name: SLD_Planta
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1332950607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332950606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d822575bd4e290942a53ab128262fbeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantaVirtual.SLD_Planta
+  parametros: {fileID: 11400000, guid: ddfc784e9f6e4cd4fbde035538a4eb6a, type: 2}
+  io: {fileID: 1282776253}
+  cinta: {fileID: 1332950608}
+  mallaPieza: {fileID: -1886335168213062750, guid: e3c80de4d6b25fd489d923d90d9129ca, type: 3}
+  materialPieza: {fileID: 2100000, guid: fd4aaa46c7f23274ba2422038854dcba, type: 2}
+  escalaMallaPieza: 100
+  piezasEnEscena: 0
+--- !u!114 &1332950608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332950606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43205d421946c94e96786f12cd0c0ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantaVirtual.CintaVirtual
+  objetoCinta: {fileID: 2593961540105253669}
+  eje: {x: 0, y: 0, z: 1}
+  inicioMundo: {x: 0, y: 0, z: 0}
+  alturaSuperficie: 0
+  velocidad_mm_s: 0
+  recorrido_mm: 0
+--- !u!4 &1332950609
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332950606}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1342602834
 GameObject:
   m_ObjectHideFlags: 0
@@ -324085,3 +324155,4 @@ SceneRoots:
   - {fileID: 405170315}
   - {fileID: 1020615021}
   - {fileID: 1282776254}
+  - {fileID: 1332950609}

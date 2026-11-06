@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ed99eb51c8be424d8f3babd3df3e03b, type: 3}
+  m_Name: ParametrosSLD
+  m_EditorClassIdentifier: Assembly-CSharp::PlantaVirtual.ParametrosSLD
+  vMax:
+    valor: 100
+    unidad: mm/s
+    provisional: 1
+    origen: "Suposici\xF3n. v = (speed/512)\xB7vMax. A 350 da 68 mm/s: un cambio
+      de C1 cada 88 ms. L\xEDmite \u2248 290 mm/s para que cada estado de C1 dure
+      \u2265 30 ms (3 im\xE1genes in)."
+  longitudCinta:
+    valor: 420.8
+    unidad: mm
+    provisional: 1
+    origen: "Escena: tama\xF1o z de la malla 9V_kette_mit_raupenbelag (CintaSLD)."
+  anchoCinta:
+    valor: 29.7
+    unidad: mm
+    provisional: 1
+    origen: "Escena: tama\xF1o x de la malla de la cinta."
+  diametroPieza:
+    valor: 25
+    unidad: mm
+    provisional: 1
+    origen: "Escena: malla de Assets/Prefabs/PiezaBase.prefab (0,25 \xD7 escala 100)."
+  alturaPieza:
+    valor: 12.5
+    unidad: mm
+    provisional: 1
+    origen: 'Escena: malla de PiezaBase.prefab.'
+  puntoColocacion:
+    valor: 5.1
+    unidad: mm
+    provisional: 1
+    origen: "Suposici\xF3n: centro de la pieza nueva = I1 + 5 mm, para que tape el
+      haz de I1 desde el principio."
+  posI1:
+    valor: 0.1
+    unidad: mm
+    provisional: 1
+    origen: 'Escena: centro de malla del sensor de entrada (z 2,2938).'
+  posI2:
+    valor: 120.1
+    unidad: mm
+    provisional: 1
+    origen: 'Escena: centro de malla de 9V_128599_Farbsensor_step001 (z 2,4138).'
+  posI3:
+    valor: 225.1
+    unidad: mm
+    provisional: 1
+    origen: "Escena: centro de malla del sensor de clasificaci\xF3n (z 2,5188)."
+  posCilindroBlanco:
+    valor: 247.6
+    unidad: mm
+    provisional: 1
+    origen: 'Escena: centro de malla del cilindro blanco (z 2,5413).'
+  posCilindroRojo:
+    valor: 307.7
+    unidad: mm
+    provisional: 1
+    origen: 'Escena: centro de malla del cilindro rojo (z 2,6014).'
+  posCilindroAzul:
+    valor: 367.6
+    unidad: mm
+    provisional: 1
+    origen: 'Escena: centro de malla del cilindro azul (z 2,6613).'
+  mmPorCambioC1:
+    valor: 6
+    unidad: mm
+    provisional: 1
+    origen: "Ajuste por m\xEDnimos cuadrados de SLD.py (para en los cambios 6/15/26)
+      a la geometr\xEDa de la escena. No encaja exacto: 6,68 mm entre blanco y rojo,
+      5,45 entre rojo y azul (opci\xF3n A de F0.6)."
+  fijarFaseC1: 0
+  faseInicialC1:
+    valor: 0
+    unidad: mm
+    provisional: 1
+    origen: "Solo para tests repetibles: si fijarFaseC1, el recorrido de C1 empieza
+      aqu\xED al iniciar Play. Si no, la fase es la que quede, como en la planta
+      real."
+  carreraCilindro:
+    valor: 29.6
+    unidad: mm
+    provisional: 1
+    origen: "Escena: valores de reposo y estirado calibrados por Adri\xE1n en ControladorCilindrosSLD_mqtt
+      (\xD7100)."
+  tiempoExtension:
+    valor: 0.15
+    unidad: s
+    provisional: 1
+    origen: "Suposici\xF3n. Tiene que ser < 0,5 s, el pulso de v\xE1lvula de eject*
+      en SLD.py."
+  tiempoRetorno:
+    valor: 0.15
+    unidad: s
+    provisional: 1
+    origen: "Suposici\xF3n: retorno por muelle al cerrar la v\xE1lvula."
+  tiempoPresion:
+    valor: 0.2
+    unidad: s
+    provisional: 1
+    origen: "Suposici\xF3n: O8 encendido este tiempo antes de que haya presi\xF3n.
+      SLD.py lo enciende > 1 s antes de abrir la v\xE1lvula."
+  velocidadRampa:
+    valor: 150
+    unidad: mm/s
+    provisional: 1
+    origen: "Suposici\xF3n: la pieza baja por la rampa a esta velocidad (\u2248 0,45
+      s). Debe llegar a la barrera antes de la comprobaci\xF3n de SLD.py (~1,0 s
+      tras abrir la v\xE1lvula)."
+  toleranciaCaptura:
+    valor: 8
+    unidad: mm
+    provisional: 1
+    origen: "Suposici\xF3n (opci\xF3n A de F0.6): descentrado m\xE1ximo, a lo largo
+      de la cinta, entre la pieza y su cilindro para que entre en la rampa."
+  tensionBlanca:
+    valor: 675
+    unidad: mV
+    provisional: 1
+    origen: "Valor de prueba de D006.7 (no medido). Rango blanco de SLD.py: 200 \u2264
+      v < 1150."
+  tensionRoja:
+    valor: 1275
+    unidad: mV
+    provisional: 1
+    origen: "Valor de prueba de D006.7 (no medido). Rango rojo: 1150 \u2264 v < 1400
+      (o 1460)."
+  tensionAzul:
+    valor: 1700
+    unidad: mV
+    provisional: 1
+    origen: "Valor de prueba de D006.7 (no medido). Rango azul: umbral \u2264 v <
+      2000."
+  tensionSinPieza:
+    valor: 2500
+    unidad: mV
+    provisional: 1
+    origen: Valor de prueba de D006.7 (no medido).
+  radioDeteccionColor:
+    valor: 12.5
+    unidad: mm
+    provisional: 1
+    origen: "Suposici\xF3n: el sensor ve la pieza si su centro est\xE1 a menos de
+      esta distancia del punto del sensor."
+  ruidoColor:
+    valor: 0
+    unidad: mV
+    provisional: 1
+    origen: "Suposici\xF3n: desviaci\xF3n del ruido gaussiano. 0 = sin ruido (por
+      defecto)."
