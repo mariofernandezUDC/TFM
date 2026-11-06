@@ -43,7 +43,8 @@
   "tier": null,
   "optOuts": [
     "knowledge-sync",
-    "trunk-open"
+    "trunk-open",
+    "worktree-isolation"
   ],
   "gitPermissions": false,
   "onboarding": {

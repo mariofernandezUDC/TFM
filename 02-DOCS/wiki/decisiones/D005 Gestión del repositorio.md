@@ -4,7 +4,7 @@ tags: [decisión, git]
 
 # D005 · Gestión del repositorio para no pisar al compañero
 
-- **Fecha:** 2026-11-02 · **Estado:** ✅ Aceptada · **Revisada:** 2026-11-05 (punto 9) · **Ampliada:** 2026-11-06 (Reglas para Unity)
+- **Fecha:** 2026-11-02 · **Estado:** ✅ Aceptada · **Revisada:** 2026-11-05 (punto 9) · **Ampliada:** 2026-11-06 (Reglas para Unity; Sin worktrees)
 
 ## Contexto
 El repositorio de partida es de Adrián (`upstream`) y él sigue trabajando en él. Mario trabaja en su propio fork (`origin`). Hay que poder traer los avances de Adrián sin conflictos y sin estropear su trabajo. Conceptos en [[Git para principiantes]].
@@ -37,10 +37,17 @@ Cómo se aplican:
 - La regla 2 concreta el punto 5. Cuando una copia en `PlantaVirtual/` no basta, sigue valiendo heredar o envolver la clase, o proponerle el cambio a Adrián con un PR.
 - La regla 3 se suma al punto 6: además del permiso de Mario, a Adrián se le sigue avisando.
 
+## Sin worktrees del asistente (2026-11-06)
+- El aislamiento de rsc (`worktree-isolation`) está **desactivado para el proyecto**: `worktree-isolation` figura en `optOuts` de `.rsc.json`. Cuando el asistente detecta otra sesión en la misma carpeta, ya no abre un worktree en `.worktrees/`: trabaja en la carpeta principal, en la rama `planta-virtual`.
+- En cada ordenador, el interruptor local es el fichero vacío `.rsc/.no-worktree-isolation` (no se sube: `.rsc/` está en `.gitignore`). Si `optOuts` lo pide y el fichero falta, rsc lo avisa al empezar la sesión ("DISARMED BY THE TEAM, still armed here"). En el segundo ordenador hay que crearlo la primera vez.
+- **Cómo se reactiva:** quitar `worktree-isolation` de `optOuts` en `.rsc.json` (commit) y borrar `.rsc/.no-worktree-isolation` en cada ordenador. Es reversible del todo.
+- **Riesgo que se acepta:** si de verdad hubiera dos sesiones del asistente a la vez en la misma carpeta, escribirían en la misma rama y podrían manejar el mismo editor de Unity. Por eso: **una sola sesión del asistente por carpeta**.
+
 ## Por qué
 - Si dos personas no tocan los mismos archivos, Git no puede generar conflictos.
 - Las escenas de Unity son casi imposibles de mezclar a mano.
 - Con merges pequeños y frecuentes, los conflictos también son pequeños.
+- **Sin worktrees.** Mario trabaja solo, en dos ordenadores, nunca con dos sesiones a la vez en la misma carpeta. Y con Unity un worktree no sirve: el editor está abierto sobre la carpeta principal, y un worktree necesitaría su propio editor y reimportar todo el proyecto (`Library/`), lo que tarda mucho. El aislamiento solo añadía ramas sueltas (como `f05-cierre`) que luego había que traer a mano.
 - **Reglas para Unity.** Con la Unity CLI o un MCP, el asistente puede cambiar escenas y ajustes sin abrir el editor, y un cambio así no se ve hasta el siguiente `git status`. Una lista cerrada de lo que se puede tocar evita romper el gemelo de Adrián por accidente. El commit aparte para `manifest.json` y `ProjectSettings/` permite deshacer ese cambio solo, sin perder el resto. Y la misma versión de Unity evita que el proyecto se reimporte o que se reescriban sus archivos.
 
 ## Pendiente
