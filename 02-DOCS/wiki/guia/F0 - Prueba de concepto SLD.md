@@ -85,11 +85,13 @@ tags: [guía, F0]
 - **Dónde:** `Assets/Scripts/PlantaVirtual/SLD_Planta.cs` (y los componentes reutilizables que decidas: `BarreraLuzVirtual.cs`, `CilindroVirtual.cs`…).
 - **❓** ¿Qué componentes de la SLD se podrán reutilizar en otras estaciones?
 
-## F0.7 · Decidir quién mueve la escena · ⏳
+## F0.7 · Decidir quién mueve la escena · ✅ 2026-11-06
 - **Problema:** `ControladorCintaSLD_mqtt.cs` y `ControladorCilindrosSLD_mqtt.cs` también mueven la cinta y las piezas (son marionetas, ver [[Marioneta vs planta]]).
 - **Opciones:** (a) en modo virtual se desactivan y manda la planta; (b) la planta solo calcula E/S y la animación sigue entrando por `dt/*`.
 - **❓** ¿Qué pasa con las piezas "de repuesto" que crean estos scripts si los dejas activos?
-- **Entregable:** decisión `D007`.
+  - **Respuesta:** aparecerían de la nada y falsearían la planta. En la planta virtual, una pieza solo puede estar donde la han llevado la cinta y los cilindros. Si la marioneta crea una de repuesto porque "debería haber una", los sensores calculados (`I1`, `I3`, `I6`–`I8`) verían una pieza que nadie ha movido. `SLD.py` reaccionaría a ella como si fuera real, y un fallo del control (una pieza perdida o mal expulsada) quedaría tapado.
+- **Decisión:** (a). En modo virtual manda la planta. Ver [[D007 Quién mueve la escena]].
+- **Entregable:** ✅ [[D007 Quién mueve la escena]].
 
 ## F0.8 · Prueba integrada · ⏳
 - **Casos:**

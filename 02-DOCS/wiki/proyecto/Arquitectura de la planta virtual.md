@@ -37,5 +37,5 @@ La idea central es **sustituir el hardware, no la lógica** ([[D001 Sustituir el
 - El [[Contrato MQTT]] `dt/*`: el hilo original `Digital_Twin.py` sigue publicándolo a partir de los contadores virtuales.
 - Las grabaciones del [[Modo simulación actual]], como trazas de referencia para la validación (F7).
 
-## Decisión abierta: ¿quién mueve la escena?
-Ver "Doble fuente de movimiento" en [[Riesgos]]. Se decide en [[F0 - Prueba de concepto SLD]], paso F0.7.
+## Decisión: ¿quién mueve la escena? ✅
+En modo virtual manda la planta: ver [[D007 Quién mueve la escena]] (F0.7). Era el riesgo "Doble fuente de movimiento" de [[Riesgos]].
