@@ -1,5 +1,10 @@
 # Log
 
+## [2026-11-06] guía | F0.5 código hecho y medido; F0.7 cerrado
+- Código nuevo fuera de la wiki: `Unity/Assets/Scripts/PlantaVirtual/VirtualIO_TXT.cs`, escena `PlantaVirtual.unity`, `virtual/medir_vio.py`.
+- Decisiones: D006.8 en [D006](decisiones/D006%20Protocolo%20vio.md); [D007](decisiones/D007%20Qui%C3%A9n%20mueve%20la%20escena.md).
+- Actualizadas: guía F0 (F0.5 🟡, F0.7 ✅), SLD - Clasificadora (posiciones), Protocolo vio, README de `virtual/`, diario 2026-11-06, 00 Contexto para Claude.
+
 ## [2026-11-06] guía | F0.4 cerrado: librería virtual mínima y hito 1
 - Código nuevo fuera de la wiki: `virtual/` (librería `fischertechnik` virtual, `run_sld_virtual.py`, `maqueta_manual.py`, tests, README).
 - Decisión: D006.7 en [D006](decisiones/D006%20Protocolo%20vio.md) (sin entradas frescas no se envía `out`).
