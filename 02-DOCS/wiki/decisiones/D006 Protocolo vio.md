@@ -4,7 +4,7 @@ tags: [decisión]
 
 # D006 · Protocolo `vio` de E/S (TXT 5, SLD)
 
-- **Fecha:** 2026-11-05 · **Estado:** ✅ Aceptada (de momento solo TXT 5, la [[SLD - Clasificadora]]) · **Ampliada:** 2026-11-05 con D006.5 y D006.6; 2026-11-06 con D006.7
+- **Fecha:** 2026-11-05 · **Estado:** ✅ Aceptada (de momento solo TXT 5, la [[SLD - Clasificadora]]) · **Ampliada:** 2026-11-05 con D006.5 y D006.6; 2026-11-06 con D006.7 y D006.8
 
 ## Contexto
 La [[Librería fischertechnik virtual]] (Python) y la maqueta virtual (Unity) tienen que intercambiar el estado de las E/S del TXT 5 por MQTT. Hay que fijar cómo se empaquetan los mensajes, cada cuánto se envían, qué pasa si se corta la comunicación y en qué unidades viajan los valores. Es el paso F0.3 de [[F0 - Prueba de concepto SLD]]. Explicación y ejemplos: [[Protocolo vio]].
@@ -59,6 +59,12 @@ Para la prueba sin Unity (D006.6): una herramienta que haga de maqueta a mano, o
 - Mensajes de `in` inválidos (JSON roto, falta una clave o un tipo incorrecto): la imagen entera **se descarta**, con un aviso limitado a uno cada 2 s, y **no renueva la hora**. No se mezclan imágenes parciales.
 - Detalles de la implementación (no cambian el protocolo): QoS 0 y sin `retain` en los dos topics.
 
+### D006.8 · Hombre muerto en Unity y `out` inválido (2026-11-06)
+- Si el **hilo principal de Unity** lleva **más de 0,5 s sin avanzar** (pausa del editor o cuelgue), **deja de enviarse `vio/txt5/in`**. Cuando Unity vuelve a avanzar, `in` se reanuda solo.
+- Así, pausar Unity pausa todo el lazo: Python ve las entradas caducadas (D006.3) y deja de enviar `out` (D006.7), y Unity pasa a estado seguro (D006.5).
+- Un **`out` inválido** (JSON roto, falta una clave, un tipo incorrecto o `speed` fuera de 0–512) **se descarta entero**, con un aviso como mucho cada 2 s, y **no renueva la hora** del último `out`. Las claves de más se ignoran, igual que en `in`.
+- Implementado en `VirtualIO_TXT.cs` (F0.5).
+
 ## Por qué
 - **D006.1.** Con un topic por borne, las entradas llegarían sueltas y de instantes distintos. La lógica podría ver, por ejemplo, la barrera `I3` de un instante y el color `I2` de otro. La imagen completa evita eso, igual que en un PLC.
 - **D006.2.** `SLD.py` no se toca ([[D001 Sustituir el hardware, no la lógica]]). Por eso la librería entrega lo mismo que el hardware real, un estado, y el conteo lo sigue haciendo el código original.
@@ -67,6 +73,7 @@ Para la prueba sin Unity (D006.6): una herramienta que haga de maqueta a mano, o
 - **D006.5.** Si `out` solo se enviara al cambiar, Unity no distinguiría "nada cambia" de "Python se ha caído". Reenviar la imagen cada 100 ms resuelve las dos cosas con el mismo mensaje. Un topic de latido aparte sería otra pieza que mantener, sin ninguna ventaja.
 - **D006.6.** Si la regla de 0,5 s se desactivara en pruebas, lo probado no sería lo que funciona de verdad. Con `maqueta_manual.py`, la librería recibe el mismo flujo a 100 Hz que le dará Unity, y la regla se prueba también.
 - **D006.7.** Es como un PLC que pierde su módulo de entradas: pone las salidas en estado seguro. Si el latido siguiera mientras Python espera, Unity mantendría la cinta en marcha con la lógica ciega, y la pieza se pasaría de su cilindro. Es coherente con D006.3: no se actúa sobre un mundo que ya no se ve. Con un `retain` en `in`, un mensaje viejo parecería nuevo, y por eso no se usa.
+- **D006.8.** Es el mismo hombre muerto de D006.7, en el otro sentido. El hilo de 100 Hz de Unity va aparte del hilo principal. Si Unity se pausa o se cuelga, ese hilo seguiría enviando entradas viejas, y Python creería que la planta está viva. Cortar `in` hace que una pausa de Unity pare todo el lazo (D006.3 + D006.7). La regla del `out` inválido es la misma que la de `in`: un mensaje que no se entiende no demuestra que Python esté sano.
 
 ## Consecuencias
 - La librería virtual guarda la última imagen y responde a `is_dark()`, `get_state()` o `get_voltage()` desde memoria.
@@ -74,6 +81,8 @@ Para la prueba sin Unity (D006.6): una herramienta que haga de maqueta a mano, o
 - Con el latido de 100 ms y el límite de 0,5 s, Unity aguanta unos 5 mensajes perdidos seguidos antes de pasar a estado seguro.
 - Con D006.7, si se corta `in`, Unity pasa a estado seguro **como mucho en 1 s**: 0,5 s hasta que Python ve caducada la imagen y otros 0,5 s hasta que Unity nota que falta el latido.
 - **Medido en F0.4 (2026-11-06):** el riesgo de D006.2 es real. En Windows, `sleep` no baja de unos 15,6 ms. La maqueta solo llegaba a 40–60 Hz y `SLD.py` perdió 4 de 30 cambios de `C1`. Con el reloj de 1 ms (`timeBeginPeriod(1)`) va a 95–101 Hz y no se pierde ninguno. **Unity tendrá que garantizar también los 100 Hz reales** (F0.5).
+- **Medido en F0.5 (2026-11-06):** `VirtualIO_TXT.cs` publica `in` a **100,00 Hz** durante 60 s, con el hueco más largo de 14,5 ms (`virtual/medir_vio.py`), con el editor en segundo plano. Al parar Python, Unity pasa a estado seguro a los **505 ms** del último `out`. Al pausar Unity, el lazo entero se para y se recupera solo (D006.8).
+- Con D006.8, cualquier parada del hilo principal de Unity de más de 0,5 s corta `in` un momento. Pasa al entrar en Play (el primer fotograma tarda) y con cada `unity command script eval`. Python avisa de que las entradas caducan y se recupera solo.
 - F0.4 suma una tarea: `maqueta_manual.py`.
 - El protocolo se ampliará a los demás TXT en F1 (`vio/txtN/in`, `vio/txtN/out`).
 

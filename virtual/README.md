@@ -56,6 +56,14 @@ py -3.12 -m unittest discover -s virtual/tests -v
 | `lib/display.py` | `display.set_attr()` imprime. En el TXT lo pone el sistema |
 | `run_sld_virtual.py` | Prepara `sys.path` y los niveles de log, y lanza solo `thread_SLD` |
 | `maqueta_manual.py` | Maqueta falsa con teclado. Publica `vio/txt5/in` a 100 Hz |
+| `medir_vio.py` | Mide desde fuera el ritmo real de `vio/txt5/in` (F0.5). Cumple con una media de 98–102 Hz y ningún hueco de más de 30 ms |
+
+## Probar con Unity en vez de la maqueta (F0.5)
+1. En Unity, abre `Assets/Scenes/PlantaVirtual.unity` y dale a Play. En la consola debe salir `[vio] Conectado a localhost:1883`.
+2. Arranca la SLD: `py -3.12 virtual/run_sld_virtual.py`.
+3. Selecciona el objeto `VirtualIO_TXT5`. En el Inspector cambias las **Entradas**, y ves las **Salidas** y el **Diagnóstico** (Hz de `in`, edad del último `out`, estado seguro).
+4. Sigue los mismos pasos de la tabla de arriba: `I1`, `I2` = 675 (blanco), `I3` y seis cambios de `C1`.
+5. Para medir los 100 Hz: `py -3.12 virtual/medir_vio.py` (60 s; `--segundos 20` para menos).
 
 - **Solo el TXT 5 está conectado.** Los demás TXT se crean igual, porque `controller.py` crea los 6 al importarse. Son "tontos": las entradas dan `False` o 0 y las salidas no hacen nada.
 - **`lib.display` y el namespace package.** `vscode/lib/` no tiene `__init__.py`, y `virtual/lib/` tampoco. Por eso Python junta las dos carpetas en un solo paquete `lib`: `lib.display` sale de `virtual/` y el resto de `vscode/`. **Si algún día se añade `vscode/lib/__init__.py`, esto deja de funcionar.** El plan B es meter el módulo a mano desde el lanzador: `sys.modules["lib.display"] = ...`.

@@ -27,7 +27,9 @@ Si la planta virtual también mueve la escena, hay **dos fuentes de movimiento**
 - **Una sola verdad.** La B exigiría arrancar también `Digital_Twin.py` para generar `dt/*`, y mantener sincronizadas dos verdades: la de la planta (E/S por `vio`) y la de la animación (`dt/*`). Cualquier diferencia entre las dos, aunque sea un retraso, produce una escena que no se corresponde con lo que ven los sensores.
 
 ## Consecuencias
-- La escena **`PlantaVirtual.unity`** (nueva y propia, [[D005 Gestión del repositorio]]) **no lleva** los scripts marioneta en la SLD: ni `ControladorCintaSLD_mqtt` ni `ControladorCilindrosSLD_mqtt`.
+- La escena **`PlantaVirtual.unity`** (nueva y propia, [[D005 Gestión del repositorio]]) **no ejecuta** los scripts marioneta de la SLD, ni `ControladorCintaSLD_mqtt` ni `ControladorCilindrosSLD_mqtt`.
+  - **Cómo (F0.5, 2026-11-06):** la escena es una copia de la de Adrián con toda la fábrica. Los dos componentes siguen en ella pero **desactivados** (`enabled = false`). No se borran ni se apaga su GameObject, para que el VGR siga encontrando `spawnPoint*` y se pueda deshacer con un clic.
+  - Comprobado que no queda código suyo en marcha: ver F0.5 en [[F0 - Prueba de concepto SLD]].
 - La escena de Adrián (`GemeloDigital_LearningFactory.unity`) **no se toca**. Sus marionetas siguen igual y el gemelo de la planta real sigue funcionando.
 - `SLD_Planta.cs` (F0.6) tiene que hacer todo lo que hoy hacen las marionetas, pero a partir de las salidas: mover la cinta, empujar con los cilindros y llevar la pieza a la rampa. Lo que no hace es pintar ni inventar piezas.
 - Con la A, la escena virtual no usa `dt/*` en la SLD. `Digital_Twin.py` no hace falta en modo virtual.

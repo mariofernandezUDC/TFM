@@ -48,6 +48,8 @@ Se lee así: la cinta va a velocidad 350 en sentido CW, las tres válvulas de ex
 6. **El latido significa "lazo de control sano"** (D006.7): mientras la imagen de entradas está caducada, Python **no envía `out`**, ni cambios ni latido. Así Unity pasa a estado seguro. Cuando vuelven las entradas, `out` se reanuda solo.
 7. **Mensajes inválidos:** un `in` con JSON roto, al que le falta una clave o con un tipo incorrecto se descarta entero, con aviso, y no cuenta como imagen nueva. Las claves de más se ignoran.
 8. QoS 0 y sin `retain` en los dos topics.
+9. **Hombre muerto en Unity** (D006.8): si el hilo principal de Unity lleva más de 0,5 s sin avanzar (pausa o cuelgue), Unity deja de enviar `in`. Pausar Unity pausa todo el lazo.
+10. **`out` inválido** (D006.8): Unity lo descarta entero, con aviso, y no cuenta como latido.
 
 > Analogía: es el hombre muerto de un tren. Mientras Python «pisa el pedal» cada 100 ms, la cinta sigue. Si deja de pisarlo durante medio segundo, todo se para. Y Python solo pisa el pedal si ve la vía: sin entradas frescas, lo suelta.
 

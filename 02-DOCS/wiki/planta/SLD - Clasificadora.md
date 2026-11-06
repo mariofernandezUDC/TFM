@@ -76,6 +76,30 @@ La detección de "pieza en la rampa equivocada" va en la **planta virtual (Unity
 - `ControladorCintaSLD_mqtt.cs`: mueve los eslabones de la cinta según `dt/sld/belt`, **pinta** la pieza del color que dice el cilindro, la traslada a su rampa y genera una pieza de repuesto si "debería haber una".
 - `ControladorCilindrosSLD_mqtt.cs`: mueve los pistones y crea o destruye piezas en las rampas. El [[VGR - Robot de vacío]] lee sus propiedades (`IsWhiteSensorActivo`, `spawnPoint*`).
 - Ambos son **marionetas**: ver [[Marioneta vs planta]].
+- En `PlantaVirtual.unity` los dos están desactivados ([[D007 Quién mueve la escena]]).
+
+### Posiciones en la escena (leídas el 2026-11-06, sin corregir)
+Son datos de partida para F0.6. **Los valores mecánicos los decide Mario.** Están en metros y en coordenadas del mundo, y salen del editor (`transform.position` y el centro de las mallas, `Renderer.bounds`).
+- El padre `LearningFactory_modelo3D` tiene **escala 100** y está en (1.3765, 0, 1.4283). La SLD está **girada 180° sobre Y**, con su raíz en (1.1034, 0.1037, 2.6653).
+- **El pivote no marca dónde está la pieza:** en el modelo CAD, el cilindro rojo y el azul comparten pivote, igual que dos de los sensores. Para situar algo, usa el centro de la malla.
+
+| Objeto | Pivote (x, y, z) | Centro de la malla (x, y, z) | Tamaño (x, y, z) |
+|---|---|---|---|
+| Cinta | 1.0027, 0.1068, 2.3261 | 1.0301, 0.1006, 2.5041 | 0.0297, 0.0306, 0.4208 |
+| Ejes de la cinta | 1.0302, 0.1078, 2.6921 | 1.0302, 0.1006, 2.5041 | 0.0119, 0.0201, 0.4103 |
+| Pulsador C1 | 1.0678, 0.1081, 2.3313 | 1.0650, 0.0931, 2.3223 | 0.0095, 0.0356, 0.0180 |
+| Sensor de entrada | 0.9983, 0.1156, 2.5113 | 1.0303, 0.1231, 2.2938 | 0.0654, 0.0150, 0.0150 |
+| Sensor de clasificación | 1.0978, 0.1007, 2.5676 | 1.0311, 0.1231, 2.5188 | 0.0711, 0.0151, 0.0150 |
+| Cilindro blanco | 1.0753, 0.0856, 2.5263 | 0.9765, 0.1292, 2.5413 | 0.0831, 0.0272, 0.0300 |
+| Cilindro rojo | 0.9912, 0.1006, 2.3088 | 0.9765, 0.1287, 2.6014 | 0.0831, 0.0262, 0.0301 |
+| Cilindro azul | 0.9912, 0.1006, 2.3088 | 0.9765, 0.1288, 2.6613 | 0.0831, 0.0265, 0.0300 |
+| Sensor de pieza blanca en la rampa | 0.9908, 0.0885, 2.3267 | 1.1203, 0.0925, 2.5413 | 0.0150, 0.0161, 0.0729 |
+| Sensor de pieza roja en la rampa | 1.1128, 0.1006, 2.6276 | 1.1053, 0.0931, 2.6013 | 0.0150, 0.0151, 0.0729 |
+| Sensor de pieza azul en la rampa | 0.9908, 0.0885, 2.3267 | 1.1203, 0.0931, 2.6613 | 0.0150, 0.0150, 0.0729 |
+| Final de la rampa blanca | 1.1053, 0.0876, 2.5563 | 1.1203, 0.0852, 2.5413 | 0.0300, 0.0048, 0.0300 |
+| Final de la rampa roja | 1.1053, 0.0876, 2.6163 | 1.1203, 0.0852, 2.6013 | 0.0300, 0.0048, 0.0300 |
+| Final de la rampa azul | 1.1053, 0.0877, 2.6763 | 1.1203, 0.0853, 2.6613 | 0.0300, 0.0048, 0.0300 |
+| Controlador TXT | 1.0903, 0.0756, 2.3763 | 1.1353, 0.0846, 2.3763 | 0.0900, 0.0181, 0.0900 |
 
 ## 🔧 Diseño de Mario (planta virtual)
 - ❓ ¿Cómo convertir la velocidad del motor (0–512) en velocidad lineal de la cinta (mm/s)?
