@@ -56,3 +56,5 @@ Thumbs.db
 
 # Configuración local de Obsidian (la bóveda vive en 02-DOCS/wiki)
 .obsidian/
+
+Unity/.vscode/
