@@ -73,6 +73,8 @@ def main():
   # Una línea por print, aunque la salida vaya a un archivo o a otro proceso.
   sys.stdout.reconfigure(line_buffering=True)
   reloj_de_1_ms()
+  # Durante el sondeo continuo de I3 y C1, paho necesita recibir las imágenes en otro hilo.
+  sys.setswitchinterval(0.001)
 
   # Sin esto, Python guardaría los .pyc de SLD.py en vscode/lib/__pycache__/,
   # y en vscode/ no se escribe nada.
