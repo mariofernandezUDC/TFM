@@ -101,6 +101,12 @@ Son datos de partida para F0.6. **Los valores mecánicos los decide Mario.** Est
 | Final de la rampa azul | 1.1053, 0.0877, 2.6763 | 1.1203, 0.0853, 2.6613 | 0.0300, 0.0048, 0.0300 |
 | Controlador TXT | 1.0903, 0.0756, 2.3763 | 1.1353, 0.0846, 2.3763 | 0.0900, 0.0181, 0.0900 |
 
+#### Corrección geométrica respecto al modelo original
+
+En `PlantaVirtual.unity` se trasladó el grupo `Sensor_PiezaRojaDepositada` (lámpara y fototransistor juntos) **+15,00 mm en X mundial**. Las tres rampas son iguales. La placa roja está centrada en X = 1,12026 m, igual que las otras dos, pero su haz estaba en X = 1,10526 m. Con una pieza de 12,5 mm de radio en reposo en el centro de la placa, I7 solo se oscurecía durante el descenso. Tras la corrección, los tres haces pasan por X = 1,12026 m y la pieza depositada corta su barrera hasta que se retira.
+
+La escena original de Adrián conserva ese desplazamiento del sensor rojo. Correspondencia física de la corrección: **pendiente de confirmar en la maqueta real o el CAD**.
+
 ## 🔧 Diseño de Mario (planta virtual)
 - ❓ ¿Cómo convertir la velocidad del motor (0–512) en velocidad lineal de la cinta (mm/s)?
 - ❓ ¿Cuántos pulsos de `C1` hay por mm de cinta? ¿Dónde están físicamente `I1`, `I2`, `I3` y los 3 cilindros, medidos sobre la cinta?

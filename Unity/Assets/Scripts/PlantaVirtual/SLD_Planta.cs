@@ -51,7 +51,6 @@ namespace PlantaVirtual
 
         [Header("Cilindros y rampas")]
         public EstacionExpulsion blanca = new EstacionExpulsion();
-        [Tooltip("I7 puede quedar libre tras el paso: el centro de la placa roja está a 15 mm del haz y el radio actual de la pieza es 12,5 mm.")]
         public EstacionExpulsion roja = new EstacionExpulsion();
         public EstacionExpulsion azul = new EstacionExpulsion();
         [SoloLectura] public bool hayPresion;
