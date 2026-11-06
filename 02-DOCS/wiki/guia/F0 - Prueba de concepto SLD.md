@@ -9,7 +9,7 @@ tags: [guía, F0]
 
 ---
 
-## F0.1 · Entender el circuito actual · ⏳
+## F0.1 · Entender el circuito actual · ✅ 2026-11-06
 - **Objetivo:** saber explicar de memoria qué hace la SLD y qué E/S usa.
 - **Qué hacer:**
   1. Lee `vscode/lib/SLD.py`, función `thread_SLD` (líneas ~39–127) y las funciones `eject*`, `is*`, `readColorValue`.
@@ -17,7 +17,9 @@ tags: [guía, F0]
   3. Para cada línea que toque hardware, anota qué E/S es y qué significa físicamente.
   4. Lee `Digital_Twin.py` (bloques `dt/sld/belt` y `dt/sld/cylinder`) y `ControladorCintaSLD_mqtt.cs` para ver cómo llega a Unity.
 - **❓ Comprobación:** ¿por qué la SLD se queda con el **mínimo** de tensión del sensor de color y no con la primera lectura? ¿Qué pasa si la pieza nunca llega a `I3`?
-- **Entregable:** el diagrama de estados añadido a [[SLD - Clasificadora]].
+  - **Mínimo:** el sensor lee sin parar mientras la pieza pasa por debajo, desde `I1` hasta `I3`. La primera lectura puede tomarse con la pieza solo a medias bajo el sensor, y entonces mezcla la pieza con el fondo de la cinta. Una pieza más clara da menos tensión, así que el valor más bajo corresponde al momento en que la pieza tapa el sensor del todo. Por eso el mínimo es la lectura más fiable, venga como venga colocada la pieza.
+  - **Si nunca llega a `I3`:** `while not isEjectionTriggered()` no tiene tiempo límite. La cinta sigue a 512 para siempre, el estado se queda en 2 y no se marca ningún error. El bucle tampoco tiene `sleep`, así que lee el color sin descanso y ocupa la CPU. Solo se sale reiniciando el programa. Caso para F0.8 y F4.
+- **Entregable:** ✅ el diagrama de estados está en [[SLD - Clasificadora]] (sección "Diagrama de estados"), con dos comportamientos reales que no son los que parecen.
 
 ## F0.2 · Preparar el entorno · ⏳
 - **Qué hacer:**

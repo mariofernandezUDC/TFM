@@ -1,5 +1,9 @@
 # Log
 
+## [2026-11-06] guía | F0.1 cerrado: diagrama de estados de la SLD
+- Actualizadas: SLD - Clasificadora (sección "Diagrama de estados"), guía F0 (F0.1 ✅ y respuestas de comprobación), 00 Contexto para Claude.
+- Nuevo: diario [2026-11-06](diario/2026-11-06.md).
+
 ## [2026-11-05] decision | D006.5 latido y D006.6 prueba sin Unity
 - Cierran los dos puntos abiertos de [D006](decisiones/D006%20Protocolo%20vio.md).
 - Actualizadas: Protocolo vio (latido, `maqueta_manual.py`), guía F0 (F0.3, tarea 4 de F0.4, hito 1, comprobación de F0.5), diario 2026-11-05, 00 Contexto para Claude.

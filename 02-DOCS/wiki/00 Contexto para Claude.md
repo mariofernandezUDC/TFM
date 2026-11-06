@@ -24,7 +24,7 @@ tags: [contexto, claude]
 9. Al final de cada sesión: nota en `diario/`, actualizar esta nota y el [[Plan de trabajo]], y crear o enlazar las notas nuevas.
 
 ## Estado actual (2026-11-05)
-- **Fase:** F0 en curso. F0.3 ✅ (protocolo `vio`, [[D006 Protocolo vio]]). F0.1 y F0.2 siguen ⏳. Siguiente meta: F0.4 (incluye la herramienta `maqueta_manual.py`) → 🏁 hito 1 ("`SLD.py` original piensa en mi PC sin maqueta, probado a mano con `maqueta_manual.py`"). De [[Rutina Git]] apartado A, el A3 (crear la rama) ya está hecho.
+- **Fase:** F0 en curso. F0.1 ✅ (diagrama de estados en [[SLD - Clasificadora]]). F0.3 ✅ (protocolo `vio`, [[D006 Protocolo vio]]). F0.2 sigue ⏳. Siguiente meta: F0.4 (incluye la herramienta `maqueta_manual.py`) → 🏁 hito 1 ("`SLD.py` original piensa en mi PC sin maqueta, probado a mano con `maqueta_manual.py`"). De [[Rutina Git]] apartado A, el A3 (crear la rama) ya está hecho.
 - **Repositorio:** `origin` = fork de Mario (`mariofernandezUDC/TFM`), `upstream` = Adrián (`AdrianRomeroUDC/TFM`, sin permiso de push). Rama de trabajo: `planta-virtual` (existe en local y en `origin`). Pendiente: de quién es `adaptacion-vr`.
 - **Harness del asistente:** instalado el 2026-11-05 (commit `671f715`). `main` está bloqueada: el asistente trabaja en `planta-virtual` y no hace push. Configuración en `harness/`.
 - **Decisiones tomadas:** [[D001 Sustituir el hardware, no la lógica]], [[D002 Modo operador y modo programador]], [[D003 Forma de trabajo con Claude]], [[D004 Paquete autónomo para el alumno]], [[D005 Gestión del repositorio]] (revisada el 2026-11-05), [[D006 Protocolo vio]] (2026-11-05, solo TXT 5; D006.5 latido y D006.6 prueba sin Unity cierran sus puntos abiertos).
