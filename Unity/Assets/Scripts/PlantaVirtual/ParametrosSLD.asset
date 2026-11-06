@@ -75,6 +75,18 @@ MonoBehaviour:
     unidad: mm
     provisional: 1
     origen: 'Escena: centro de malla del cilindro azul (z 2,6613).'
+  alturaHazCinta:
+    valor: 7.2
+    unidad: mm
+    provisional: 1
+    origen: "Escena: altura de los haces de I1 e I3 sobre la superficie de la cinta
+      (centro de malla y 0,1231 \u2212 superficie 0,1159)."
+  margenHazCinta:
+    valor: 10
+    unidad: mm
+    provisional: 1
+    origen: "Suposici\xF3n: el emisor y el receptor quedan a esta distancia fuera
+      de cada borde de la cinta."
   mmPorCambioC1:
     valor: 6
     unidad: mm

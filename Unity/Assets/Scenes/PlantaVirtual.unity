@@ -25839,6 +25839,7 @@ MonoBehaviour:
   broker: localhost
   puerto: 1883
   numeroTxt: 5
+  origenEntradas: 1
   entradas:
     I1: 0
     I2: 2500
@@ -27532,6 +27533,27 @@ MonoBehaviour:
   materialPieza: {fileID: 2100000, guid: fd4aaa46c7f23274ba2422038854dcba, type: 2}
   escalaMallaPieza: 100
   piezasEnEscena: 0
+  I1:
+    nombre: I1 entrada
+    oscura: 0
+    emisor: {x: 0, y: 0, z: 0}
+    receptor: {x: 0, y: 0, z: 0}
+  I2:
+    nombre: I2 color
+    tension: 0
+    vePieza: '-'
+  I3:
+    nombre: I3 cilindros
+    oscura: 0
+    emisor: {x: 0, y: 0, z: 0}
+    receptor: {x: 0, y: 0, z: 0}
+  C1:
+    nombre: C1 contador
+    estado: 0
+    cambios: 0
+  I6: 0
+  I7: 0
+  I8: 0
 --- !u!114 &1332950608
 MonoBehaviour:
   m_ObjectHideFlags: 0

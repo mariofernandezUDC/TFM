@@ -60,6 +60,10 @@ namespace PlantaVirtual
         public Parametro posCilindroBlanco = new Parametro(247.6f, "mm", "Escena: centro de malla del cilindro blanco (z 2,5413).");
         public Parametro posCilindroRojo = new Parametro(307.7f, "mm", "Escena: centro de malla del cilindro rojo (z 2,6014).");
         public Parametro posCilindroAzul = new Parametro(367.6f, "mm", "Escena: centro de malla del cilindro azul (z 2,6613).");
+        public Parametro alturaHazCinta = new Parametro(7.2f, "mm",
+            "Escena: altura de los haces de I1 e I3 sobre la superficie de la cinta (centro de malla y 0,1231 − superficie 0,1159).");
+        public Parametro margenHazCinta = new Parametro(10f, "mm",
+            "Suposición: el emisor y el receptor quedan a esta distancia fuera de cada borde de la cinta.");
 
         [Header("Contador C1")]
         public Parametro mmPorCambioC1 = new Parametro(6.0f, "mm",

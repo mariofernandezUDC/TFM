@@ -95,8 +95,23 @@ namespace PlantaVirtual
         public int puerto = 1883;
         [Tooltip("Número de TXT. De momento solo el 5 (D006)")] public int numeroTxt = 5;
 
-        [Header("Entradas (las cambias tú; salen por vio/txtN/in a 100 Hz)")]
+        public enum OrigenEntradas { Manual, Planta }
+
+        [Header("Entradas (salen por vio/txtN/in a 100 Hz)")]
+        [Tooltip("Manual: las cambias tú en el Inspector. Planta: las escribe la planta virtual (SLD_Planta) en cada frame y aquí solo se ven (F0.6).")]
+        public OrigenEntradas origenEntradas = OrigenEntradas.Manual;
         public EntradasTXT5 entradas = new EntradasTXT5();
+
+        /// <summary>
+        /// La planta virtual escribe aquí las entradas (F0.6). Solo tiene efecto en modo Planta:
+        /// en modo Manual mandan las del Inspector. Llamar antes del Update de este componente.
+        /// </summary>
+        public void EscribirEntradas(bool i1, int i2, bool i3, bool i6, bool i7, bool i8, bool c1)
+        {
+            if (origenEntradas != OrigenEntradas.Planta) return;
+            entradas.I1 = i1; entradas.I2 = i2; entradas.I3 = i3;
+            entradas.I6 = i6; entradas.I7 = i7; entradas.I8 = i8; entradas.C1 = c1;
+        }
 
         [Header("Salidas que se aplican (lo recibido, o el estado seguro)")]
         [SoloLectura] public int M1_speed;
