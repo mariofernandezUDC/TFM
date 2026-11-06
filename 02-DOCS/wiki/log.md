@@ -1,5 +1,10 @@
 # Log
 
+## [2026-11-06] guía | F0.4 cerrado: librería virtual mínima y hito 1
+- Código nuevo fuera de la wiki: `virtual/` (librería `fischertechnik` virtual, `run_sld_virtual.py`, `maqueta_manual.py`, tests, README).
+- Decisión: D006.7 en [D006](decisiones/D006%20Protocolo%20vio.md) (sin entradas frescas no se envía `out`).
+- Actualizadas: Librería fischertechnik virtual, Protocolo vio, D006, guía F0 (F0.4 ✅, hito 1, aviso en F0.5), diario 2026-11-06, 00 Contexto para Claude.
+
 ## [2026-11-06] guía | F0.1 cerrado: diagrama de estados de la SLD
 - Actualizadas: SLD - Clasificadora (sección "Diagrama de estados"), guía F0 (F0.1 ✅ y respuestas de comprobación), 00 Contexto para Claude.
 - Nuevo: diario [2026-11-06](diario/2026-11-06.md).

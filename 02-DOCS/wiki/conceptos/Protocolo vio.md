@@ -45,8 +45,11 @@ Se lee así: la cinta va a velocidad 350 en sentido CW, las tres válvulas de ex
 3. **Nada de datos viejos:** si la última imagen tiene más de 0,5 s, la librería espera a una nueva y avisa por consola.
 4. **Latido:** Python reenvía `vio/txt5/out` cada 100 ms aunque no cambie. No hay topic de latido aparte: el propio mensaje de salidas sirve de latido.
 5. **Estado seguro:** si Unity no recibe nada por `vio/txt5/out` durante más de 0,5 s, para el motor y cierra las válvulas.
+6. **El latido significa "lazo de control sano"** (D006.7): mientras la imagen de entradas está caducada, Python **no envía `out`**, ni cambios ni latido. Así Unity pasa a estado seguro. Cuando vuelven las entradas, `out` se reanuda solo.
+7. **Mensajes inválidos:** un `in` con JSON roto, al que le falta una clave o con un tipo incorrecto se descarta entero, con aviso, y no cuenta como imagen nueva. Las claves de más se ignoran.
+8. QoS 0 y sin `retain` en los dos topics.
 
-> Analogía: es el hombre muerto de un tren. Mientras Python «pisa el pedal» cada 100 ms, la cinta sigue. Si deja de pisarlo durante medio segundo, todo se para.
+> Analogía: es el hombre muerto de un tren. Mientras Python «pisa el pedal» cada 100 ms, la cinta sigue. Si deja de pisarlo durante medio segundo, todo se para. Y Python solo pisa el pedal si ve la vía: sin entradas frescas, lo suelta.
 
 ## Probar sin Unity: `maqueta_manual.py`
 La regla 3 no se desactiva nunca, ni en pruebas. Por eso no basta con publicar un mensaje a mano en MQTT Explorer: caducaría a los 0,5 s. En su lugar se usa `maqueta_manual.py`, una maqueta de mentira manejada desde el teclado:
@@ -54,9 +57,11 @@ La regla 3 no se desactiva nunca, ni en pruebas. Por eso no basta con publicar u
 - permite cambiar `I1`, `I3`, `I6`–`I8`, `C1` e `I2` con el teclado;
 - muestra lo que llega por `vio/txt5/out`.
 
-Con ella se prueba el hito 1 de [[F0 - Prueba de concepto SLD]]. Ver [[D006 Protocolo vio]] (D006.6).
+Con ella se prueba el hito 1 de [[F0 - Prueba de concepto SLD]]. Ver [[D006 Protocolo vio]] (D006.6). Está en `virtual/maqueta_manual.py` (cómo usarla: `virtual/README.md`).
+
+> ⚠️ En Windows hay que pedir un reloj de 1 ms (`timeBeginPeriod(1)`), o la imagen no llega a 100 Hz y se pierden cambios de `C1`. Medido en F0.4: ver "Consecuencias" en [[D006 Protocolo vio]].
 
 ## ❓ Pregunta de comprensión
 Con la cinta a velocidad 350, ¿cuántos cambios por segundo de `C1` aguantan los 100 Hz con margen? ¿Qué medida de la maqueta te hace falta para responder? (Pista: los mm de cinta por cuenta de `C1`.)
 
-Relacionado: [[D006 Protocolo vio]], [[Imagen de E-S]], [[Hilos y sondeo (polling)]], [[F0 - Prueba de concepto SLD]] (F0.3).
+Relacionado: [[D006 Protocolo vio]], [[Imagen de E-S]], [[Hilos y sondeo (polling)]], [[Librería fischertechnik virtual]], [[F0 - Prueba de concepto SLD]] (F0.3 y F0.4).

@@ -4,7 +4,7 @@ tags: [decisión]
 
 # D006 · Protocolo `vio` de E/S (TXT 5, SLD)
 
-- **Fecha:** 2026-11-05 · **Estado:** ✅ Aceptada (de momento solo TXT 5, la [[SLD - Clasificadora]]) · **Ampliada:** 2026-11-05 con D006.5 y D006.6
+- **Fecha:** 2026-11-05 · **Estado:** ✅ Aceptada (de momento solo TXT 5, la [[SLD - Clasificadora]]) · **Ampliada:** 2026-11-05 con D006.5 y D006.6; 2026-11-06 con D006.7
 
 ## Contexto
 La [[Librería fischertechnik virtual]] (Python) y la maqueta virtual (Unity) tienen que intercambiar el estado de las E/S del TXT 5 por MQTT. Hay que fijar cómo se empaquetan los mensajes, cada cuánto se envían, qué pasa si se corta la comunicación y en qué unidades viajan los valores. Es el paso F0.3 de [[F0 - Prueba de concepto SLD]]. Explicación y ejemplos: [[Protocolo vio]].
@@ -51,6 +51,14 @@ Para la prueba sin Unity (D006.6): una herramienta que haga de maqueta a mano, o
   - muestra lo que llega por `vio/txt5/out`.
 - El **hito 1** se prueba con ella, en vez de con MQTT Explorer. Es una tarea de F0.4.
 
+### D006.7 · Sin entradas frescas, no se envía `out` (2026-11-06)
+- Mientras la librería espera entradas (la última imagen tiene más de 0,5 s, o todavía no ha llegado ninguna), **deja de enviar `vio/txt5/out`**. Deja de enviar los cambios y también el latido.
+- Así Unity pasa a **estado seguro** por la regla de D006.5.
+- Cuando vuelven las entradas, `out` se reanuda solo, empezando por la imagen de salidas que haya en ese momento.
+- **El latido significa "lazo de control sano"**: Python está vivo **y** recibe entradas frescas. No basta con que Python esté vivo.
+- Mensajes de `in` inválidos (JSON roto, falta una clave o un tipo incorrecto): la imagen entera **se descarta**, con un aviso limitado a uno cada 2 s, y **no renueva la hora**. No se mezclan imágenes parciales.
+- Detalles de la implementación (no cambian el protocolo): QoS 0 y sin `retain` en los dos topics.
+
 ## Por qué
 - **D006.1.** Con un topic por borne, las entradas llegarían sueltas y de instantes distintos. La lógica podría ver, por ejemplo, la barrera `I3` de un instante y el color `I2` de otro. La imagen completa evita eso, igual que en un PLC.
 - **D006.2.** `SLD.py` no se toca ([[D001 Sustituir el hardware, no la lógica]]). Por eso la librería entrega lo mismo que el hardware real, un estado, y el conteo lo sigue haciendo el código original.
@@ -58,11 +66,14 @@ Para la prueba sin Unity (D006.6): una herramienta que haga de maqueta a mano, o
 - **D006.4.** Si los valores son los mismos que devuelve la API real, la librería virtual no convierte nada y lo que aprende el alumno vale tal cual en la planta real.
 - **D006.5.** Si `out` solo se enviara al cambiar, Unity no distinguiría "nada cambia" de "Python se ha caído". Reenviar la imagen cada 100 ms resuelve las dos cosas con el mismo mensaje. Un topic de latido aparte sería otra pieza que mantener, sin ninguna ventaja.
 - **D006.6.** Si la regla de 0,5 s se desactivara en pruebas, lo probado no sería lo que funciona de verdad. Con `maqueta_manual.py`, la librería recibe el mismo flujo a 100 Hz que le dará Unity, y la regla se prueba también.
+- **D006.7.** Es como un PLC que pierde su módulo de entradas: pone las salidas en estado seguro. Si el latido siguiera mientras Python espera, Unity mantendría la cinta en marcha con la lógica ciega, y la pieza se pasaría de su cilindro. Es coherente con D006.3: no se actúa sobre un mundo que ya no se ve. Con un `retain` en `in`, un mensaje viejo parecería nuevo, y por eso no se usa.
 
 ## Consecuencias
 - La librería virtual guarda la última imagen y responde a `is_dark()`, `get_state()` o `get_voltage()` desde memoria.
 - El riesgo de pulsos perdidos queda controlado por la regla de D006.2, pero **hay que medirlo** (ver "Pendientes").
 - Con el latido de 100 ms y el límite de 0,5 s, Unity aguanta unos 5 mensajes perdidos seguidos antes de pasar a estado seguro.
+- Con D006.7, si se corta `in`, Unity pasa a estado seguro **como mucho en 1 s**: 0,5 s hasta que Python ve caducada la imagen y otros 0,5 s hasta que Unity nota que falta el latido.
+- **Medido en F0.4 (2026-11-06):** el riesgo de D006.2 es real. En Windows, `sleep` no baja de unos 15,6 ms. La maqueta solo llegaba a 40–60 Hz y `SLD.py` perdió 4 de 30 cambios de `C1`. Con el reloj de 1 ms (`timeBeginPeriod(1)`) va a 95–101 Hz y no se pierde ninguno. **Unity tendrá que garantizar también los 100 Hz reales** (F0.5).
 - F0.4 suma una tarea: `maqueta_manual.py`.
 - El protocolo se ampliará a los demás TXT en F1 (`vio/txtN/in`, `vio/txtN/out`).
 
@@ -77,6 +88,6 @@ Para la prueba sin Unity (D006.6): una herramienta que haga de maqueta a mano, o
 - [ ] **Tarea futura:** sacar de las grabaciones reales (`datosPieza*.json` o Influx) el tiempo T desde que la cinta arranca a 350 hasta que para, por color, para validar los 100 Hz.
 - [ ] Confirmar la unidad de `get_voltage()`.
 - [ ] Comprobar con `git log` qué parte de `vscode/lib/SLD.py` es de Fischertechnik (lógica generada por ROBO Pro Coding) y qué añadió Adrián (comentarios en español, `sld_cylinder_state`). Afecta a la licencia: ver "Licencia" en [[Riesgos]].
-- [ ] Escribir `maqueta_manual.py` (tarea de F0.4, D006.6).
+- [x] Escribir `maqueta_manual.py` (tarea de F0.4, D006.6). Hecho el 2026-11-06, en `virtual/`.
 
 Relacionado: [[Protocolo vio]], [[Imagen de E-S]], [[Contador por pulsos]], [[Hilos y sondeo (polling)]], [[Librería fischertechnik virtual]], [[F0 - Prueba de concepto SLD]] (F0.3, F0.4 y hito 1).
