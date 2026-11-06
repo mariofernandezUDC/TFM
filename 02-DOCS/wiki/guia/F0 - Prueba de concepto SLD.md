@@ -67,11 +67,28 @@ tags: [guía, F0]
 >
 > Antes se iba a probar con MQTT Explorer. Se cambió porque un mensaje publicado a mano caduca a los 0,5 s (D006.3), y esa regla no se desactiva en pruebas ([[D006 Protocolo vio]], D006.6). MQTT Explorer sigue sirviendo para mirar los mensajes.
 
-## F0.5 · Puente de E/S en Unity · ⏳
+## F0.5 · Puente de E/S en Unity · 🟡 2026-11-06 (código hecho y medido; falta la prueba a mano de Mario)
 - **Objetivo:** un componente de Unity que reciba `vio/txt5/out` y publique `vio/txt5/in`.
-- **Dónde:** carpeta nueva `Assets/Scripts/PlantaVirtual/` → `VirtualIO_TXT.cs` (💻 te explico cómo reutilizar la conexión de `MQTTClient.cs`).
+- **Dónde:** carpeta nueva `Assets/Scripts/PlantaVirtual/` → `VirtualIO_TXT.cs`. `MQTTClient.cs` de Adrián no se puede copiar ni envolver: su conexión es privada, se suscribe a una lista fija de `dt/*` y entrega los mensajes en `Update()`, al ritmo de los FPS. Se reutiliza **su librería**, `Assets/Plugins/M2Mqtt.Net.dll`, con una conexión propia.
 - **Comprobación:** en el Inspector se ven las salidas cambiar cuando la SLD manda, y las entradas se pueden cambiar a mano. Si paras Python con la cinta en marcha, en menos de 0,5 s Unity para el motor y cierra las válvulas ([[D006 Protocolo vio]], D006.5). Si dejas de publicar `in`, Python deja de enviar `out` (D006.7), y en menos de 1 s Unity también pasa a estado seguro.
 - ⚠️ `in` tiene que salir a **100 Hz reales**, no solo configurados. En F0.4, a 40–60 Hz se perdían cambios de `C1` (ver [[Librería fischertechnik virtual]]). Mide la frecuencia real en Unity.
+- **Escena:** `Assets/Scenes/PlantaVirtual.unity`, una copia de la escena de Adrián con toda la fábrica (`AssetDatabase.CopyAsset`, GUID nuevo). Lleva `ControladorCintaSLD_mqtt` y `ControladorCilindrosSLD_mqtt` desactivados (`enabled = false`, [[D007 Quién mueve la escena]]) y el objeto `VirtualIO_TXT5`.
+- **Comprobado que ningún código de las marionetas de la SLD sigue vivo:**
+  - Los dos se suscriben a `OnBeltUpdateEvent` y `OnCylinderUpdateEvent` en `Start()`, con `InvokeRepeating`. Un componente desactivado nunca ejecuta `Start()` ni `Update()`. No tienen `Awake()`, constructores estáticos ni `[RuntimeInitializeOnLoadMethod]`.
+  - Nadie más escucha esos dos eventos. `SimuladorOffline` e `InfluxDBClient` inyectan mensajes por `MQTTClient.ProcesarMensajeExterno`, que solo llegan a esos dos eventos: sin suscriptores, no mueven nada de la SLD.
+  - Dentro de la SLD no hay más scripts, solo 2 `BoxCollider`. Ningún otro componente de la escena apunta a objetos de la SLD.
+  - **Queda para F2:** el VGR sigue leyendo `IsWhite/Red/BlueSensorActivo` y `spawnPoint*` del controlador desactivado (siempre `false` y las posiciones de las rampas).
+- **Medido (2026-11-06, con la CLI de Unity):**
+  - b) `virtual/medir_vio.py`, 60 s: **100,00 Hz**, hueco medio 10,00 ms (desviación 0,27 ms), hueco más largo 14,5 ms, ningún inválido. Fue con el editor en segundo plano. Falta repetirlo con el editor en primer plano.
+  - a) Ciclo blanco cambiando las entradas por la CLI: 512 en marcha → speed 0 con running true → `O8` → 350 → running false → `O5` durante **0,500 s** → `O5` y `O8` apagados.
+  - c) Python parado con la cinta a 512: **estado seguro a los 505 ms** del último `out`. El criterio es "edad del último `out` ≤ 0,51 s" porque Unity cuenta desde el último latido, no desde que se para Python.
+  - d) Al volver a arrancar Python, Unity sale solo del estado seguro.
+  - D006.8: con Unity en pausa 3 s, Python ve las entradas caducadas, deja de enviar `out` y Unity pasa a estado seguro a los 503 ms. Al quitar la pausa, todo se recupera.
+- **Falta (Mario):** repetir a) a mano desde el Inspector, y medir b) con el editor en primer plano.
+- **Cómo probarlo:** abre `PlantaVirtual.unity` y dale a Play. Arranca `py -3.12 virtual/run_sld_virtual.py` y selecciona `VirtualIO_TXT5`. Cambia las entradas en el Inspector con los mismos pasos que en la tabla del [README de virtual/](../../../virtual/README.md). Para medir: `py -3.12 virtual/medir_vio.py`.
+- **Avisos:**
+  - Los errores `Could not resolve host 'CHANGE_ME'` son de los clientes MQTT de Adrián, que no tienen broker configurado. Son normales.
+  - El menú de la interfaz recarga la escena por su número en la lista de compilación (`UI_ControladorMenu.cs:882`). `PlantaVirtual.unity` no está en esa lista (añadirla toca `ProjectSettings/`, regla 3 de [[D005 Gestión del repositorio]]). Según el código, en esta escena el número es -1 y la recarga fallaría. No está probado. Mientras tanto, **no uses los botones de modo del menú** en esta escena.
 
 ## F0.6 · Modelo físico de la SLD · ⏳ · 🔧 **Diseño de Mario**
 - **Objetivo:** que la cinta, la pieza, los sensores y los cilindros se comporten como los reales.
