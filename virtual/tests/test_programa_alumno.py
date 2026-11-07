@@ -29,8 +29,8 @@ EJEMPLO = VIRTUAL / "alumno" / "ejemplos" / "clasificar_por_color.py"
 PLANTILLA = VIRTUAL / "alumno" / "plantilla_sld.py"
 
 
-@unittest.skipUnless(broker_disponible(), "Mosquitto no responde en {}:{}".format(BROKER, PUERTO))
-class TestProgramaAlumno(unittest.TestCase):
+class BaseLanzador(unittest.TestCase):
+  """Lanza run_virtual.py --programa contra la maqueta falsa. Sin tests propios: la usan otros archivos."""
 
   def lanzar(self, programa):
     self.maqueta = MaquetaVirtual(BROKER, PUERTO)
@@ -47,6 +47,8 @@ class TestProgramaAlumno(unittest.TestCase):
     self.buscar(lambda img: "M1" in img, timeout=5)
 
   def tearDown(self):
+    if getattr(self, "proceso", None) is None:
+      return   # ya cerrado (o nunca lanzado)
     if self.proceso.poll() is None:
       self.proceso.terminate()
     self.proceso.wait(timeout=5)
@@ -54,6 +56,7 @@ class TestProgramaAlumno(unittest.TestCase):
     self.maqueta.parar()
     if self._outcome.result.failures or self._outcome.result.errors:
       print("\n--- consola de run_virtual.py ---\n" + "".join(self.consola))
+    self.proceso = None
 
   def _leer_consola(self):
     for linea in self.proceso.stdout:
@@ -73,6 +76,10 @@ class TestProgramaAlumno(unittest.TestCase):
     encontrado = esperar(mirar, timeout)
     self.assertIsNotNone(encontrado, "no llegó en {} s el out esperado".format(timeout))
     return encontrado
+
+
+@unittest.skipUnless(broker_disponible(), "Mosquitto no responde en {}:{}".format(BROKER, PUERTO))
+class TestProgramaAlumno(BaseLanzador):
 
   # --- El ejemplo resuelto ---
 

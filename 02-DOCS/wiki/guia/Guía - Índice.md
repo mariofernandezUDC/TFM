@@ -18,7 +18,7 @@ Leyenda: 🔧 diseño de Mario · 💻 software (Claude acompaña) · ❓ pregun
 | F2 | Modelos por estación | se detalla al terminar F1 |
 | F3 | Flujo completo | — |
 | F4 | Modo operador e inyección de fallos | — |
-| F5 | Modo programador | — |
+| F5 | [[F5 - Modo programador]] | ⏳ F5.1 y F5.2 hechos |
 | F6 | Empaquetado | — |
 | F7 | Validación | — |
 

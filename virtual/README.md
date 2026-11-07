@@ -77,7 +77,27 @@ Sin latido, Unity pasa a **estado seguro** a los 0,5 s (D006.5). Lo ves en `Virt
 ### ¿Funciona igual en el TXT real? (D001)
 El mismo archivo, sin cambios, debería funcionar en el TXT de la SLD. ⚠️ **Supuesto pendiente de comprobar en la maqueta:** en el TXT, tu `lib/` tiene que tener el mismo `controller.py` de la fábrica (`vscode/lib/controller.py`), que es de donde salen los nombres `TXT_SLD_E5_…`. Si ROBO Pro Coding genera otro `lib/controller.py` para la SLD sola, con otros nombres, habrá que adaptar la plantilla.
 
-> En la prueba con Unity del 2026-11-07, el ejemplo dejó la blanca y la azul en su rampa, pero la roja no: su cilindro no la capturó. Es el sesgo de la roja que ya está apuntado en el diario del 2026-11-06. Es un problema de la planta, no del programa.
+> **La roja y la tolerancia.** La planta virtual para la roja unos 8–9 mm antes de su cilindro (el sesgo del diario del 2026-11-06). Es un **error del modelo de la planta**, pendiente de medir en la maqueta, no del programa. Por eso las cuentas de C1 de los programas siguen en **6/15/26**, como en la fábrica, y lo que se ha cambiado es `toleranciaCaptura` en `ParametrosSLD.asset`: de 8 a **10 mm**, provisional. Con 10 mm, `SLD.py` original captura **10 de 10** rojas (con 8 mm entraban 3 de 10).
+>
+> **Al medir, no consultes Unity por la CLI durante el ciclo.** Cada consulta congela el editor, y la cinta parece pasarse de largo aunque el programa esté bien.
+
+### ¿Y los programas en bloques de ROBO Pro Coding?
+En un proyecto de la fábrica, el Python que genera ROBO Pro Coding debería cargarse igual con `--programa`. En un proyecto nuevo solo para la SLD probablemente no, porque la librería virtual solo conecta el TXT 5. **Está pendiente de comprobar.** La prueba de 10 minutos está en `02-DOCS/wiki/guia/F5 - Modo programador.md` (F5.3).
+
+## Ejercicios por niveles (alumnos de grado)
+En `virtual/alumno/ejercicios/`: cuatro niveles cortos. Empieza por su `LEEME.md`.
+
+| Nivel | Archivo | Qué tiene que pasar |
+|---|---|---|
+| 1 | `nivel1_arrancar.py` | La cinta arranca cuando llega una pieza a I1 |
+| 2 | `nivel2_parar.py` | Se para delante de los cilindros (I3) |
+| 3 | `nivel3_color.py` | Escribe si la pieza es blanca, roja o azul |
+| 4 | `nivel4_expulsar.py` | La pieza acaba en su rampa |
+
+- Cada nivel trae el anterior ya resuelto y un hueco marcado (`>>>>> TU CÓDIGO AQUÍ`). Se resuelve con pocas líneas, sin hilos ni conceptos avanzados.
+- Pistas en `pistas/` y soluciones en `soluciones/`, aparte, para no verlas sin querer.
+- Una plantilla sin rellenar se ejecuta sin errores y avisa de que falta código.
+- En Unity: tecla **1** pieza blanca, **2** roja, **3** azul y **0** quita todas.
 
 ## Prueba automática
 ```powershell
@@ -85,6 +105,8 @@ py -3.12 -m unittest discover -s virtual/tests -v
 ```
 - `test_vio.py`: reglas del protocolo sin broker (mensajes inválidos, caducidad, D006.7).
 - `test_hito1.py`: lanza `run_sld_virtual.py`, lo maneja con la misma clase que la maqueta y comprueba los pasos de arriba. Si Mosquitto no responde, se salta.
+- `test_ejercicios.py`: cada solución de `alumno/ejercicios/` hace lo que pide su nivel, y cada plantilla sin rellenar se ejecuta sin errores.
+- **Con Unity en Play, los tests con maqueta fallan:** Unity también publica `vio/txt5/in` y se mezcla con la maqueta falsa. Sal de Play antes de lanzarlos.
 - `test_programa_alumno.py`: lanza `run_virtual.py --programa`. Comprueba que la plantilla arranca y para la cinta y que el ejemplo clasifica una blanca. Con los programas de `tests/programas/`, que fallan a mitad (en el hilo principal o en un hilo del alumno), comprueba que la cinta se para, que deja de llegar `out` en menos de 1 s, que el código de salida es 1 y que el error se ve claro.
 
 ## Cómo está hecho

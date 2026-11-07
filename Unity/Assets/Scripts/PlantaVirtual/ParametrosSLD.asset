@@ -136,11 +136,13 @@ MonoBehaviour:
       s). Debe llegar a la barrera antes de la comprobaci\xF3n de SLD.py (~1,0 s
       tras abrir la v\xE1lvula)."
   toleranciaCaptura:
-    valor: 8
+    valor: 10
     unidad: mm
     provisional: 1
-    origen: "Suposici\xF3n (opci\xF3n A de F0.6): descentrado m\xE1ximo, a lo largo
-      de la cinta, entre la pieza y su cilindro para que entre en la rampa."
+    origen: "PROVISIONAL (2026-11-07): de 8 a 10 mm para que la roja entre mientras
+      no se mida la maqueta; ver sesgo del 06-11. Antes: suposici\xF3n (opci\xF3n
+      A de F0.6), descentrado m\xE1ximo a lo largo de la cinta entre la pieza y su
+      cilindro para que entre en la rampa."
   tensionBlanca:
     valor: 675
     unidad: mV
