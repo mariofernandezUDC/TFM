@@ -71,6 +71,7 @@ class EnlaceVio:
     # Publicación de salidas
     self._lock_out = threading.Lock()
     self._ultima_out = None
+    self._salidas_bloqueadas = False   # tras parar_salidas() ya no se publica nada más
 
     # Avisos de imágenes descartadas
     self._descartes = 0
@@ -233,8 +234,28 @@ class EnlaceVio:
   def imagen_salidas(self):
     return {clave: self._salidas[clave].valor_vio() for clave in sorted(self._salidas)}
 
+  def parar_salidas(self):
+    """Parada de seguridad: todas las salidas a cero, un último `out` y nada más.
+
+    Después se bloquean las salidas: si otro hilo del programa sigue escribiendo,
+    ya no se publica. Así la cinta se para en el acto, sin esperar a los 0,5 s
+    de D006.5, y no vuelve a arrancar.
+    """
+    with self._lock_out:
+      for borne in self._salidas.values():
+        borne.a_cero()
+      if self.lazo_sano() and self._cliente is not None:
+        info = self._cliente.publish(self.topic_out, json.dumps(self.imagen_salidas()), qos=QOS, retain=RETAIN)
+        try:
+          info.wait_for_publish(timeout=0.2)
+        except (RuntimeError, ValueError):
+          pass   # sin conexión: Unity pasará a estado seguro por falta de latido
+      self._salidas_bloqueadas = True
+
   def _publicar_salidas(self, solo_si_cambia):
     with self._lock_out:
+      if self._salidas_bloqueadas:
+        return
       # D006.7: sin entradas frescas no se envía nada, ni cambios ni latido.
       if not self.lazo_sano():
         return

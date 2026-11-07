@@ -60,6 +60,15 @@ def initialized():
     enlace.arrancar()
 
 
+def parar_salidas():
+  """Parada de seguridad: motores parados y válvulas, compresor y LED apagados.
+
+  Publica un último `out` con todo a cero y bloquea las salidas.
+  """
+  for enlace in _enlaces:
+    enlace.parar_salidas()
+
+
 def cerrar():
   """Desconecta los enlaces vio. Sin latido, Unity pasa a estado seguro."""
   for enlace in _enlaces:

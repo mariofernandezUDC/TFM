@@ -130,6 +130,10 @@ class _OnOff(_Salida):
   def valor_vio(self):
     return self._encendido
 
+  def a_cero(self):
+    """Apaga sin publicar. Lo usa la parada de seguridad del lanzador."""
+    self._encendido = False
+
 
 class MagneticValve(_OnOff):
   """Electroválvula. on() abre el paso de aire al cilindro."""
@@ -152,6 +156,9 @@ class Led(_Salida):
 
   def valor_vio(self):
     return self._brillo
+
+  def a_cero(self):
+    self._brillo = 0
 
 
 # --- Motores ---
@@ -190,6 +197,10 @@ class MotorVirtual(_MotorBase, _Salida):
 
   def valor_vio(self):
     return {"speed": self._velocidad, "dir": self._sentido, "running": self._en_marcha}
+
+  def a_cero(self):
+    self._velocidad = 0
+    self._en_marcha = False
 
 
 class EncoderMotorVirtual(MotorVirtual):
