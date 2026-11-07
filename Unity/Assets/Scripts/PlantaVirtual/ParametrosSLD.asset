@@ -139,10 +139,10 @@ MonoBehaviour:
     valor: 10
     unidad: mm
     provisional: 1
-    origen: "PROVISIONAL (2026-11-07): de 8 a 10 mm para que la roja entre mientras
-      no se mida la maqueta; ver sesgo del 06-11. Antes: suposici\xF3n (opci\xF3n
-      A de F0.6), descentrado m\xE1ximo a lo largo de la cinta entre la pieza y su
-      cilindro para que entre en la rampa."
+    origen: "PROVISIONAL: subido de 8 a 10 mm el 2026-11-07 para absorber el sesgo
+      de la roja (\u22128,4 mm), pendiente de medir en la maqueta real. Descentrado
+      m\xE1ximo, a lo largo de la cinta, entre la pieza y su cilindro para que entre
+      en la rampa (opci\xF3n A de F0.6)."
   tensionBlanca:
     valor: 675
     unidad: mV

@@ -90,8 +90,10 @@ namespace PlantaVirtual
         [SoloLectura] public string fichaFueraDeTolerancia = "PROVISIONAL | Unidad: sin dimensión | Origen: Mario, F0.6 paso 3.";
         public Parametro velocidadRampa = new Parametro(150f, "mm/s",
             "Suposición: la pieza baja por la rampa a esta velocidad (≈ 0,45 s). Debe llegar a la barrera antes de la comprobación de SLD.py (~1,0 s tras abrir la válvula).");
-        public Parametro toleranciaCaptura = new Parametro(8f, "mm",
-            "Suposición (opción A de F0.6): descentrado máximo, a lo largo de la cinta, entre la pieza y su cilindro para que entre en la rampa.");
+        // PROVISIONAL: subido de 8 a 10 mm el 2026-11-07 para absorber el sesgo de la roja (−8,4 mm),
+        // pendiente de medir en la maqueta real. Decisión de Mario.
+        public Parametro toleranciaCaptura = new Parametro(10f, "mm",
+            "PROVISIONAL: subido de 8 a 10 mm el 2026-11-07 para absorber el sesgo de la roja (−8,4 mm), pendiente de medir en la maqueta real. Descentrado máximo, a lo largo de la cinta, entre la pieza y su cilindro para que entre en la rampa (opción A de F0.6).");
 
         [Header("Sensor de color I2")]
         public Parametro tensionBlanca = new Parametro(675f, "mV", "Valor de prueba de D006.7 (no medido). Rango blanco de SLD.py: 200 ≤ v < 1150.");

@@ -107,6 +107,11 @@ En `PlantaVirtual.unity` se trasladó el grupo `Sensor_PiezaRojaDepositada` (lá
 
 La escena original de Adrián conserva ese desplazamiento del sensor rojo. Correspondencia física de la corrección: **pendiente de confirmar en la maqueta real o el CAD**.
 
+#### Tolerancia de captura · PROVISIONAL
+`toleranciaCaptura` (`ParametrosSLD.asset`): **subido de 8 a 10 mm el 2026-11-07 para absorber el sesgo de la roja (−8,4 mm), pendiente de medir en la maqueta real.** Decisión de Mario.
+- Las cuentas de C1 de `SLD.py` y de los programas del alumno **no cambian** (6/15/26). El sesgo se trata como un error del modelo de la planta, no del programa ([[D001 Sustituir el hardware, no la lógica]]).
+- Medido con `SLD.py` original: 10/10 rojas capturadas con 10 mm, frente a 3/10 con 8 mm. Detalle y datos en [[Librería fischertechnik virtual]].
+
 ## 🔧 Diseño de Mario (planta virtual)
 - ❓ ¿Cómo convertir la velocidad del motor (0–512) en velocidad lineal de la cinta (mm/s)?
 - ❓ ¿Cuántos pulsos de `C1` hay por mm de cinta? ¿Dónde están físicamente `I1`, `I2`, `I3` y los 3 cilindros, medidos sobre la cinta?
