@@ -62,7 +62,7 @@ Hay que decidir cuatro cosas: cómo ejecuta Unity el Python (A), qué broker se 
 - El comando de PowerShell sigue funcionando: queda como plan B.
 
 ## Pendientes
-- [ ] P6: `mosquitto.exe` portable en 18830 (pedir confirmación a Mario y revisar la licencia).
+- [ ] P6: `mosquitto.exe` portable en 18830. **Aplazado (2026-11-11) hasta después de la reunión con el tutor:** hay que decidir si se meten binarios de terceros en el repo y revisar su licencia (EPL-2.0/EDL). Para la demo basta el Mosquitto del PC (servicio en 1883).
 - [ ] Parada limpia con `vio/sim/parar` (D2).
 - [ ] F6: raíz del repo y ruta de Python en la build.
 - [x] P4a (2026-11-11): desactivado `MQTT_InterfaceClient` en `PlantaVirtual.unity` (componente apagado, no borrado). Tiene el host sin configurar (`CHANGE_ME`) y llena la consola de errores; el test de PlayMode los tiene que ignorar.

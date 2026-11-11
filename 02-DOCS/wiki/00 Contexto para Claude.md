@@ -32,7 +32,7 @@ tags: [contexto, claude]
   - P4d ✅ píldoras Blanca, Roja, Azul y Quitar encima de la planta (lo mismo que las teclas 1, 2, 3 y 0). Botón neutro; el color solo en el punto (D009). Si la entrada está ocupada, aviso en «Salida».
   - P5 ✅ errores en rojo en «Salida»: el bloque de `mostrar_error` (archivo y línea, también de un hilo), la salida se amplía sola y el estado pasa a «Error». Si el programa no llega a arrancar (Python o programa no encontrado), aviso en rojo y código −2 (evento `LanzadorPrograma.NoArranca`).
   - 🏁 Hito para el tutor: «Cargar programa» se puede enseñar. Guion de la reunión al día (demo con el dashboard; PowerShell como plan B).
-  - **Siguiente: P6** (broker portable en 18830): pedir antes la confirmación de Mario.
+  - **P6 aplazado** (2026-11-11) hasta después de la reunión con el tutor: meter binarios de terceros en el repo y su licencia (EPL-2.0/EDL) se deciden allí. Para la demo basta el Mosquitto del PC (servicio en 1883).
   - 14 tests de PlayMode en verde (`Assets/Scripts/PlantaVirtual/Tests/LanzadorProgramaTest.cs`; necesitan Mosquitto en marcha). Tiempos a rampa 2,7 / 4,3 / 5,3 s; estado seguro a 0,50 s tras Parar.
 - **F0 en pausa** desde que el tutor priorizó «cargar código». F0.1, F0.3, F0.4 (hito 1), F0.5 y F0.7 ✅. F0.6 🟡: `SLD.py` clasifica las tres piezas; faltan las medidas reales 🔧. F0.2, F0.8 (versión corta) y F0.9 ⏳.
 - **F5:** F5.1 ✅ y F5.2 ✅ (2026-11-07). F5.3 ⏳ (prueba de ROBO Pro Coding 🔧). F5.4 🚧 lanzador desde Unity.
@@ -48,7 +48,7 @@ tags: [contexto, claude]
   - [[Preguntas para el tutor]].
   - "Doble fuente de movimiento" (ver [[Riesgos]]).
   - Pendientes de D006: medidas 🔧 de la cinta y de `C1`, tiempo T en las grabaciones, unidad de `get_voltage()`, autoría de `SLD.py` (licencia).
-  - Pendientes de D008: P6 (broker portable en 18830), parada limpia con `vio/sim/parar`, ruta de Python y raíz del repo en la build (F6).
+  - Pendientes de D008: P6 (broker portable en 18830; aplazado hasta después de la reunión con el tutor), parada limpia con `vio/sim/parar`, ruta de Python y raíz del repo en la build (F6).
 - **Formato del protocolo:** [[Protocolo vio]]. Valores iguales a los de la API real, sin conversión.
 
 ## Al empezar una sesión, leer
