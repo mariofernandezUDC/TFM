@@ -65,5 +65,7 @@ Hay que decidir cuatro cosas: cómo ejecuta Unity el Python (A), qué broker se 
 - [ ] P6: `mosquitto.exe` portable en 18830 (pedir confirmación a Mario y revisar la licencia).
 - [ ] Parada limpia con `vio/sim/parar` (D2).
 - [ ] F6: raíz del repo y ruta de Python en la build.
+- [ ] P4: desactivar `MQTT_InterfaceClient` en `PlantaVirtual.unity`. Tiene el host sin configurar (`CHANGE_ME`) y llena la consola de errores; el test de PlayMode los tiene que ignorar.
+- [ ] El test `LanzadorProgramaTest` depende de la tolerancia de captura de la roja: el 2026-11-11 paró a −8,8 mm, dentro de los 10 mm provisionales (con 8 mm habría fallado). Revisarlo cuando se fije `toleranciaCaptura` con la medida de la maqueta 🔧.
 
 Relacionado: [[D001 Sustituir el hardware, no la lógica]], [[D004 Paquete autónomo para el alumno]], [[D006 Protocolo vio]], [[F5 - Modo programador]], [[Encargo - Lanzador desde Unity]].

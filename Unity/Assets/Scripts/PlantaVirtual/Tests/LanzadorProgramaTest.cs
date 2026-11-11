@@ -57,7 +57,7 @@ namespace PlantaVirtual.Tests
         // (host CHANGE_ME sin configurar) que no tienen que ver con este test. Por
         // defecto el Test Framework falla con CUALQUIER Debug.LogError, así que se
         // desactiva esa regla y se vigilan solo los errores de la planta virtual.
-        private static readonly string[] PrefijosPropios = { "[Lanzador]", "[programa]", "[SLD_Planta]", "[Pieza]" };
+        private static readonly string[] PrefijosPropios = { "[Lanzador]", "[programa]", "[vio]", "[SLD_Planta]", "[Pieza]" };
         private readonly List<string> _erroresPropios = new List<string>();
 
         private void AlRecibirLog(string mensaje, string pila, LogType tipo)
