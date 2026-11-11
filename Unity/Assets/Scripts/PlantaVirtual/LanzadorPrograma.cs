@@ -26,7 +26,7 @@ namespace PlantaVirtual
     public class LanzadorPrograma : MonoBehaviour
     {
         [Header("Python")]
-        [Tooltip("Ruta del python.exe real (no py.exe). Si está vacía, se pregunta a «py -3.12» la primera vez y se guarda aquí")]
+        [Tooltip("Ruta del python.exe real (no py.exe). Si está vacía, se pregunta a «py -3.12» al primer Cargar de cada Play (cada PC tiene la suya)")]
         public string rutaPython = "";
         [Tooltip("Versión que se pide a py.exe para encontrar python.exe")]
         public string versionPy = "-3.12";

@@ -324245,7 +324245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34932f59ef2d483f9fd2764016cca5ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlantaVirtual.LanzadorPrograma
-  rutaPython: C:\Users\Mario\AppData\Local\Programs\Python\Python312\python.exe
+  rutaPython: 
   versionPy: -3.12
   programa: ejercicios/soluciones/nivel4.py
   io: {fileID: 1282776253}
