@@ -29,8 +29,10 @@ tags: [contexto, claude]
   - P4a ✅ esqueleto del dashboard (`4ced235`) y ajustes tras la revisión de Mario (`651ce47`): soluciones y plantilla ocultas al alumno, SLD entera en el hueco central (vista 55°/90°), paneles negros con alfa 0,85, salida en 4 líneas con «Ver detalle». Diseño en [[D009 Dashboard del alumno]].
   - P4b ✅ panel «Sensores y salidas» y etiquetas `I1`…`C1` sobre la planta (cian = activa); escala mínima 12/14 para que el texto no baje de 12 px a 1366×768.
   - P4c ✅ «Resultado» (% de acierto, bien/mal/en cinta), «Ciclo por pieza» (media y las 4 últimas) y «Retos» (niveles 1–4; pinchar uno lo elige). Cada pieza cuenta una vez, al pasar a `EnRampa`; nunca por el estado de I6–I8.
-  - **Siguiente: P5** (errores visibles) y P6 (necesita la confirmación de Mario). Con P4 terminado, ya se puede actualizar el guion de la reunión con el tutor.
-  - 9 tests de PlayMode en verde (`Assets/Scripts/PlantaVirtual/Tests/LanzadorProgramaTest.cs`; necesitan Mosquitto en marcha). Tiempos a rampa 2,7 / 4,3 / 5,3 s; estado seguro a 0,50 s tras Parar.
+  - P5 ✅ errores en rojo en «Salida»: el bloque de `mostrar_error` (archivo y línea, también de un hilo), la salida se amplía sola y el estado pasa a «Error». Si el programa no llega a arrancar (Python o programa no encontrado), aviso en rojo y código −2 (evento `LanzadorPrograma.NoArranca`).
+  - 🏁 Hito para el tutor: «Cargar programa» se puede enseñar. Guion de la reunión al día (demo con el dashboard; PowerShell como plan B).
+  - **Siguiente: P6** (broker portable en 18830): pedir antes la confirmación de Mario.
+  - 12 tests de PlayMode en verde (`Assets/Scripts/PlantaVirtual/Tests/LanzadorProgramaTest.cs`; necesitan Mosquitto en marcha). Tiempos a rampa 2,7 / 4,3 / 5,3 s; estado seguro a 0,50 s tras Parar.
 - **F0 en pausa** desde que el tutor priorizó «cargar código». F0.1, F0.3, F0.4 (hito 1), F0.5 y F0.7 ✅. F0.6 🟡: `SLD.py` clasifica las tres piezas; faltan las medidas reales 🔧. F0.2, F0.8 (versión corta) y F0.9 ⏳.
 - **F5:** F5.1 ✅ y F5.2 ✅ (2026-11-07). F5.3 ⏳ (prueba de ROBO Pro Coding 🔧). F5.4 🚧 lanzador desde Unity.
 - **Lo último medido (2026-11-11):** en el test de P2 la roja paró a −8,8 mm. Entra en la tolerancia provisional de 10 mm (con 8 mm habría fallado). La tolerancia definitiva sale de la medida en la maqueta 🔧.

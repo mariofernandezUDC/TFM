@@ -14,6 +14,8 @@
 //     Dashboard_Escala_TextoNoBajaDe12px_A1366x768
 // P4c Dashboard_Resultado_Nivel4_TresBienCeroMal (cuenta por pieza, no por I6–I8)
 //     Dashboard_Reto_AlPincharlo_EligeSuPrograma
+// P5  Dashboard_ErrorDelAlumno_EnRojoConArchivoYLinea (falla_a_mitad.py y falla_en_hilo.py)
+//     Dashboard_ProgramaQueNoExiste_AvisaEnRojo
 //
 // Necesitan Mosquitto en marcha en el puerto de VirtualIO_TXT5 (1883).
 //
@@ -46,6 +48,7 @@ namespace PlantaVirtual.Tests
         private const string Nivel4 = "ejercicios/soluciones/nivel4.py";
         private const string Ejemplo = "ejemplos/clasificar_por_color.py"; // lo que elige el alumno en el dashboard
         private const string FallaAMitad = "../tests/programas/falla_a_mitad.py"; // relativo a virtual/alumno/
+        private const string FallaEnHilo = "../tests/programas/falla_en_hilo.py";
         private const float EsperaPython_s = 20f;    // hasta que llega el primer latido de Python
         private const float EsperaPorPieza_s = 60f;  // de la entrada de la cinta a la rampa
         private const float LatidoMaximo_s = 1.0f;   // D006.5: 0,5 s sin out → estado seguro (+ margen)
@@ -498,6 +501,81 @@ namespace PlantaVirtual.Tests
             Assert.AreEqual(ruta, raiz.Q<Label>("programaTexto").text);
             Assert.IsTrue(raiz.Q("reto:" + ruta).ClassListContains("reto--elegido"), "La tarjeta elegida no se marca");
             Assert.IsNull(raiz.Q("reto:ejercicios/soluciones/nivel4.py"), "Un reto no puede apuntar a una solución");
+        }
+
+        // ── P5 ───────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Cargar desde el dashboard un programa que falla: el bloque de error sale en rojo
+        /// (a la vista, sin «Ver detalle») con el archivo y la línea, la salida se amplía,
+        /// el estado pasa a «Error» y la planta se para.
+        /// </summary>
+        [UnityTest]
+        [Timeout(120000)]
+        public IEnumerator Dashboard_ErrorDelAlumno_EnRojoConArchivoYLinea(
+            [Values(FallaAMitad + "|falla_a_mitad.py, línea 16|",
+                    FallaEnHilo + "|falla_en_hilo.py, línea 13|(en el hilo vigilar_i3)")] string caso)
+        {
+            string[] c = caso.Split('|');
+            string programa = c[0], archivoYLinea = c[1], hilo = c[2];
+
+            yield return CargarEscena();
+            var dashboard = Object.FindFirstObjectByType(Tipo("DashboardPlanta")) as Component;
+            VisualElement raiz = dashboard.GetComponent<UIDocument>().rootVisualElement;
+            Label estado = raiz.Q<Label>("estadoTexto");
+            yield return null;
+
+            Llamar(dashboard, "Elegir", programa);
+            Pulsar(raiz.Q<Button>("cargar"));
+            yield return null;
+            Assert.Greater(Pid, 0, "El botón Cargar no ha lanzado " + programa);
+            Process proceso = Process.GetProcessById(Pid);
+            yield return EsperarLatido(proceso);
+            ColocarPieza("Blanca"); // I1 arranca la cinta; en I3 llega el error
+
+            float t0 = Time.realtimeSinceStartup;
+            while (estado.text != "Error")
+            {
+                Assert.Less(Time.realtimeSinceStartup - t0, EsperaPorPieza_s, $"El estado no pasa a «Error» (está en «{estado.text}»)");
+                yield return null;
+            }
+            yield return null; // las últimas líneas del bloque
+
+            string rojo = (string)Leer(dashboard, "TextoSalidaError");
+            string visible = (string)Leer(dashboard, "TextoSalidaVisible");
+            Debug.Log("[Test] Error en rojo:\n" + rojo);
+            StringAssert.Contains("ERROR en tu programa" + (hilo.Length > 0 ? " " + hilo : ""), rojo, "No sale en rojo la línea del error");
+            StringAssert.Contains(archivoYLinea, rojo, "El error no dice el archivo y la línea");
+            StringAssert.Contains("La planta se ha parado", rojo, "No sale en rojo el aviso de planta parada");
+            StringAssert.Contains(archivoYLinea, visible, "El error queda oculto tras «Ver detalle»");
+            Assert.IsTrue((bool)Leer(dashboard, "SalidaAmpliada"), "La salida no se amplía para enseñar el error entero");
+            Assert.AreEqual(1, UltimoCodigo, "Código de salida");
+
+            t0 = Time.realtimeSinceStartup;
+            while (VelocidadCinta != 0f || !EstadoSeguro)
+            {
+                Assert.Less(Time.realtimeSinceStartup - t0, 3f, "La planta no se para después del error");
+                yield return null;
+            }
+            SinErroresPropios();
+        }
+
+        /// <summary>Un programa que no existe: aviso claro en rojo en «Salida» y estado «Error».</summary>
+        [UnityTest]
+        public IEnumerator Dashboard_ProgramaQueNoExiste_AvisaEnRojo()
+        {
+            yield return CargarEscena();
+            var dashboard = Object.FindFirstObjectByType(Tipo("DashboardPlanta")) as Component;
+            VisualElement raiz = dashboard.GetComponent<UIDocument>().rootVisualElement;
+            yield return null;
+
+            Llamar(dashboard, "Elegir", "no_existe.py");
+            Pulsar(raiz.Q<Button>("cargar"));
+            yield return null;
+            StringAssert.Contains("No encuentro el programa no_existe.py", (string)Leer(dashboard, "TextoSalidaError"),
+                "El fallo al arrancar no sale en rojo en «Salida»");
+            Assert.AreEqual("Error", raiz.Q<Label>("estadoTexto").text);
+            Assert.AreEqual(-2, UltimoCodigo, "Código de salida (no ha llegado a arrancar)");
         }
 
         // ── Utilidades ───────────────────────────────────────────────────────

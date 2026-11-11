@@ -107,7 +107,11 @@ namespace PlantaVirtual
             // Un clic fuera de la lista la cierra.
             _raiz.RegisterCallback<PointerDownEvent>(AlPulsarFuera, TrickleDown.TrickleDown);
 
-            if (lanzador != null) lanzador.LineaSalida += AnadirLinea;
+            if (lanzador != null)
+            {
+                lanzador.LineaSalida += AnadirLinea;
+                lanzador.NoArranca += AlNoArrancar;
+            }
 
             LeerProgramas();
             Elegir(_programas.Contains(programaInicial) ? programaInicial : _programas.FirstOrDefault());
@@ -121,7 +125,11 @@ namespace PlantaVirtual
 
         private void OnDisable()
         {
-            if (lanzador != null) lanzador.LineaSalida -= AnadirLinea;
+            if (lanzador != null)
+            {
+                lanzador.LineaSalida -= AnadirLinea;
+                lanzador.NoArranca -= AlNoArrancar;
+            }
             if (_raiz != null) _raiz.UnregisterCallback<PointerDownEvent>(AlPulsarFuera, TrickleDown.TrickleDown);
         }
 
@@ -280,7 +288,7 @@ namespace PlantaVirtual
             _enMarchaAntes = enMarcha;
 
             int codigo = lanzador != null ? lanzador.ultimoCodigoSalida : LanzadorPrograma.SinCodigo;
-            bool error = !enMarcha && (codigo == 1 || codigo == 2);
+            bool error = !enMarcha && (codigo == 1 || codigo == 2 || codigo == LanzadorPrograma.CodigoNoArranca);
 
             string texto;
             if (enMarcha)
@@ -329,7 +337,20 @@ namespace PlantaVirtual
         public const string ClaseDetalle = "salida-linea--detalle";
         public const string ClaseError = "salida-linea--error";
 
-        private void AnadirLinea(string texto, bool esError) => Anadir(texto, ClaseDeLinea(texto, esError, ref _enBloqueError));
+        private void AnadirLinea(string texto, bool esError)
+        {
+            bool antes = _enBloqueError;
+            Anadir(texto, ClaseDeLinea(texto, esError, ref _enBloqueError));
+            // P5: al empezar el bloque de error, la salida se amplía para que se lea entero.
+            if (!antes && _enBloqueError) AmpliarSalida(true);
+        }
+
+        // P5: el programa no ha llegado a arrancar. Mensaje en rojo y estado «Error».
+        private void AlNoArrancar(string texto)
+        {
+            Anadir(texto, ClaseError);
+            ActualizarEstado(forzar: true);
+        }
 
         private void AnadirAviso(string texto) => Anadir(texto, "salida-linea--aviso");
 
@@ -372,9 +393,11 @@ namespace PlantaVirtual
         }
 
         // La salida no se pliega del todo: de ~4 líneas pasa a ~12 y vuelve.
-        private void AlternarAmpliarSalida()
+        private void AlternarAmpliarSalida() => AmpliarSalida(!_salidaAmpliada);
+
+        private void AmpliarSalida(bool ampliada)
         {
-            _salidaAmpliada = !_salidaAmpliada;
+            _salidaAmpliada = ampliada;
             _tarjetaSalida.EnableInClassList("tarjeta-salida--ampliada", _salidaAmpliada);
             _ampliarSalida.text = _salidaAmpliada ? "−" : "+";
             BajarAlFinal();
@@ -382,6 +405,13 @@ namespace PlantaVirtual
 
         /// <summary>Texto de todas las líneas de la caja de salida, también las de detalle (para los tests).</summary>
         public string TextoSalida => string.Join("\n", _salida.contentContainer.Children().Select(l => ((Label)l).text));
+
+        /// <summary>Texto de las líneas en rojo (errores), para los tests.</summary>
+        public string TextoSalidaError => string.Join("\n", _salida.contentContainer.Children()
+            .Where(l => l.ClassListContains(ClaseError)).Select(l => ((Label)l).text));
+
+        /// <summary>True si la salida está ampliada (~12 líneas), para los tests.</summary>
+        public bool SalidaAmpliada => _salidaAmpliada;
 
         /// <summary>Texto de las líneas que se ven sin pulsar «Ver detalle» (para los tests).</summary>
         public string TextoSalidaVisible => string.Join("\n", _salida.contentContainer.Children()

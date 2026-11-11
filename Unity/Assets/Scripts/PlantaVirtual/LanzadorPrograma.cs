@@ -11,6 +11,7 @@
 //     estado seguro en 0,5 s (D006.5). Cargar con un programa en marcha para antes
 //     el anterior. Al terminar solo, se apunta el código de salida.
 // P4: el dashboard (DashboardPlanta) usa Lanzar(), Parar() y LineaSalida.
+// P5: NoArranca avisa al dashboard cuando el programa no llega a arrancar.
 //     Las teclas L y P quedan solo en el editor.
 //
 // Se lanza python.exe directamente, NO py.exe: py.exe abre python.exe como hijo,
@@ -33,6 +34,8 @@ namespace PlantaVirtual
         public const int CodigoParadoDesdeUnity = -1;
         /// <summary>Código que se apunta mientras no ha terminado ningún programa.</summary>
         public const int SinCodigo = int.MinValue;
+        /// <summary>Código que se apunta cuando el programa no llega a arrancar (Python o programa no encontrado, P5).</summary>
+        public const int CodigoNoArranca = -2;
 
         [Header("Python")]
         [Tooltip("Ruta del python.exe real (no py.exe). Si está vacía, se pregunta a «py -3.12» al primer Cargar de cada Play (cada PC tiene la suya)")]
@@ -55,7 +58,7 @@ namespace PlantaVirtual
         [Header("Estado")]
         [SoloLectura] public bool enMarcha;
         [SoloLectura] public int pid = -1;
-        [SoloLectura, Tooltip("0 = bien, 1 = error del alumno, 2 = no encuentra el programa, -1 = parado desde Unity")]
+        [SoloLectura, Tooltip("0 = bien, 1 = error del alumno, 2 = no encuentra el programa, -1 = parado desde Unity, -2 = no ha llegado a arrancar")]
         public int ultimoCodigoSalida = SinCodigo;
 
         /// <summary>Un programa lanzado. Cada lanzamiento tiene el suyo, así el aviso de
@@ -73,6 +76,18 @@ namespace PlantaVirtual
         /// <summary>Cada línea que escribe el programa (texto, esError = vino por stderr).
         /// Se lanza desde Update(), en el hilo de Unity: se puede tocar la UI.</summary>
         public event Action<string, bool> LineaSalida;
+
+        /// <summary>El programa no ha llegado a arrancar (P5). El texto está pensado para el
+        /// alumno: el dashboard lo enseña en rojo en «Salida». Se lanza en el hilo de Unity.</summary>
+        public event Action<string> NoArranca;
+
+        /// <summary>Apunta el fallo en la consola y avisa al dashboard. ultimoCodigoSalida = -2.</summary>
+        private void FalloAlArrancar(string paraLaConsola, string paraElAlumno)
+        {
+            Debug.LogError("[Lanzador] " + paraLaConsola);
+            ultimoCodigoSalida = CodigoNoArranca;
+            NoArranca?.Invoke(paraElAlumno);
+        }
 
         // Las líneas y los avisos de fin llegan en hilos de .NET, no en el de Unity.
         // Se guardan aquí y se tratan desde Update(). esError = vino por stderr.
@@ -119,13 +134,18 @@ namespace PlantaVirtual
                 Parar();
             }
 
-            if (!ResolverPython()) return;
+            if (!ResolverPython(out string porQue))
+            {
+                FalloAlArrancar(porQue, "No encuentro Python " + versionPy.TrimStart('-') + ". Instálalo, o escribe la ruta de python.exe en LanzadorPrograma → rutaPython. (" + porQue + ")");
+                return;
+            }
 
             string raiz = RaizRepo;
             string rutaPrograma = Path.GetFullPath(Path.Combine(raiz, "virtual", "alumno", programa));
             if (!File.Exists(rutaPrograma))
             {
-                Debug.LogError("[Lanzador] No encuentro el programa: " + rutaPrograma);
+                FalloAlArrancar("No encuentro el programa: " + rutaPrograma,
+                    "No encuentro el programa " + programa + ". ¿Lo has borrado o cambiado de nombre? Pulsa ↻ para volver a leer la carpeta.");
                 return;
             }
 
@@ -163,7 +183,8 @@ namespace PlantaVirtual
             }
             catch (Exception ex)
             {
-                Debug.LogError("[Lanzador] No he podido arrancar Python (" + rutaPython + "): " + ex.Message);
+                FalloAlArrancar("No he podido arrancar Python (" + rutaPython + "): " + ex.Message,
+                    "No he podido arrancar Python (" + rutaPython + "): " + ex.Message);
                 return;
             }
             p.BeginOutputReadLine();
@@ -268,12 +289,13 @@ namespace PlantaVirtual
         /// Si rutaPython está vacía, pregunta una vez a py.exe dónde está el python.exe real
         /// (py -3.12 -c "import sys; print(sys.executable)") y lo guarda en el campo.
         /// </summary>
-        private bool ResolverPython()
+        private bool ResolverPython(out string porQue)
         {
+            porQue = "";
             if (!string.IsNullOrWhiteSpace(rutaPython))
             {
                 if (File.Exists(rutaPython)) return true;
-                Debug.LogError("[Lanzador] No existe rutaPython: " + rutaPython + ". Déjala vacía para buscarla con py " + versionPy + ".");
+                porQue = "No existe rutaPython: " + rutaPython + ". Déjala vacía para buscarla con py " + versionPy + ".";
                 return false;
             }
 
@@ -297,12 +319,12 @@ namespace PlantaVirtual
                         Debug.Log("[Lanzador] Python encontrado: " + rutaPython);
                         return true;
                     }
-                    Debug.LogError($"[Lanzador] «py {versionPy}» no ha dado una ruta válida (código {p.ExitCode}): «{ruta}»");
+                    porQue = $"«py {versionPy}» no ha dado una ruta válida (código {p.ExitCode}): «{ruta}»";
                 }
             }
             catch (Exception ex)
             {
-                Debug.LogError("[Lanzador] No he podido ejecutar «py " + versionPy + "» para encontrar Python: " + ex.Message);
+                porQue = "No he podido ejecutar «py " + versionPy + "» para encontrar Python: " + ex.Message;
             }
             return false;
         }
