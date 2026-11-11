@@ -19,10 +19,13 @@
     -unity-font: url("project://database/Assets/Scripts/PlantaVirtual/UI/Fuentes/Outfit-Medium.ttf");
 }
 
-/* ── Panel translúcido: oscuro, borde fino claro, radio 16 px. Sin desenfoque. ── */
+/* ── Panel translúcido: negro, borde fino claro, radio 16 px. Sin desenfoque. ──
+   El proyecto está en espacio de color lineal y la UI se mezcla en lineal: un alfa
+   de 0,85 oscurece a la vista como un negro al ~60 % mezclado en sRGB (la pieza
+   que queda debajo se ve al ~40 % de su brillo). Con 0,6 se vería casi transparente. */
 
 .panel {
-    background-color: rgba(24, 26, 30, 0.78);
+    background-color: rgba(8, 9, 11, 0.85);
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.16);
     border-radius: 16px;
@@ -257,29 +260,89 @@
 
 /* ── Salida del programa (abajo) ──────────────────────────────────────────── */
 
+/* Por defecto ~4 líneas; con «+» ~12. Las líneas del log de la librería van
+   ocultas hasta que se pulsa «Ver detalle». */
+
 .tarjeta-salida {
-    height: 210px;
+    padding-top: 10px;
+    padding-bottom: 12px;
     margin-bottom: 0;
 }
 
-.tarjeta-salida.tarjeta--plegada {
-    height: auto;
+.tarjeta-salida .tarjeta-cuerpo {
+    margin-top: 6px;
 }
 
 .salida-scroll {
-    flex-grow: 1;
+    height: 80px;
+    overflow: hidden;
+}
+
+.salida-scroll .unity-scroll-view__content-container {
+    flex-shrink: 0;
+}
+
+.tarjeta-salida--ampliada .salida-scroll {
+    height: 236px;
+}
+
+.cabecera-botones {
+    flex-direction: row;
+    align-items: center;
+}
+
+.boton-detalle {
+    height: 28px;
+    margin: 0 8px 0 0;
+    padding: 0 14px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 13px;
+    -unity-text-align: middle-center;
+    transition-duration: 0.15s;
+}
+
+.boton-detalle:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+    color: rgb(242, 244, 245);
+}
+
+.tarjeta-salida--detalle .boton-detalle {
+    border-color: rgba(212, 242, 60, 0.6);
+    color: rgb(212, 242, 60);
 }
 
 .salida-linea {
+    flex-shrink: 0;
+    min-height: 20px;
     margin: 0;
-    padding: 1px 0;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.82);
+    padding: 0;
+    font-size: 14px;
+    -unity-text-align: middle-left;
+    color: rgba(255, 255, 255, 0.88);
     white-space: normal;
 }
 
 .salida-linea--aviso {
     color: rgb(212, 242, 60);
+}
+
+.salida-linea--error {
+    color: rgb(240, 149, 149);
+}
+
+.salida-linea--detalle {
+    display: none;
+    min-height: 18px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.tarjeta-salida--detalle .salida-linea--detalle {
+    display: flex;
 }
 
 /* ── Lista desplegable de programas ───────────────────────────────────────── */

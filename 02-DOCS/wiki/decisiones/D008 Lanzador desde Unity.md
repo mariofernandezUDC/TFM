@@ -39,7 +39,7 @@ Hay que decidir cuatro cosas: cómo ejecuta Unity el Python (A), qué broker se 
 ## Decisión
 - **A → A1. Proceso aparte.** Unity ejecuta `run_virtual.py --programa <ruta>` con `System.Diagnostics.Process`. Entre los dos procesos solo hay dos canales: **`vio` por MQTT** ([[D006 Protocolo vio]]) y la **salida estándar** del proceso, que Unity lee para enseñar mensajes y errores.
 - **B → B1 ahora y B2 en P6.** De momento, el servicio Mosquitto en 1883. En P6, un `mosquitto.exe` portable lanzado por Unity en el **puerto 18830**, para no chocar con otro Mosquitto que tenga el alumno. P6 necesita la confirmación de Mario (binarios en el repo y licencia EPL-2.0/EDL).
-- **C → C1. Desplegable.** Lista los `.py` de `virtual/alumno/`, buscados **de forma recursiva** y **excluyendo `pistas/`**. Cada entrada se ve con su ruta relativa, por ejemplo `ejercicios/nivel1_arrancar.py`.
+- **C → C1. Desplegable.** Lista los `.py` de `virtual/alumno/`, buscados **de forma recursiva** y **excluyendo `pistas/`**. Tampoco salen `ejercicios/soluciones/` ni `plantilla_sld.py`, que son del profesor (ajuste del 2026-11-11 tras revisar P4a). `DashboardPlanta.EsDelProfesor` los marca; un futuro modo profesor (F4) podrá enseñarlos. Cada entrada se ve con su ruta relativa, por ejemplo `ejercicios/nivel1_arrancar.py`.
 - **D → D1. Parar = matar el proceso.** La parada limpia con `vio/sim/parar` (D2) queda para más adelante.
 
 ## Por qué

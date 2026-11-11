@@ -70,7 +70,10 @@
         <ui:VisualElement name="tarjetaSalida" class="panel tarjeta tarjeta-salida">
             <ui:VisualElement class="tarjeta-cabecera">
                 <ui:Label text="Salida" class="tarjeta-titulo texto-fuerte" />
-                <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
+                <ui:VisualElement class="cabecera-botones">
+                    <ui:Button name="verDetalle" text="Ver detalle" class="boton-detalle texto-medio" tooltip="Ver también los mensajes internos de la librería (fecha, hilo y archivo)" />
+                    <ui:Button name="ampliarSalida" text="+" class="boton-plegar" tooltip="Ver más líneas o menos" />
+                </ui:VisualElement>
             </ui:VisualElement>
             <ui:ScrollView name="salida" class="tarjeta-cuerpo salida-scroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" />
         </ui:VisualElement>

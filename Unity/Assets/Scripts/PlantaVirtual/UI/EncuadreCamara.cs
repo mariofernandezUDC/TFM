@@ -15,16 +15,16 @@ namespace PlantaVirtual
     {
         [Tooltip("Cámara que se encuadra. Vacío = Camera.main")]
         public Camera camara;
-        [Tooltip("Lo que tiene que quedar en el centro: las partes funcionales de la SLD (cinta, sensores, cilindros y barreras de las rampas)")]
+        [Tooltip("Lo que tiene que verse entero en el hueco: la SLD completa (cinta, 3 cilindros y 3 rampas)")]
         public Transform[] objetivos;
         [Tooltip("Dashboard con el elemento del hueco central")]
         public UIDocument dashboard;
         [Tooltip("Nombre del elemento del hueco central en el UXML")]
         public string nombreHueco = "hueco";
-        [Tooltip("Orientación de la cámara (grados). Por defecto, la de la vista «Estación SLD» de la escena")]
-        public Vector3 angulos = new Vector3(26f, 162f, 0f);
+        [Tooltip("Orientación de la cámara (grados). 55° hacia abajo, desde el lado de los cilindros: la cinta queda horizontal, los cilindros delante y las rampas detrás. Con el rumbo de la vista «Estación SLD» (162°) se mira a lo largo de la cinta y queda en escorzo")]
+        public Vector3 angulos = new Vector3(55f, 90f, 0f);
         [Tooltip("Aire alrededor de los objetivos (1 = justo)")]
-        [Range(1f, 2f)] public float margen = 1.1f;
+        [Range(1f, 2f)] public float margen = 1.12f;
         [Tooltip("Plano de recorte cercano, m. El de la escena (0,3 m) no deja acercar la cámara a una maqueta de 1 m")]
         public float planoCercano = 0.02f;
 

@@ -40,6 +40,7 @@ namespace PlantaVirtual.Tests
     {
         private const string Escena = "Assets/Scenes/PlantaVirtual.unity";
         private const string Nivel4 = "ejercicios/soluciones/nivel4.py";
+        private const string Ejemplo = "ejemplos/clasificar_por_color.py"; // lo que elige el alumno en el dashboard
         private const string FallaAMitad = "../tests/programas/falla_a_mitad.py"; // relativo a virtual/alumno/
         private const float EsperaPython_s = 20f;    // hasta que llega el primer latido de Python
         private const float EsperaPorPieza_s = 60f;  // de la entrada de la cinta a la rampa
@@ -328,16 +329,18 @@ namespace PlantaVirtual.Tests
             Label estado = raiz.Q<Label>("estadoTexto");
             yield return null;
 
-            // Desplegable: abrir y elegir soluciones/nivel4.py.
+            // Desplegable: abrir y elegir el ejemplo.
             Pulsar(raiz.Q<Button>("programaSeleccionado"));
             yield return null;
             Assert.IsFalse(raiz.Q("listaProgramas").ClassListContains("lista-programas--oculta"), "La lista de programas no se abre");
             var programas = ((IEnumerable)Leer(dashboard, "Programas")).Cast<string>().ToList();
-            Assert.Contains(Nivel4, programas, "La lista no tiene " + Nivel4);
+            Assert.Contains(Ejemplo, programas, "La lista no tiene " + Ejemplo);
             Assert.IsFalse(programas.Any(p => p.Contains("pistas/")), "La lista no debe tener nada de pistas/ (D008-C)");
-            Pulsar(raiz.Q<Button>("programa:" + Nivel4));
+            Assert.IsFalse(programas.Any(p => p.Contains("soluciones/")), "El alumno no debe ver las soluciones en la lista");
+            Assert.IsFalse(programas.Contains("plantilla_sld.py"), "El alumno no debe ver la plantilla en la lista");
+            Pulsar(raiz.Q<Button>("programa:" + Ejemplo));
             yield return null;
-            Assert.AreEqual(Nivel4, Leer(dashboard, "programaElegido"));
+            Assert.AreEqual(Ejemplo, Leer(dashboard, "programaElegido"));
             Assert.IsTrue(raiz.Q("listaProgramas").ClassListContains("lista-programas--oculta"), "La lista no se cierra al elegir");
 
             // Cargar.
@@ -349,13 +352,19 @@ namespace PlantaVirtual.Tests
             yield return EsperarLatido(proceso);
             StringAssert.StartsWith("En marcha", estado.text);
 
-            // La salida del programa llega a la caja de abajo.
+            // La salida del programa llega a la caja de abajo, y el log de la librería
+            // (fecha, [hilo], #vio.py:NNN) queda oculto tras «Ver detalle».
             float t0 = Time.realtimeSinceStartup;
-            while (!((string)Leer(dashboard, "TextoSalida")).Contains("Nivel 4 en marcha"))
+            while (!((string)Leer(dashboard, "TextoSalidaVisible")).Contains("Clasificador por color en marcha"))
             {
                 Assert.Less(Time.realtimeSinceStartup - t0, 10f, "La salida del programa no aparece en el dashboard");
                 yield return null;
             }
+            string visible = (string)Leer(dashboard, "TextoSalidaVisible");
+            StringAssert.DoesNotMatch(@"(?m)^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3} \[.*\] (DEBUG|INFO|WARNING)", visible,
+                "Se ven líneas de log de la librería sin pulsar «Ver detalle»");
+            StringAssert.DoesNotContain("Ejecutando tu programa:", visible, "Se ve la línea del lanzador sin pulsar «Ver detalle»");
+            StringAssert.Contains("#vio.py:", (string)Leer(dashboard, "TextoSalida"), "El log de la librería no llega al detalle");
 
             // Parar.
             Pulsar(raiz.Q<Button>("parar"));

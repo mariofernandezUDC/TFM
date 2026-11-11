@@ -1,7 +1,8 @@
 // DashboardPlanta.cs · Dashboard de la planta virtual (D008, P4a: esqueleto).
 //
 // UI Toolkit (Dashboard.uxml + Dashboard.uss). Barra superior: programa,
-// Cargar, Parar y estado. Abajo: lo que imprime el programa. Columnas con
+// Cargar, Parar y estado. Abajo: lo que imprime el programa (~4 líneas; el log de
+// la librería, tras «Ver detalle»). Columnas con
 // tarjetas plegables, vacías hasta P4b/P4c. En el hueco central se ve la planta 3D
 // (lo encuadra EncuadreCamara).
 //
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -22,7 +24,7 @@ namespace PlantaVirtual
         [Tooltip("Lanzador de programas. Vacío = se busca en la escena")]
         public LanzadorPrograma lanzador;
         [Tooltip("Programa elegido al abrir el dashboard, relativo a virtual/alumno/")]
-        public string programaInicial = "ejercicios/soluciones/nivel4.py";
+        public string programaInicial = "ejercicios/nivel1_arrancar.py";
         [Tooltip("Líneas que guarda la caja de salida")]
         public int maxLineasSalida = 300;
 
@@ -32,10 +34,22 @@ namespace PlantaVirtual
 
         public const string CarpetaAlumno = "virtual/alumno";
 
-        private VisualElement _raiz, _lista, _estado;
+        // Lo que es del profesor y el alumno no ve en el desplegable: las soluciones
+        // y la plantilla. Un futuro «modo profesor» (F4) los enseñará poniendo
+        // _modoProfesor a true; en P4 no hay forma de activarlo.
+        private static readonly string[] CarpetasProfesor = { "ejercicios/soluciones/" };
+        private static readonly string[] ArchivosProfesor = { "plantilla_sld.py" };
+        private bool _modoProfesor = false;
+
+        /// <summary>True si el programa (ruta relativa a virtual/alumno, con /) es solo del profesor.</summary>
+        public static bool EsDelProfesor(string rel) =>
+            CarpetasProfesor.Any(c => rel.StartsWith(c, StringComparison.OrdinalIgnoreCase)) ||
+            ArchivosProfesor.Any(a => string.Equals(rel, a, StringComparison.OrdinalIgnoreCase));
+
+        private VisualElement _raiz, _lista, _estado, _tarjetaSalida;
         private ScrollView _salida, _listaScroll;
         private Label _programaTexto, _estadoTexto;
-        private Button _selector, _recargar, _cargar, _parar;
+        private Button _selector, _recargar, _cargar, _parar, _botonDetalle, _ampliarSalida;
         private readonly List<string> _programas = new List<string>();
 
         private bool _enMarchaAntes;
@@ -62,6 +76,9 @@ namespace PlantaVirtual
             _salida = _raiz.Q<ScrollView>("salida");
             _lista = _raiz.Q("listaProgramas");
             _listaScroll = _raiz.Q<ScrollView>("listaProgramasScroll");
+            _tarjetaSalida = _raiz.Q("tarjetaSalida");
+            _botonDetalle = _raiz.Q<Button>("verDetalle");
+            _ampliarSalida = _raiz.Q<Button>("ampliarSalida");
 
             _raiz.Q("programaFlecha").Add(new IconoDibujado(IconoDibujado.Forma.Flecha));
             _raiz.Q("recargarIcono").Add(new IconoDibujado(IconoDibujado.Forma.Recargar));
@@ -70,8 +87,10 @@ namespace PlantaVirtual
             _recargar.clicked += LeerProgramas;
             _cargar.clicked += Cargar;
             _parar.clicked += Parar;
+            _botonDetalle.clicked += AlternarDetalle;
+            _ampliarSalida.clicked += AlternarAmpliarSalida;
             foreach (var b in _raiz.Query<Button>(className: "boton-plegar").ToList())
-                b.clicked += () => Plegar(b);
+                if (b != _ampliarSalida) b.clicked += () => Plegar(b);
             // Un clic fuera de la lista la cierra.
             _raiz.RegisterCallback<PointerDownEvent>(AlPulsarFuera, TrickleDown.TrickleDown);
 
@@ -93,7 +112,8 @@ namespace PlantaVirtual
         // ── Programas (D008-C) ───────────────────────────────────────────────
 
         /// <summary>
-        /// Busca los .py de virtual/alumno de forma recursiva, sin pistas/ ni __pycache__/.
+        /// Busca los .py de virtual/alumno de forma recursiva, sin pistas/ ni __pycache__/
+        /// y sin lo que es del profesor (EsDelProfesor).
         /// En la lista se ve la ruta relativa, por ejemplo ejercicios/nivel1_arrancar.py.
         /// </summary>
         public void LeerProgramas()
@@ -107,6 +127,7 @@ namespace PlantaVirtual
                     string rel = Path.GetRelativePath(carpeta, ruta).Replace('\\', '/');
                     var partes = rel.Split('/');
                     if (partes.Contains("pistas") || partes.Contains("__pycache__")) continue;
+                    if (!_modoProfesor && EsDelProfesor(rel)) continue;
                     _programas.Add(rel);
                 }
             }
@@ -171,6 +192,7 @@ namespace PlantaVirtual
             CerrarLista();
             if (lanzador == null) { AnadirAviso("No hay LanzadorPrograma en la escena."); return; }
             if (string.IsNullOrEmpty(programaElegido)) { AnadirAviso("Elige un programa antes de cargar."); return; }
+            _enBloqueError = false;
             AnadirAviso("── Cargando " + programaElegido + " ──");
             lanzador.programa = programaElegido;
             lanzador.Lanzar();
@@ -214,7 +236,37 @@ namespace PlantaVirtual
 
         // ── Salida del programa ──────────────────────────────────────────────
 
-        private void AnadirLinea(string texto, bool esError) => Anadir(texto, null);
+        // Línea de log de la librería: «2026-11-11 13:54:35,262 [MainThread] WARNING …  #vio.py:115»
+        // (FORMATO_LOG de run_virtual.py). El grupo 1 es el nivel.
+        private static readonly Regex LineaLog =
+            new Regex(@"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3} \[[^\]]*\] (\w+)", RegexOptions.Compiled);
+        // Líneas del lanzador (run_virtual.py) que no son del programa del alumno.
+        private static readonly string[] LineasLanzador = { "Ejecutando tu programa:", "Broker " };
+        // run_virtual.py encierra el error del alumno entre dos rayas de 70 «=».
+        private static readonly string Raya = new string('=', 70);
+
+        private bool _enBloqueError;
+
+        /// <summary>
+        /// Clasifica una línea del programa. A la vista: lo que imprime el alumno y los
+        /// errores (también los ERROR/CRITICAL de la librería). Detrás de «Ver detalle»:
+        /// el resto del log de la librería, las rayas y las líneas del lanzador.
+        /// </summary>
+        public static string ClaseDeLinea(string texto, bool esError, ref bool enBloqueError)
+        {
+            if (texto.TrimEnd() == Raya) { enBloqueError = !enBloqueError; return ClaseDetalle; }
+            if (enBloqueError) return ClaseError;
+            Match log = LineaLog.Match(texto);
+            if (log.Success)
+                return log.Groups[1].Value == "ERROR" || log.Groups[1].Value == "CRITICAL" ? ClaseError : ClaseDetalle;
+            if (LineasLanzador.Any(l => texto.StartsWith(l, StringComparison.Ordinal))) return ClaseDetalle;
+            return esError ? ClaseError : null;
+        }
+
+        public const string ClaseDetalle = "salida-linea--detalle";
+        public const string ClaseError = "salida-linea--error";
+
+        private void AnadirLinea(string texto, bool esError) => Anadir(texto, ClaseDeLinea(texto, esError, ref _enBloqueError));
 
         private void AnadirAviso(string texto) => Anadir(texto, "salida-linea--aviso");
 
@@ -223,15 +275,54 @@ namespace PlantaVirtual
             var linea = new Label(texto);
             linea.AddToClassList("salida-linea");
             if (clase != null) linea.AddToClassList(clase);
+            if (clase == ClaseDetalle) _lineasDetalle++;
             _salida.Add(linea);
             while (_salida.contentContainer.childCount > maxLineasSalida)
+            {
+                if (_salida.contentContainer[0].ClassListContains(ClaseDetalle)) _lineasDetalle--;
                 _salida.contentContainer.RemoveAt(0);
-            // Baja al final cuando la línea nueva ya tiene tamaño.
-            _salida.schedule.Execute(() => _salida.scrollOffset = new Vector2(0, float.MaxValue));
+            }
+            ActualizarBotonDetalle();
+            BajarAlFinal();
         }
 
-        /// <summary>Texto de todas las líneas de la caja de salida (para los tests).</summary>
+        // Baja al final cuando la línea nueva (o la caja con su nuevo alto) ya tiene tamaño.
+        private void BajarAlFinal() =>
+            _salida.schedule.Execute(() => _salida.scrollOffset = new Vector2(0, float.MaxValue));
+
+        private int _lineasDetalle;
+        private bool _verDetalle;
+        private bool _salidaAmpliada;
+
+        private void AlternarDetalle()
+        {
+            _verDetalle = !_verDetalle;
+            _tarjetaSalida.EnableInClassList("tarjeta-salida--detalle", _verDetalle);
+            ActualizarBotonDetalle();
+            BajarAlFinal();
+        }
+
+        private void ActualizarBotonDetalle()
+        {
+            _botonDetalle.text = _verDetalle ? "Ocultar detalle"
+                : _lineasDetalle > 0 ? $"Ver detalle ({_lineasDetalle})" : "Ver detalle";
+        }
+
+        // La salida no se pliega del todo: de ~4 líneas pasa a ~12 y vuelve.
+        private void AlternarAmpliarSalida()
+        {
+            _salidaAmpliada = !_salidaAmpliada;
+            _tarjetaSalida.EnableInClassList("tarjeta-salida--ampliada", _salidaAmpliada);
+            _ampliarSalida.text = _salidaAmpliada ? "−" : "+";
+            BajarAlFinal();
+        }
+
+        /// <summary>Texto de todas las líneas de la caja de salida, también las de detalle (para los tests).</summary>
         public string TextoSalida => string.Join("\n", _salida.contentContainer.Children().Select(l => ((Label)l).text));
+
+        /// <summary>Texto de las líneas que se ven sin pulsar «Ver detalle» (para los tests).</summary>
+        public string TextoSalidaVisible => string.Join("\n", _salida.contentContainer.Children()
+            .Where(l => !l.ClassListContains(ClaseDetalle)).Select(l => ((Label)l).text));
 
         // ── Tarjetas plegables ───────────────────────────────────────────────
 

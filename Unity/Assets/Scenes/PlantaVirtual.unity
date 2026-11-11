@@ -30874,19 +30874,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantaVirtual.EncuadreCamara
   camara: {fileID: 330585545}
   objetivos:
-  - {fileID: 2593961540105253669}
-  - {fileID: 175871540}
-  - {fileID: 1385385634}
-  - {fileID: 1961927408}
-  - {fileID: 1200812580}
-  - {fileID: 1470231075}
-  - {fileID: 1991905256}
-  - {fileID: 1381773752}
-  - {fileID: 1583995213}
+  - {fileID: 1634781541072564334}
   dashboard: {fileID: 1559529775}
   nombreHueco: hueco
-  angulos: {x: 26, y: 162, z: 0}
-  margen: 1.1
+  angulos: {x: 55, y: 90, z: 0}
+  margen: 1.12
+  planoCercano: 0.02
   centroObjetivo: {x: 0, y: 0, z: 0}
   distancia: 0
 --- !u!114 &1559529774
@@ -30902,7 +30895,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlantaVirtual.DashboardPlanta
   lanzador: {fileID: 1500000103}
-  programaInicial: ejercicios/soluciones/nivel4.py
+  programaInicial: ejercicios/nivel1_arrancar.py
   maxLineasSalida: 300
   programaElegido: 
   programasEncontrados: 0
