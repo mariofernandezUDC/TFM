@@ -14,6 +14,7 @@
 //     Dashboard_Escala_TextoNoBajaDe12px_A1366x768
 // P4c Dashboard_Resultado_Nivel4_TresBienCeroMal (cuenta por pieza, no por I6–I8)
 //     Dashboard_Reto_AlPincharlo_EligeSuPrograma
+// P4d Dashboard_Piezas_ConLasPildoras (Blanca, Roja, Azul y Quitar = teclas 1, 2, 3 y 0)
 // P5  Dashboard_ErrorDelAlumno_EnRojoConArchivoYLinea (falla_a_mitad.py y falla_en_hilo.py)
 //     Dashboard_ProgramaQueNoExiste_AvisaEnRojo
 //
@@ -501,6 +502,49 @@ namespace PlantaVirtual.Tests
             Assert.AreEqual(ruta, raiz.Q<Label>("programaTexto").text);
             Assert.IsTrue(raiz.Q("reto:" + ruta).ClassListContains("reto--elegido"), "La tarjeta elegida no se marca");
             Assert.IsNull(raiz.Q("reto:ejercicios/soluciones/nivel4.py"), "Un reto no puede apuntar a una solución");
+        }
+
+        // ── P4d ──────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Las píldoras Blanca, Roja, Azul y Quitar hacen lo mismo que las teclas 1, 2, 3 y 0.
+        /// Sin programa en marcha la cinta está parada: cada pieza se queda a la entrada.
+        /// Una segunda pieza con la entrada ocupada no entra y se avisa en «Salida».
+        /// </summary>
+        [UnityTest]
+        public IEnumerator Dashboard_Piezas_ConLasPildoras()
+        {
+            yield return CargarEscena();
+            var dashboard = Object.FindFirstObjectByType(Tipo("DashboardPlanta")) as Component;
+            VisualElement raiz = dashboard.GetComponent<UIDocument>().rootVisualElement;
+            yield return null;
+            List<object> Piezas() => ((IEnumerable)Leer(_planta, "Piezas")).Cast<object>().Where(p => (Object)p != null).ToList();
+
+            foreach (string color in new[] { "Blanca", "Roja", "Azul" })
+            {
+                Pulsar(raiz.Q<Button>("pieza:" + color));
+                yield return null;
+                var piezas = Piezas();
+                Assert.AreEqual(1, piezas.Count, $"La píldora {color} no pone una pieza");
+                Assert.AreEqual(color, Leer(piezas[0], "ColorReal").ToString(), $"La píldora {color} pone una pieza de otro color");
+
+                // Con la entrada ocupada no entra otra, y se avisa.
+                Pulsar(raiz.Q<Button>("pieza:" + color));
+                yield return null;
+                Assert.AreEqual(1, Piezas().Count, "Con la entrada ocupada ha entrado otra pieza");
+                StringAssert.Contains("Ya hay una pieza al principio de la cinta", (string)Leer(dashboard, "TextoSalidaVisible"));
+
+                Pulsar(raiz.Q<Button>("pieza:Quitar"));
+                yield return null; // Destroy() surte efecto al final del frame
+                yield return null;
+                Assert.AreEqual(0, Piezas().Count, "Quitar no quita las piezas");
+            }
+
+            // Las píldoras quedan fuera del hueco: no tapan la planta que encuadra la cámara.
+            Rect piezasRect = raiz.Q("piezas").worldBound, hueco = raiz.Q("hueco").worldBound;
+            Assert.LessOrEqual(piezasRect.yMax, hueco.yMin + 0.5f, "Las píldoras se meten en el hueco de la planta");
+            Assert.IsFalse(raiz.Q<Button>("pieza:Blanca").focusable, "Las píldoras no deben quedarse con el foco");
+            SinErroresPropios();
         }
 
         // ── P5 ───────────────────────────────────────────────────────────────

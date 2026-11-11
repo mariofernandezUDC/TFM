@@ -46,7 +46,29 @@
                 </ui:VisualElement>
             </ui:VisualElement>
 
-            <ui:VisualElement name="hueco" class="hueco" picking-mode="Ignore" />
+            <!-- Centro: píldoras para meter piezas (P4d) y, debajo, el hueco donde se ve la planta.
+                 Las píldoras quedan fuera de «hueco», así EncuadreCamara no deja que tapen la planta. -->
+            <ui:VisualElement name="centro" class="centro" picking-mode="Ignore">
+                <ui:VisualElement name="piezas" class="piezas" picking-mode="Ignore">
+                    <ui:Button name="pieza:Blanca" class="pieza-boton" tooltip="Pon una pieza blanca al principio de la cinta (tecla 1)">
+                        <ui:VisualElement class="pieza-punto pieza-punto--blanca" picking-mode="Ignore" />
+                        <ui:Label text="Blanca" class="pieza-texto texto-medio" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="pieza:Roja" class="pieza-boton" tooltip="Pon una pieza roja al principio de la cinta (tecla 2)">
+                        <ui:VisualElement class="pieza-punto pieza-punto--roja" picking-mode="Ignore" />
+                        <ui:Label text="Roja" class="pieza-texto texto-medio" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="pieza:Azul" class="pieza-boton" tooltip="Pon una pieza azul al principio de la cinta (tecla 3)">
+                        <ui:VisualElement class="pieza-punto pieza-punto--azul" picking-mode="Ignore" />
+                        <ui:Label text="Azul" class="pieza-texto texto-medio" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="pieza:Quitar" class="pieza-boton pieza-boton--quitar" tooltip="Quita todas las piezas de la planta (tecla 0)">
+                        <ui:VisualElement name="quitarIcono" class="icono pieza-icono" picking-mode="Ignore" />
+                        <ui:Label text="Quitar" class="pieza-texto texto-medio" picking-mode="Ignore" />
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement name="hueco" class="hueco" picking-mode="Ignore" />
+            </ui:VisualElement>
 
             <ui:VisualElement name="columnaDerecha" class="columna columna-derecha" picking-mode="Ignore">
                 <ui:VisualElement name="tarjetaCiclo" class="panel tarjeta">

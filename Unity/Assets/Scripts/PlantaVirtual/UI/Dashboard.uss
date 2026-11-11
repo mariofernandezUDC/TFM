@@ -208,8 +208,92 @@
     width: 340px;
 }
 
+.centro {
+    flex-grow: 1;
+}
+
 .hueco {
     flex-grow: 1;
+}
+
+/* ── Piezas (P4d): píldoras flotantes encima de la planta ─────────────────────
+   Botón neutro, como «Parar». El color de la pieza solo va en el punto, como
+   identificador: nunca como fondo ni borde del botón (D009). */
+
+.piezas {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0 16px;
+}
+
+.pieza-boton {
+    flex-direction: row;
+    align-items: center;
+    height: 40px;
+    margin: 0 5px;
+    padding: 0 18px 0 14px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background-color: rgba(8, 9, 11, 0.85);
+    color: rgb(242, 244, 245);
+    transition-duration: 0.15s;
+}
+
+.pieza-boton:hover {
+    background-color: rgba(40, 43, 48, 0.92);
+    border-color: rgba(255, 255, 255, 0.32);
+}
+
+.pieza-boton:active {
+    background-color: rgba(60, 64, 70, 0.95);
+}
+
+.pieza-texto {
+    font-size: 15px;
+    -unity-text-align: middle-left;
+}
+
+/* Punto de 12 px con un aro claro: así la roja y la azul se distinguen sobre el fondo oscuro. */
+.pieza-punto {
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.55);
+    border-radius: 6px;
+}
+
+.pieza-punto--blanca {
+    background-color: rgb(242, 242, 242);
+}
+
+.pieza-punto--roja {
+    background-color: rgb(217, 26, 26);
+}
+
+.pieza-punto--azul {
+    background-color: rgb(26, 77, 230);
+}
+
+.pieza-boton--quitar {
+    margin-left: 15px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.pieza-boton--quitar:hover {
+    color: rgb(242, 244, 245);
+}
+
+/* La «X» de Quitar (IconoDibujado) y su caja, del mismo tamaño que el punto. */
+.pieza-boton--quitar .icono {
+    width: 12px;
+    height: 12px;
+}
+
+.pieza-icono {
+    margin-right: 8px;
 }
 
 /* ── Tarjetas plegables ───────────────────────────────────────────────────── */

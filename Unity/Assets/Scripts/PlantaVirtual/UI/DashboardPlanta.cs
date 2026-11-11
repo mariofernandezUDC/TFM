@@ -6,6 +6,9 @@
 // tarjetas plegables, vacías hasta P4b/P4c. En el hueco central se ve la planta 3D
 // (lo encuadra EncuadreCamara).
 //
+// Encima del hueco, píldoras para meter piezas con el ratón (P4d): Blanca, Roja,
+// Azul y Quitar. Llaman a lo mismo que las teclas 1, 2, 3 y 0 de SLD_Planta.
+//
 // Este script solo maneja la UI. Lanzar y parar lo hace LanzadorPrograma (P2–P3).
 
 using System;
@@ -23,6 +26,8 @@ namespace PlantaVirtual
     {
         [Tooltip("Lanzador de programas. Vacío = se busca en la escena")]
         public LanzadorPrograma lanzador;
+        [Tooltip("Planta donde ponen piezas las píldoras Blanca, Roja y Azul. Vacío = se busca en la escena")]
+        public SLD_Planta planta;
         [Tooltip("Programa elegido al abrir el dashboard, relativo a virtual/alumno/")]
         public string programaInicial = "ejercicios/nivel1_arrancar.py";
         [Tooltip("Líneas que guarda la caja de salida")]
@@ -76,6 +81,7 @@ namespace PlantaVirtual
         private void OnEnable()
         {
             if (lanzador == null) lanzador = FindFirstObjectByType<LanzadorPrograma>();
+            if (planta == null) planta = FindFirstObjectByType<SLD_Planta>();
             UsarPanelPropio();
             _raiz = GetComponent<UIDocument>().rootVisualElement;
 
@@ -95,6 +101,7 @@ namespace PlantaVirtual
 
             _raiz.Q("programaFlecha").Add(new IconoDibujado(IconoDibujado.Forma.Flecha));
             _raiz.Q("recargarIcono").Add(new IconoDibujado(IconoDibujado.Forma.Recargar));
+            _raiz.Q("quitarIcono").Add(new IconoDibujado(IconoDibujado.Forma.Quitar));
 
             _selector.clicked += AlternarLista;
             _recargar.clicked += LeerProgramas;
@@ -102,6 +109,7 @@ namespace PlantaVirtual
             _parar.clicked += Parar;
             _botonDetalle.clicked += AlternarDetalle;
             _ampliarSalida.clicked += AlternarAmpliarSalida;
+            PrepararPiezas();
             foreach (var b in _raiz.Query<Button>(className: "boton-plegar").ToList())
                 if (b != _ampliarSalida) b.clicked += () => Plegar(b);
             // Un clic fuera de la lista la cierra.
@@ -279,6 +287,43 @@ namespace PlantaVirtual
             ActualizarEstado(forzar: true);
         }
 
+        // ── Piezas (P4d): lo mismo que las teclas 1, 2, 3 y 0 ─────────────────
+
+        private void PrepararPiezas()
+        {
+            foreach (ColorPieza color in Enum.GetValues(typeof(ColorPieza)))
+            {
+                ColorPieza c = color;
+                PrepararPildora("pieza:" + c, () => PonerPieza(c));
+            }
+            PrepararPildora("pieza:Quitar", QuitarPiezas);
+        }
+
+        private void PrepararPildora(string nombre, Action accion)
+        {
+            var boton = _raiz.Q<Button>(nombre);
+            if (boton == null) return;
+            // Sin foco: así, después de pinchar, Espacio o Intro no vuelven a meter otra pieza.
+            boton.focusable = false;
+            boton.clicked += accion;
+        }
+
+        /// <summary>Pone una pieza al principio de la cinta (lo mismo que las teclas 1, 2 y 3).</summary>
+        public void PonerPieza(ColorPieza color)
+        {
+            CerrarLista();
+            if (planta == null) { AnadirAviso("No hay SLD_Planta en la escena."); return; }
+            if (!planta.ColocarPieza(color))
+                AnadirAviso("Ya hay una pieza al principio de la cinta. Espera a que avance o pulsa Quitar.");
+        }
+
+        /// <summary>Quita todas las piezas de la planta (lo mismo que la tecla 0).</summary>
+        public void QuitarPiezas()
+        {
+            CerrarLista();
+            if (planta != null) planta.QuitarTodas();
+        }
+
         // ── Estado: Parado / En marcha + tiempo / Error ──────────────────────
 
         private void ActualizarEstado(bool forzar)
@@ -436,7 +481,7 @@ namespace PlantaVirtual
     /// </summary>
     public class IconoDibujado : VisualElement
     {
-        public enum Forma { Flecha, Recargar }
+        public enum Forma { Flecha, Recargar, Quitar }
         private readonly Forma _forma;
 
         public IconoDibujado(Forma forma)
@@ -465,6 +510,15 @@ namespace PlantaVirtual
                 p.MoveTo(new Vector2(w * 0.2f, h * 0.38f));
                 p.LineTo(new Vector2(w * 0.5f, h * 0.66f));
                 p.LineTo(new Vector2(w * 0.8f, h * 0.38f));
+                p.Stroke();
+            }
+            else if (_forma == Forma.Quitar)
+            {
+                p.BeginPath();
+                p.MoveTo(new Vector2(w * 0.15f, h * 0.15f));
+                p.LineTo(new Vector2(w * 0.85f, h * 0.85f));
+                p.MoveTo(new Vector2(w * 0.85f, h * 0.15f));
+                p.LineTo(new Vector2(w * 0.15f, h * 0.85f));
                 p.Stroke();
             }
             else
