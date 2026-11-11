@@ -346,6 +346,192 @@
     display: flex;
 }
 
+/* ── Resultado y ciclo por pieza (P4c) ─────────────────────────────────────────
+   Bien = lima, mal = ámbar, ciclo = cian. Nunca rojo ni azul (colores de las piezas). */
+
+.resultado-cabeza {
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.resultado-porcentaje {
+    font-size: 36px;
+    color: rgb(242, 244, 245);
+    margin-right: 10px;
+}
+
+.resultado-sub {
+    flex-shrink: 1;
+    margin-bottom: 7px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: normal;
+}
+
+.resultado-barra {
+    height: 10px;
+    margin: 10px 0 12px 0;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.10);
+    overflow: hidden;
+}
+
+.resultado-barra-bien {
+    height: 100%;
+    width: 0;
+    border-radius: 5px;
+    background-color: rgb(212, 242, 60);
+    transition-duration: 0.3s;
+}
+
+.resultado-cuentas {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.cuenta {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.cuenta-valor {
+    font-size: 22px;
+    color: rgb(242, 244, 245);
+}
+
+.cuenta-nombre {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.cuenta--bien .cuenta-valor {
+    color: rgb(212, 242, 60);
+}
+
+.cuenta--mal .cuenta-valor {
+    color: rgb(245, 183, 49);
+}
+
+.ciclo-barras {
+    margin-top: 10px;
+}
+
+.ciclo-fila {
+    flex-direction: row;
+    align-items: center;
+    height: 24px;
+}
+
+.ciclo-nombre {
+    width: 56px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.ciclo-pista {
+    flex-grow: 1;
+    height: 10px;
+    margin: 0 10px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.ciclo-barra {
+    height: 100%;
+    border-radius: 5px;
+    background-color: rgb(62, 230, 224);
+}
+
+.ciclo-barra--mal {
+    background-color: rgb(245, 183, 49);
+}
+
+.ciclo-tiempo {
+    width: 44px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.75);
+    -unity-text-align: middle-right;
+}
+
+/* ── Retos (P4c): Fácil = lima, Medio = cian, Avería = ámbar ───────────────── */
+
+.reto {
+    margin: 0 0 8px 0;
+    padding: 9px 12px 10px 12px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.12);
+    border-left-width: 4px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.05);
+    -unity-text-align: upper-left;
+    transition-duration: 0.12s;
+}
+
+.reto:hover {
+    background-color: rgba(255, 255, 255, 0.11);
+}
+
+.reto-cabeza {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.reto-titulo {
+    font-size: 15px;
+    color: rgb(242, 244, 245);
+}
+
+.reto-chip {
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 10px;
+    font-size: 14px;
+    -unity-text-align: middle-center;
+}
+
+.reto-detalle {
+    margin-top: 2px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: normal;
+}
+
+.reto--facil {
+    border-left-color: rgb(212, 242, 60);
+}
+
+.reto--facil .reto-chip {
+    color: rgb(212, 242, 60);
+    background-color: rgba(212, 242, 60, 0.14);
+}
+
+.reto--medio {
+    border-left-color: rgb(62, 230, 224);
+}
+
+.reto--medio .reto-chip {
+    color: rgb(62, 230, 224);
+    background-color: rgba(62, 230, 224, 0.14);
+}
+
+.reto--averia {
+    border-left-color: rgb(245, 183, 49);
+}
+
+.reto--averia .reto-chip {
+    color: rgb(245, 183, 49);
+    background-color: rgba(245, 183, 49, 0.14);
+}
+
+/* Sin tocar el borde izquierdo, que lleva el color de la dificultad. */
+.reto--elegido {
+    border-top-color: rgba(255, 255, 255, 0.45);
+    border-right-color: rgba(255, 255, 255, 0.45);
+    border-bottom-color: rgba(255, 255, 255, 0.45);
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
 /* ── Sensores y salidas (P4b) ─────────────────────────────────────────────────
    Encendido = cian. Nunca blanco, rojo ni azul (colores de las piezas). */
 

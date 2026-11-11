@@ -12,6 +12,8 @@
 // P4a Dashboard_CargarYParar_ConLosBotones (usa los botones del dashboard, no las teclas)
 // P4b Dashboard_EtiquetasSeEncienden_EnOrdenI1I3I7 (etiquetas 3D y panel de E/S)
 //     Dashboard_Escala_TextoNoBajaDe12px_A1366x768
+// P4c Dashboard_Resultado_Nivel4_TresBienCeroMal (cuenta por pieza, no por I6–I8)
+//     Dashboard_Reto_AlPincharlo_EligeSuPrograma
 //
 // Necesitan Mosquitto en marcha en el puerto de VirtualIO_TXT5 (1883).
 //
@@ -433,6 +435,69 @@ namespace PlantaVirtual.Tests
             float e1920 = (float)calcular.Invoke(null, new object[] { 1920f, 1080f, referencia, 12f, 14f });
             Assert.GreaterOrEqual(14f * e1366, 12f - 1e-3f, $"A 1366×768 la letra de 14 px queda en {14f * e1366:F1} px");
             Assert.AreEqual(1f, e1920, 1e-4f, "A 1920×1080 la escala tiene que ser 1");
+        }
+
+        // ── P4c ──────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// nivel4 con blanca, roja y azul: 3 bien, 0 mal, 0 en cinta y un ciclo por pieza
+        /// parecido al del test de P2 (2,7 / 4,3 / 5,3 s). Cada pieza se cuenta una sola vez,
+        /// aunque su barrera de rampa siga tapada los frames siguientes.
+        /// </summary>
+        [UnityTest]
+        [Timeout(180000)]
+        public IEnumerator Dashboard_Resultado_Nivel4_TresBienCeroMal()
+        {
+            yield return CargarEscena();
+            var resultado = Object.FindFirstObjectByType(Tipo("ResultadoDashboard")) as Component;
+            Assert.IsNotNull(resultado, "No hay ResultadoDashboard en la escena");
+            Process proceso = Lanzar(Nivel4);
+            yield return EsperarLatido(proceso);
+
+            foreach (string color in new[] { "Blanca", "Roja", "Azul" })
+            {
+                object pieza = ColocarPieza(color);
+                float t0 = Time.realtimeSinceStartup;
+                while (Leer(pieza, "estado").ToString() != "EnRampa")
+                {
+                    SinErroresPropios();
+                    Assert.Less(Time.realtimeSinceStartup - t0, EsperaPorPieza_s, $"La pieza {color} no ha llegado a su rampa");
+                    yield return null;
+                }
+            }
+            // Unos frames más con las tres barreras de rampa tapadas: no tiene que contar nada nuevo.
+            for (int i = 0; i < 30; i++) yield return null;
+
+            Assert.AreEqual(3, (int)Leer(resultado, "bien"), "Piezas bien");
+            Assert.AreEqual(0, (int)Leer(resultado, "mal"), "Piezas mal");
+            Assert.AreEqual(0, (int)Leer(resultado, "enCinta"), "Piezas en cinta");
+            var llegadas = ((IEnumerable)Leer(resultado, "Llegadas")).Cast<object>().ToList();
+            Assert.AreEqual(3, llegadas.Count, "Cada pieza se cuenta una sola vez");
+            var esperados = new[] { 2.7f, 4.3f, 5.3f };
+            for (int i = 0; i < 3; i++)
+            {
+                float ciclo = (float)Leer(llegadas[i], "ciclo_s");
+                Debug.Log($"[Test] {Leer(llegadas[i], "nombre")}: ciclo {ciclo:F2} s");
+                Assert.AreEqual(esperados[i], ciclo, 0.5f, $"Ciclo de {Leer(llegadas[i], "nombre")}");
+            }
+            SinErroresPropios();
+        }
+
+        /// <summary>Pinchar el reto del nivel 2 lo elige en el desplegable.</summary>
+        [UnityTest]
+        public IEnumerator Dashboard_Reto_AlPincharlo_EligeSuPrograma()
+        {
+            yield return CargarEscena();
+            var dashboard = Object.FindFirstObjectByType(Tipo("DashboardPlanta")) as Component;
+            VisualElement raiz = dashboard.GetComponent<UIDocument>().rootVisualElement;
+            yield return null; // los retos se construyen en Start
+            const string ruta = "ejercicios/nivel2_parar.py";
+            Pulsar(raiz.Q<Button>("reto:" + ruta));
+            yield return null;
+            Assert.AreEqual(ruta, Leer(dashboard, "programaElegido"));
+            Assert.AreEqual(ruta, raiz.Q<Label>("programaTexto").text);
+            Assert.IsTrue(raiz.Q("reto:" + ruta).ClassListContains("reto--elegido"), "La tarjeta elegida no se marca");
+            Assert.IsNull(raiz.Q("reto:ejercicios/soluciones/nivel4.py"), "Un reto no puede apuntar a una solución");
         }
 
         // ── Utilidades ───────────────────────────────────────────────────────

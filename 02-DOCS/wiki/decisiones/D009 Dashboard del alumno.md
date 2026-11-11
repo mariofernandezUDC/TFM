@@ -45,6 +45,9 @@ Hay que decidir cinco cosas: qué ocupa el centro de la pantalla, con qué se ha
 - **Salida en 4 líneas:** por defecto solo se ve lo que imprime el programa del alumno y los errores. El log de la librería (fecha, hilo, `#vio.py:NNN`) queda tras «Ver detalle».
 - **Escalado:** la UI se escala desde 1920×1080, pero la escala nunca baja de 12/14 ≈ 0,86. La letra más pequeña del USS es de 14 px, así que en pantalla ningún texto baja de 12 px (P4b). A 1366×768 los paneles ocupan algo más y la planta se ve algo más pequeña.
 - **Sensores visibles (P4b):** etiquetas `I1`, `I2`, `I3`, `I6`, `I7`, `I8` y `C1` sobre la planta y lista de E/S en el panel. Encendido = cian. Las barreras de rampa siguen encendidas mientras haya piezas en la rampa, igual que en la maqueta.
+- **Cómo se cuenta el resultado (P4c):** cada pieza cuenta **una sola vez**, en el momento en que pasa a `EnRampa` (el evento de la pieza al llegar a una rampa). Bien = la rampa en la que cae es la de su color real. **No se cuenta por el estado de I6–I8**: esas barreras siguen tapadas mientras haya piezas en la rampa. El ciclo es el tiempo de planta desde que la pieza aparece en la cinta hasta que llega a la rampa. Al pulsar Cargar las cuentas vuelven a cero.
+- **Retos:** niveles 1 y 2 = Fácil (lima), niveles 3 y 4 = Medio (cian). Avería (ámbar) queda preparada para F4; todavía no hay ejercicios de avería. Pinchar un reto elige su programa en el desplegable.
+- **«Ciclo por pieza» enseña las 4 últimas piezas.** Con más barras, a 1366×768 la columna derecha llega a la salida.
 - **El panel de averías no va en el dashboard del alumno.** Es F4 y lo activa el profesor.
 
 Relacionado: [[D008 Lanzador desde Unity]], [[F5 - Modo programador]], [[Encargo - Lanzador desde Unity]], [[2026-11-11]].

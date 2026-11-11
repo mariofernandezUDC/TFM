@@ -65,6 +65,9 @@ namespace PlantaVirtual
         private float _inicioMarcha;
         private string _textoEstado = "";
 
+        /// <summary>Se lanza al pulsar Cargar, con el programa elegido (ResultadoDashboard pone a cero sus cuentas).</summary>
+        public event Action<string> ProgramaCargado;
+
         /// <summary>Programas encontrados en virtual/alumno (rutas relativas con /).</summary>
         public IReadOnlyList<string> Programas => _programas;
 
@@ -253,6 +256,7 @@ namespace PlantaVirtual
             if (string.IsNullOrEmpty(programaElegido)) { AnadirAviso("Elige un programa antes de cargar."); return; }
             _enBloqueError = false;
             AnadirAviso("── Cargando " + programaElegido + " ──");
+            ProgramaCargado?.Invoke(programaElegido);
             lanzador.programa = programaElegido;
             lanzador.Lanzar();
             ActualizarEstado(forzar: true);

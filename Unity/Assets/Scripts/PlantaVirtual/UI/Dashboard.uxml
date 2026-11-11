@@ -32,7 +32,7 @@
                         <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
                     </ui:VisualElement>
                     <ui:VisualElement class="tarjeta-cuerpo">
-                        <ui:Label text="Piezas bien y mal clasificadas (P4c)" class="marcador" />
+                        <ui:VisualElement name="resultado" class="resultado" />
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="tarjetaRetos" class="panel tarjeta">
@@ -41,7 +41,7 @@
                         <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
                     </ui:VisualElement>
                     <ui:VisualElement class="tarjeta-cuerpo">
-                        <ui:Label text="Ejercicios por niveles (P4c)" class="marcador" />
+                        <ui:VisualElement name="retos" class="retos" />
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -55,7 +55,7 @@
                         <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
                     </ui:VisualElement>
                     <ui:VisualElement class="tarjeta-cuerpo">
-                        <ui:Label text="Tiempo de entrada a rampa (P4c)" class="marcador" />
+                        <ui:VisualElement name="ciclo" class="ciclo" />
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="tarjetaSensores" class="panel tarjeta">

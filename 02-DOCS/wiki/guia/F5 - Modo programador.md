@@ -56,7 +56,7 @@ tags: [guía, F5]
 | P3 | Parar, Cargar para el anterior, código de salida | ✅ `27defdc` |
 | P4a | Esqueleto del dashboard y ajustes | ✅ `4ced235`, `651ce47` |
 | P4b | Sensores visibles en el panel y sobre la planta; texto ≥ 12 px a 1366×768 | ✅ |
-| P4c | Resultado, ciclo por pieza y retos | ⏳ |
+| P4c | Resultado, ciclo por pieza y retos (cuenta por pieza, no por I6–I8) | ✅ |
 | P5 | Errores visibles en rojo | ⏳ |
 | P6 | Broker portable en el puerto 18830 (pedir confirmación a Mario) | ⏳ |
 
