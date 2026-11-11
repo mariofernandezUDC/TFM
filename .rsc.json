@@ -25,6 +25,7 @@
     "plan",
     "review",
     "sdd-init",
+    "security-audit",
     "ship",
     "simplify-code",
     "source-grounded-development",
@@ -39,7 +40,7 @@
   ],
   "agents": [],
   "ownSkills": [],
-  "catalogVersion": "4.0.5",
+  "catalogVersion": "4.1.2",
   "tier": null,
   "optOuts": [
     "knowledge-sync",

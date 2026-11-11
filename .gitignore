@@ -63,3 +63,6 @@ Unity/Assets/_Recovery/
 Unity/Assets/_Recovery.meta
 
 .agents/skills/
+
+# rsc local state (hooks, seals, logs) and managed skill links — machine-local
+.claude/skills/security-audit
