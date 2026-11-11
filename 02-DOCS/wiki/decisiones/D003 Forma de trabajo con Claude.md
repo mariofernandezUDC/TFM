@@ -17,7 +17,7 @@ tags: [decisión, claude]
 - En **cada hito o resultado importante**, el asistente hace una captura con la Unity CLI (`unity command capture ...`).
 - Se guarda en `02-DOCS/attachments/<fase>/` (por ejemplo, `attachments/F0/`) con el nombre `AAAA-MM-DD_descripcion.png`. Los datos que la acompañan (CSV, registros) van en la misma carpeta, con el mismo prefijo de fecha.
 - Se enlaza desde el diario del día **y** desde la nota que corresponda, con `![[...]]` y un pie de foto de una línea: qué se ve y por qué importa.
-- **Nunca** en carpetas temporales: lo que solo está en una carpeta temporal se pierde. PNG de tamaño razonable, **menos de 1 MB** (reducir la resolución si hace falta).
+- **Nunca** en carpetas temporales: lo que solo está en una carpeta temporal se pierde. PNG de tamaño razonable, **menos de 1 MB**. Si un PNG pasa de 1 MB (por ejemplo, a 1920×1080), se guarda como **JPG con calidad 85**, que mantiene la resolución y el texto legible (2026-11-11).
 
 ## Por qué
 Es el TFM de Mario: tiene que entender y poder defender cada línea ante el tribunal. Además, el diario y las decisiones alimentan directamente la memoria ([[Estructura de la memoria]]). Las capturas hechas en el momento son la prueba gráfica de cada resultado: rehacerlas meses después exige volver a montar el mismo estado de la planta.

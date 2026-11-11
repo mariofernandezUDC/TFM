@@ -72,7 +72,7 @@ git push                         # 4. súbelo a tu GitHub
 Unity reescribe archivos aunque no los hayas cambiado. Ese «ruido» no se sube nunca.
 
 **Cómo reconocerlo** (`git status` enseña archivos que no has tocado, a menudo de Adrián):
-- **Layout Groups:** en `git diff <archivo>` solo cambian números de la UI (`m_AnchoredPosition`, `m_SizeDelta`, `m_AnchorMin`…), a veces en el último decimal. Unity los recalcula al abrir una escena o un prefab con Layout Groups.
+- **Layout Groups:** en `git diff <archivo>` solo cambian números de la UI (`m_AnchoredPosition`, `m_SizeDelta`, `m_AnchorMin`, el `m_Value` de una barra de desplazamiento…), a veces en el último decimal. Unity los recalcula al abrir una escena o un prefab con Layout Groups.
 - **Saltos de línea:** sale el aviso `LF will be replaced by CRLF`, y el archivo aparece cambiado entero sin que se vea nada distinto. Compruébalo con:
   ```bash
   git diff --ignore-cr-at-eol --stat <archivo>

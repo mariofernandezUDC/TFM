@@ -1,5 +1,9 @@
 # Log
 
+## [2026-11-11] guía | Capturas de más de 1 MB a JPG
+- 6 PNG de `attachments/F5/` (P4a y ajustes a 1920×1080) pasados a JPG con calidad 85; enlaces del diario 2026-11-11 actualizados.
+- D003: los PNG de más de 1 MB se guardan como JPG con calidad 85. Rutina Git: `m_Value` de las barras de desplazamiento en «Ruido de Unity».
+
 ## [2026-11-11] decision | Sesión 6: lanzador desde Unity (P1–P4a), D008 y D009
 - Código fuera de la wiki: `LanzadorPrograma.cs`, `UI/` del dashboard y tests de PlayMode (`f14c4e8` … `651ce47`).
 - Nuevas: [D009 Dashboard del alumno](decisiones/D009%20Dashboard%20del%20alumno.md), diario [2026-11-11](diario/2026-11-11.md).
