@@ -6,7 +6,7 @@ tags: [guía, F5]
 
 > **Meta:** un alumno escribe su propio programa de control de la SLD, con la misma API que en el TXT 4.0 real ([[D001 Sustituir el hardware, no la lógica]]), y lo ve funcionar en la planta virtual.
 > Librería: [[Librería fischertechnik virtual]] · Uso paso a paso: `virtual/README.md` · Plan: [[Plan de trabajo]]
-> Cargar el programa desde Unity: [[D008 Lanzador desde Unity]]
+> Cargar el programa desde Unity: [[D008 Lanzador desde Unity]] · Dashboard: [[D009 Dashboard del alumno]]
 
 ---
 
@@ -43,6 +43,28 @@ tags: [guía, F5]
   4. Anotar los nombres de `lib/controller.py`, el número de `create_graphical_controller(...)` y si la cinta arranca en Unity.
 - **Después:** si falla, decidir el arreglo en la librería virtual («un único TXT → `vio/txt5`»). No está implementado.
 - **❓ Comprobación:** ¿por qué un programa hecho en un proyecto solo para la SLD puede no mover la cinta virtual, aunque use los mismos bloques?
+
+## F5.4 · Cargar desde Unity · 🚧 desde 2026-11-11
+- **Qué es:** el alumno elige su programa en un desplegable dentro de Unity, pulsa **Cargar** y lo ve funcionar; pulsa **Parar** y la planta pasa a estado seguro. Sin PowerShell. Es el prototipo que pidió el tutor.
+- **Decisiones:** [[D008 Lanzador desde Unity]] (Unity lanza `run_virtual.py --programa` como proceso aparte; Parar = matar el proceso) y [[D009 Dashboard del alumno]] (planta en el centro, UI Toolkit, soluciones ocultas al alumno).
+- **Pasos:** [[Encargo - Lanzador desde Unity]].
+
+| Paso | Qué | Estado |
+|---|---|---|
+| P1 | Nota D008 | ✅ `f14c4e8` |
+| P2 | `LanzadorPrograma.cs` y test automático | ✅ `752617f` … `027b87a` |
+| P3 | Parar, Cargar para el anterior, código de salida | ✅ `27defdc` |
+| P4a | Esqueleto del dashboard y ajustes | ✅ `4ced235`, `651ce47` |
+| P4b | Sensores visibles en el panel y sobre la planta | ⏳ |
+| P4c | Resultado, ciclo por pieza y retos | ⏳ |
+| P5 | Errores visibles en rojo | ⏳ |
+| P6 | Broker portable en el puerto 18830 (pedir confirmación a Mario) | ⏳ |
+
+- **Dónde:** `Unity/Assets/Scripts/PlantaVirtual/LanzadorPrograma.cs` y `UI/` (`DashboardPlanta.cs`, `EncuadreCamara.cs`, `Dashboard.uxml`, `Dashboard.uss`), en la escena `PlantaVirtual.unity`.
+- **Cómo comprobarlo:** con Mosquitto en marcha, los tests de PlayMode de `LanzadorProgramaTest` (5 en verde el 2026-11-11). A mano: Play → elegir `ejemplos/clasificar_por_color.py` → Cargar → teclas 1, 2, 3 → las piezas acaban en su rampa → Parar.
+- El comando de PowerShell (F5.1) sigue funcionando como plan B.
+- Capturas: [[2026-11-11]].
+- **❓ Comprobación:** si el programa del alumno entra en un `while True:` sin salida, ¿qué pasa al pulsar Parar y por qué la planta queda segura?
 
 ## Pendiente
 - [ ] Comprobar en la maqueta que el mismo archivo funciona en el TXT real (supuesto de `lib/controller.py`).

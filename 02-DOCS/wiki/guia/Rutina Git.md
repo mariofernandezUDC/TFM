@@ -68,6 +68,29 @@ git push                         # 4. súbelo a tu GitHub
 
 💡 Evita `git add .` (lo añade todo) hasta que tengas soltura: puede colar archivos que no son tuyos.
 
+## Ruido de Unity
+Unity reescribe archivos aunque no los hayas cambiado. Ese «ruido» no se sube nunca.
+
+**Cómo reconocerlo** (`git status` enseña archivos que no has tocado, a menudo de Adrián):
+- **Layout Groups:** en `git diff <archivo>` solo cambian números de la UI (`m_AnchoredPosition`, `m_SizeDelta`, `m_AnchorMin`…), a veces en el último decimal. Unity los recalcula al abrir una escena o un prefab con Layout Groups.
+- **Saltos de línea:** sale el aviso `LF will be replaced by CRLF`, y el archivo aparece cambiado entero sin que se vea nada distinto. Compruébalo con:
+  ```bash
+  git diff --ignore-cr-at-eol --stat <archivo>
+  ```
+  Si no sale nada, el único cambio son los saltos de línea.
+- **`Unity/Unity.slnx` y los `.csproj`:** los regenera Unity al abrir el proyecto.
+
+**Cómo descartarlo:**
+1. **Cierra Unity.** Si sigue abierto, vuelve a escribir el archivo.
+2. Para cada archivo con ruido:
+   ```bash
+   git restore <archivo>
+   ```
+   No sale nada si va bien.
+3. `git status`: el archivo ya no aparece.
+
+⚠️ `git restore` **borra los cambios sin guardar** de ese archivo, y no se pueden recuperar. Úsalo solo en archivos que no has cambiado a propósito. Si dudas, pega el `git diff` a Claude antes.
+
 ## D. Traer los avances de Adrián (una vez por semana)
 ```bash
 git status                          # tiene que estar limpio

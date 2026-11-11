@@ -1,5 +1,11 @@
 # Log
 
+## [2026-11-11] decision | Sesión 6: lanzador desde Unity (P1–P4a), D008 y D009
+- Código fuera de la wiki: `LanzadorPrograma.cs`, `UI/` del dashboard y tests de PlayMode (`f14c4e8` … `651ce47`).
+- Nuevas: [D009 Dashboard del alumno](decisiones/D009%20Dashboard%20del%20alumno.md), diario [2026-11-11](diario/2026-11-11.md).
+- Actualizadas: D008 (soluciones ocultas), 00 Contexto para Claude (Estado actual), Plan de trabajo (F0 y F5), F5 - Modo programador (F5.4), Rutina Git (Ruido de Unity), Guía - Índice, index.
+- Capturas en `02-DOCS/attachments/F5/` (las de 1920×1080 pasan de 1 MB: pendiente).
+
 ## [2026-11-06] guía | Cierre de sesión: F0.5 ✅, F0.6 pasos 1–3, nueva prioridad "cargar código"
 - Probado a mano: hito 1 (con `maqueta_manual.py`, y el experimento sin `I6` confirma el comportamiento raro nº 1) y F0.5 (desde el Inspector).
 - F0.6 pasos 1 a 3 (`3b95fb7`, `34ce739`, `eb10ee5`; los pasos 2 y 3 los hizo Codex): `SLD.py` clasifica las tres piezas solas. Sensor rojo +15 mm en X solo en `PlantaVirtual.unity` (`e765709`). GIL: p95 de 105 a 5 ms con `sys.setswitchinterval(0.001)` (`cf1a692`), y deja a la vista el sesgo de la roja (−8,4 mm).

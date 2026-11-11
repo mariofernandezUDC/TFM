@@ -13,7 +13,7 @@ Esta bóveda (`02-DOCS/wiki`) es el **contexto global** del TFM. Cada nota es un
 - 🏗️ [[Arquitectura de la planta virtual]]: cómo se va a construir.
 - 🗺️ [[Plan de trabajo]]: fases y estado.
 - 🧭 [[Guía - Índice]]: los pasos concretos para ir desarrollando.
-- 📓 Diario: la última sesión está en [[2026-11-05]].
+- 📓 Diario: la última sesión está en [[2026-11-11]].
 
 ## Mapa de la bóveda
 | Carpeta | Qué contiene |
