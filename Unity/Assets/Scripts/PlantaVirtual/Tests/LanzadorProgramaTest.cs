@@ -15,6 +15,7 @@
 //     Dashboard_Escala_TextoNoBajaDe12px_A1366x768
 // P4c Dashboard_Resultado_Nivel4_TresBienCeroMal (cuenta por pieza, no por I6–I8)
 //     Dashboard_Reto_AlPincharlo_EligeSuPrograma
+// F5.5 P2 Dashboard_EmpezarReto_CopiaSinPisarYLaElige (copia en Mis programas, grupos del desplegable)
 // P4d Dashboard_Piezas_ConLasPildoras (Blanca, Roja, Azul y Quitar = teclas 1, 2, 3 y 0)
 // P5  Dashboard_ErrorDelAlumno_EnRojoConArchivoYLinea (falla_a_mitad.py y falla_en_hilo.py)
 //     Dashboard_ProgramaQueNoExiste_AvisaEnRojo
@@ -29,6 +30,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -535,12 +537,78 @@ namespace PlantaVirtual.Tests
             VisualElement raiz = dashboard.GetComponent<UIDocument>().rootVisualElement;
             yield return null; // los retos se construyen en Start
             const string ruta = "ejercicios/nivel2_parar.py";
-            Pulsar(raiz.Q<Button>("reto:" + ruta));
+            Pulsar(raiz.Q<Button>("elegir:" + ruta)); // la tarjeta, fuera de «Empezar reto» (F5.5 P2)
             yield return null;
             Assert.AreEqual(ruta, Leer(dashboard, "programaElegido"));
             Assert.AreEqual(ruta, raiz.Q<Label>("programaTexto").text);
             Assert.IsTrue(raiz.Q("reto:" + ruta).ClassListContains("reto--elegido"), "La tarjeta elegida no se marca");
             Assert.IsNull(raiz.Q("reto:ejercicios/soluciones/nivel4.py"), "Un reto no puede apuntar a una solución");
+        }
+
+        // ── F5.5 P2 ──────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// «Empezar reto» copia el ejercicio a Mis programas, no toca el original y deja
+        /// elegida la copia. Repetirlo no pisa la copia. El desplegable separa «Ejemplos y
+        /// retos» (con candado) de «Mis programas».
+        /// Usa una carpeta propia del test, para no tocar nunca la de verdad del alumno.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator Dashboard_EmpezarReto_CopiaSinPisarYLaElige()
+        {
+            yield return CargarEscena();
+            var dashboard = Object.FindFirstObjectByType(Tipo("DashboardPlanta")) as Component;
+            VisualElement raiz = dashboard.GetComponent<UIDocument>().rootVisualElement;
+            yield return null; // los retos se construyen en Start
+
+            const string carpeta = "Mis programas (test)";
+            const string original = "ejercicios/nivel1_arrancar.py";
+            const string copia = carpeta + "/nivel1_arrancar.py";
+            string alumno = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "virtual", "alumno"));
+            string dirTest = Path.Combine(alumno, carpeta);
+            string rutaOriginal = Path.Combine(alumno, original), rutaCopia = Path.Combine(alumno, copia);
+            if (Directory.Exists(dirTest)) Directory.Delete(dirTest, true);
+            string textoOriginal = File.ReadAllText(rutaOriginal);
+            Escribir(dashboard, "carpetaMisProgramas", carpeta);
+            Llamar(dashboard, "LeerProgramas");
+            try
+            {
+                // Mis programas vacío: el grupo existe y lo dice.
+                Assert.IsNotNull(raiz.Q("grupo:Mis programas"), "El desplegable no tiene el grupo «Mis programas»");
+
+                Pulsar(raiz.Q<Button>("empezar:" + original));
+                yield return null;
+                Assert.IsTrue(File.Exists(rutaCopia), "Empezar reto no crea la copia en " + carpeta);
+                Assert.AreEqual(textoOriginal, File.ReadAllText(rutaCopia), "La copia no es igual al original");
+                Assert.AreEqual(textoOriginal, File.ReadAllText(rutaOriginal), "Empezar reto ha tocado el original");
+                Assert.AreEqual(copia, Leer(dashboard, "programaElegido"), "La copia no queda elegida");
+                Assert.AreEqual(copia, raiz.Q<Label>("programaTexto").text);
+                Assert.IsTrue(raiz.Q("reto:" + original).ClassListContains("reto--elegido"),
+                    "Con la copia elegida, su reto no se marca");
+
+                // Dos grupos: el original con candado y la copia en «Mis programas», sin candado.
+                VisualElement retos = raiz.Q("grupo:Ejemplos y retos"), mios = raiz.Q("grupo:Mis programas");
+                Assert.IsNotNull(retos, "El desplegable no tiene el grupo «Ejemplos y retos»");
+                Assert.IsNotNull(retos.Q<Button>("programa:" + original), "El reto no está en «Ejemplos y retos»");
+                Assert.IsNotNull(retos.Q<Button>("programa:" + Ejemplo), "El ejemplo no está en «Ejemplos y retos»");
+                Assert.IsNotNull(retos.Q<Button>("programa:" + original).Q(className: "lista-candado"), "El reto no lleva candado");
+                Assert.IsNotNull(mios.Q<Button>("programa:" + copia), "La copia no está en «Mis programas»");
+                Assert.IsNull(mios.Q<Button>("programa:" + copia).Q(className: "lista-candado"), "La copia no puede llevar candado");
+
+                // Repetir no pisa la copia: la elige y avisa.
+                File.WriteAllText(rutaCopia, "# mi trabajo\n");
+                Llamar(dashboard, "Elegir", Ejemplo);
+                Pulsar(raiz.Q<Button>("empezar:" + original));
+                yield return null;
+                Assert.AreEqual("# mi trabajo\n", File.ReadAllText(rutaCopia), "Empezar reto ha pisado la copia del alumno");
+                Assert.AreEqual(copia, Leer(dashboard, "programaElegido"));
+                StringAssert.Contains("Ya tienes tu copia", (string)Leer(dashboard, "TextoSalidaVisible"));
+            }
+            finally
+            {
+                if (Directory.Exists(dirTest)) Directory.Delete(dirTest, true);
+            }
+            SinErroresPropios();
         }
 
         // ── P4d ──────────────────────────────────────────────────────────────

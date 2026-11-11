@@ -9,6 +9,10 @@
 // Encima del hueco, píldoras para meter piezas con el ratón (P4d): Blanca, Roja,
 // Azul y Quitar. Llaman a lo mismo que las teclas 1, 2, 3 y 0 de SLD_Planta.
 //
+// F5.5 P2 (D010): el desplegable separa «Ejemplos y retos» (solo lectura, con
+// candado) de «Mis programas». «Empezar reto» copia el ejercicio a Mis programas/
+// sin pisar nunca una copia que ya exista, y la deja elegida.
+//
 // Este script solo maneja la UI. Lanzar y parar lo hace LanzadorPrograma (P2–P3).
 
 using System;
@@ -30,6 +34,8 @@ namespace PlantaVirtual
         public SLD_Planta planta;
         [Tooltip("Programa elegido al abrir el dashboard, relativo a virtual/alumno/")]
         public string programaInicial = "ejercicios/nivel1_arrancar.py";
+        [Tooltip("Carpeta de las copias del alumno, relativa a virtual/alumno/ (D010). Los tests usan otra")]
+        public string carpetaMisProgramas = "Mis programas";
         [Tooltip("Líneas que guarda la caja de salida")]
         public int maxLineasSalida = 300;
 
@@ -75,6 +81,16 @@ namespace PlantaVirtual
 
         /// <summary>Programas encontrados en virtual/alumno (rutas relativas con /).</summary>
         public IReadOnlyList<string> Programas => _programas;
+
+        // Lo que el alumno nunca edita: «Empezar reto» le da una copia (D010).
+        private static readonly string[] CarpetasSoloLectura = { "ejemplos/", "ejercicios/" };
+
+        /// <summary>True si el programa es un ejemplo o un reto: solo lectura (D010).</summary>
+        public static bool EsSoloLectura(string rel) =>
+            !string.IsNullOrEmpty(rel) && CarpetasSoloLectura.Any(c => rel.StartsWith(c, StringComparison.OrdinalIgnoreCase));
+
+        /// <summary>Dónde va la copia del alumno de un ejercicio: Mis programas/&lt;nombre&gt;.</summary>
+        public string RutaCopia(string original) => carpetaMisProgramas + "/" + Path.GetFileName(original);
 
         private static string RaizRepo => Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
 
@@ -217,14 +233,79 @@ namespace PlantaVirtual
             programasEncontrados = _programas.Count;
 
             _listaScroll.Clear();
-            foreach (string p in _programas)
-            {
-                var item = new Button(() => { Elegir(p); CerrarLista(); }) { text = p, name = "programa:" + p };
-                item.AddToClassList("lista-item");
-                _listaScroll.Add(item);
-            }
+            AnadirGrupo("Ejemplos y retos", _programas.Where(EsSoloLectura).ToList(), null);
+            AnadirGrupo("Mis programas", _programas.Where(p => !EsSoloLectura(p)).ToList(),
+                "Vacío. Pulsa «Empezar reto» en un reto para tener tu copia.");
             if (!_programas.Contains(programaElegido)) Elegir(_programas.FirstOrDefault());
             else Elegir(programaElegido);
+        }
+
+        private void AnadirGrupo(string titulo, List<string> programas, string siVacio)
+        {
+            var grupo = new VisualElement { name = "grupo:" + titulo };
+            grupo.AddToClassList("lista-grupo");
+            var cabeza = new Label(titulo);
+            cabeza.AddToClassList("lista-grupo-titulo");
+            cabeza.AddToClassList("texto-medio");
+            grupo.Add(cabeza);
+            if (programas.Count == 0 && siVacio != null)
+            {
+                var vacio = new Label(siVacio);
+                vacio.AddToClassList("lista-vacia");
+                grupo.Add(vacio);
+            }
+            string prefijo = carpetaMisProgramas + "/";
+            foreach (string p in programas)
+            {
+                bool soloLectura = EsSoloLectura(p);
+                var item = new Button(() => { Elegir(p); CerrarLista(); }) { name = "programa:" + p };
+                item.AddToClassList("lista-item");
+                if (soloLectura)
+                {
+                    item.tooltip = "Solo lectura. Para escribir tu código, pulsa «Empezar reto» en su reto.";
+                    var candado = new IconoDibujado(IconoDibujado.Forma.Candado);
+                    candado.AddToClassList("lista-candado");
+                    item.Add(candado);
+                }
+                // En «Mis programas» las copias se ven sin el nombre de la carpeta.
+                string texto = p.StartsWith(prefijo, StringComparison.OrdinalIgnoreCase) ? p.Substring(prefijo.Length) : p;
+                var etiqueta = new Label(texto) { pickingMode = PickingMode.Ignore };
+                etiqueta.AddToClassList("lista-item-texto");
+                item.Add(etiqueta);
+                grupo.Add(item);
+            }
+            _listaScroll.Add(grupo);
+        }
+
+        /// <summary>
+        /// Empezar reto (D010): copia el ejercicio a Mis programas y deja elegida la copia.
+        /// Si la copia ya existe no la pisa: la elige y avisa. Devuelve la copia (o null si falla).
+        /// </summary>
+        public string EmpezarReto(string original)
+        {
+            CerrarLista();
+            string alumno = Path.Combine(RaizRepo, CarpetaAlumno);
+            string copia = RutaCopia(original);
+            string rutaOriginal = Path.Combine(alumno, original), rutaCopia = Path.Combine(alumno, copia);
+            try
+            {
+                if (File.Exists(rutaCopia))
+                    AnadirAviso($"Ya tienes tu copia: {copia}. No la piso; la dejo elegida.");
+                else
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(rutaCopia));
+                    File.Copy(rutaOriginal, rutaCopia, overwrite: false);
+                    AnadirAviso($"Tu copia: {copia}. Escribe tu código en ella y pulsa Cargar.");
+                }
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            {
+                Anadir($"No he podido copiar {original} a {carpetaMisProgramas}: {ex.Message}", ClaseError);
+                return null;
+            }
+            LeerProgramas();
+            Elegir(copia);
+            return copia;
         }
 
         /// <summary>Elige un programa de la lista (lo mismo que pinchar en él).</summary>
@@ -232,7 +313,7 @@ namespace PlantaVirtual
         {
             programaElegido = programa ?? "";
             _programaTexto.text = string.IsNullOrEmpty(programaElegido) ? "No hay programas" : programaElegido;
-            foreach (var item in _listaScroll.Children())
+            foreach (var item in _listaScroll.Query<Button>(className: "lista-item").ToList())
                 item.EnableInClassList("lista-item--elegido", item.name == "programa:" + programaElegido);
         }
 
@@ -484,7 +565,7 @@ namespace PlantaVirtual
     /// </summary>
     public class IconoDibujado : VisualElement
     {
-        public enum Forma { Flecha, Recargar, Quitar }
+        public enum Forma { Flecha, Recargar, Quitar, Candado }
         private readonly Forma _forma;
 
         public IconoDibujado(Forma forma)
@@ -514,6 +595,24 @@ namespace PlantaVirtual
                 p.LineTo(new Vector2(w * 0.5f, h * 0.66f));
                 p.LineTo(new Vector2(w * 0.8f, h * 0.38f));
                 p.Stroke();
+            }
+            else if (_forma == Forma.Candado)
+            {
+                // Cuerpo relleno y arco (el cierre) encima.
+                p.lineWidth = Mathf.Max(1.4f, w * 0.11f);
+                p.BeginPath();
+                p.MoveTo(new Vector2(w * 0.32f, h * 0.48f));
+                p.LineTo(new Vector2(w * 0.32f, h * 0.32f));
+                p.Arc(new Vector2(w * 0.5f, h * 0.32f), w * 0.18f, 180f, 360f);
+                p.LineTo(new Vector2(w * 0.68f, h * 0.48f));
+                p.Stroke();
+                p.BeginPath();
+                p.MoveTo(new Vector2(w * 0.2f, h * 0.46f));
+                p.LineTo(new Vector2(w * 0.8f, h * 0.46f));
+                p.LineTo(new Vector2(w * 0.8f, h * 0.9f));
+                p.LineTo(new Vector2(w * 0.2f, h * 0.9f));
+                p.ClosePath();
+                p.Fill();
             }
             else if (_forma == Forma.Quitar)
             {

@@ -1,4 +1,5 @@
 // ResultadoDashboard.cs · Resultado, ciclo por pieza y retos del dashboard (D009, P4c).
+// F5.5 P2 (D010): cada reto lleva un botón «Empezar reto».
 //
 // Cuenta cada pieza UNA vez, en el momento en que pasa a EnRampa (el evento de la
 // pieza al llegar a una rampa). No usa I6–I8: esas barreras siguen tapadas mientras
@@ -196,7 +197,9 @@ namespace PlantaVirtual
             foreach (var (ruta, titulo, detalle, dificultad) in Retos)
             {
                 if (dashboard != null && !dashboard.Programas.Contains(ruta)) continue;
-                var tarjeta = new Button(() => dashboard?.Elegir(ruta)) { name = "reto:" + ruta, tooltip = "Elegir " + ruta };
+                // Tarjeta = zona que elige el original + botón «Empezar reto» (F5.5 P2, D010).
+                // No son botones anidados: así un clic en «Empezar reto» no elige también el original.
+                var tarjeta = new VisualElement { name = "reto:" + ruta };
                 tarjeta.AddToClassList("reto");
                 tarjeta.AddToClassList(dificultad switch { "Fácil" => "reto--facil", "Medio" => "reto--medio", _ => "reto--averia" });
                 var cabeza = new VisualElement();
@@ -211,7 +214,18 @@ namespace PlantaVirtual
                 cabeza.Add(t); cabeza.Add(chip);
                 var d = new Label(detalle) { pickingMode = PickingMode.Ignore };
                 d.AddToClassList("reto-detalle");
-                tarjeta.Add(cabeza); tarjeta.Add(d);
+                var elegir = new Button(() => dashboard?.Elegir(ruta)) { name = "elegir:" + ruta, tooltip = "Elegir " + ruta + " (solo lectura)" };
+                elegir.AddToClassList("reto-elegir");
+                elegir.Add(cabeza); elegir.Add(d);
+                var empezar = new Button(() => dashboard?.EmpezarReto(ruta))
+                {
+                    name = "empezar:" + ruta,
+                    text = "Empezar reto",
+                    tooltip = "Crea tu copia en «Mis programas» y la deja elegida. Si ya la tienes, no la pisa.",
+                };
+                empezar.AddToClassList("reto-empezar");
+                empezar.AddToClassList("texto-medio");
+                tarjeta.Add(elegir); tarjeta.Add(empezar);
                 _retos.Add(tarjeta);
             }
         }
@@ -220,8 +234,13 @@ namespace PlantaVirtual
         {
             // La tarjeta del programa elegido se marca (cambia al elegir en el desplegable o en un reto).
             if (dashboard == null || _retos == null) return;
+            // También con la copia del alumno elegida (Mis programas/<nombre>).
+            string elegido = dashboard.programaElegido;
             foreach (var t in _retos.Children())
-                t.EnableInClassList("reto--elegido", t.name == "reto:" + dashboard.programaElegido);
+            {
+                string ruta = t.name.Substring("reto:".Length);
+                t.EnableInClassList("reto--elegido", elegido == ruta || elegido == dashboard.RutaCopia(ruta));
+            }
         }
 
         // ── Pintar ───────────────────────────────────────────────────────────

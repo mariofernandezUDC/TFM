@@ -66,3 +66,8 @@ Unity/Assets/_Recovery.meta
 
 # rsc local state (hooks, seals, logs) and managed skill links — machine-local
 .claude/skills/security-audit
+
+# Programas del alumno (D010): solo se sube el LEEME. La carpeta «(test)» la crea y borra un test de PlayMode.
+virtual/alumno/Mis programas/*
+!virtual/alumno/Mis programas/LEEME.md
+virtual/alumno/Mis programas (test)/
