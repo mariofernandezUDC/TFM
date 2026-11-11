@@ -6,6 +6,7 @@ tags: [guía, F5]
 
 > **Meta:** un alumno escribe su propio programa de control de la SLD, con la misma API que en el TXT 4.0 real ([[D001 Sustituir el hardware, no la lógica]]), y lo ve funcionar en la planta virtual.
 > Librería: [[Librería fischertechnik virtual]] · Uso paso a paso: `virtual/README.md` · Plan: [[Plan de trabajo]]
+> Cargar el programa desde Unity: [[D008 Lanzador desde Unity]]
 
 ---
 
