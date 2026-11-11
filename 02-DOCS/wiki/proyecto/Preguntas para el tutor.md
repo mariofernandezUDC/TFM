@@ -10,5 +10,6 @@ tags: [proyecto, tutor]
 - [ ] ¿La VR es obligatoria o solo opcional en el paquete del alumno?
 - [ ] ¿Se puede redistribuir el código de Fischertechnik (`lib/`) dentro del paquete del alumno?
 - [ ] Normativa del máster sobre el uso de IA y cómo declararlo en la memoria. Ver [[D003 Forma de trabajo con Claude]].
+- [ ] ¿Desactivamos por defecto las sugerencias de IA de VS Code en `Mis programas/` (`.vscode/settings.json` con `"editor.inlineSuggest.enabled": false`)? Al pulsar Tab, la sugerencia escribe el hueco del ejercicio ([[2026-11-07]]). Ver [[D010 Flujo del alumno]], «Abierto».
 
 Respuestas → crear una decisión en `decisiones/` y enlazarla aquí.
