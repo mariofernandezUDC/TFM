@@ -1,0 +1,318 @@
+/* Dashboard.uss · Dashboard de la planta virtual (D008, P4).
+   Decisiones de estilo: guia/Encargo - Lanzador desde Unity.md, P4.
+   Acentos: lima #D4F23C, cian #3EE6E0, ámbar #F5B731.
+   Nunca blanco, rojo ni azul como acento: son los colores de las piezas. */
+
+.raiz {
+    flex-grow: 1;
+    padding: 16px;
+    color: rgb(242, 244, 245);
+    font-size: 15px;
+    -unity-font: url("project://database/Assets/Scripts/PlantaVirtual/UI/Fuentes/Outfit-Regular.ttf");
+}
+
+.texto-fuerte {
+    -unity-font: url("project://database/Assets/Scripts/PlantaVirtual/UI/Fuentes/Outfit-SemiBold.ttf");
+}
+
+.texto-medio {
+    -unity-font: url("project://database/Assets/Scripts/PlantaVirtual/UI/Fuentes/Outfit-Medium.ttf");
+}
+
+/* ── Panel translúcido: oscuro, borde fino claro, radio 16 px. Sin desenfoque. ── */
+
+.panel {
+    background-color: rgba(24, 26, 30, 0.78);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+}
+
+/* ── Barra superior ───────────────────────────────────────────────────────── */
+
+.barra {
+    flex-direction: row;
+    align-items: center;
+    height: 68px;
+    padding-left: 14px;
+    padding-right: 14px;
+    border-radius: 34px;
+}
+
+.barra-titulo {
+    font-size: 20px;
+    margin-left: 8px;
+    margin-right: 24px;
+}
+
+.selector {
+    flex-direction: row;
+    align-items: center;
+    width: 400px;
+    height: 44px;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 22px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.16);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.selector-boton {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    height: 36px;
+    margin: 0;
+    padding-left: 14px;
+    padding-right: 10px;
+    border-width: 0;
+    border-radius: 18px;
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(242, 244, 245);
+    font-size: 15px;
+    -unity-text-align: middle-left;
+    transition-duration: 0.15s;
+}
+
+.selector-boton:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.selector-texto {
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -unity-text-align: middle-left;
+}
+
+.icono {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.boton-icono {
+    width: 36px;
+    height: 36px;
+    margin: 0 0 0 4px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    border-width: 0;
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.75);
+    transition-duration: 0.15s;
+}
+
+.boton-icono:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+    color: rgb(242, 244, 245);
+}
+
+.boton-icono .icono {
+    width: 16px;
+    height: 16px;
+}
+
+.pildora {
+    height: 44px;
+    margin: 0 0 0 10px;
+    padding: 0 24px;
+    border-width: 1px;
+    border-radius: 22px;
+    font-size: 16px;
+    -unity-text-align: middle-center;
+    transition-duration: 0.15s;
+}
+
+.boton-cargar {
+    background-color: rgb(212, 242, 60);
+    border-color: rgb(212, 242, 60);
+    color: rgb(21, 23, 15);
+}
+
+.boton-cargar:hover {
+    background-color: rgb(224, 247, 106);
+    border-color: rgb(224, 247, 106);
+}
+
+.boton-parar {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: rgb(242, 244, 245);
+}
+
+.boton-parar:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.estado {
+    flex-direction: row;
+    align-items: center;
+    height: 44px;
+    margin-left: auto;
+    padding: 0 18px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.16);
+    border-radius: 22px;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.estado-punto {
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    background-color: rgb(138, 143, 152);
+}
+
+.estado-texto {
+    font-size: 15px;
+}
+
+.estado--en-marcha .estado-punto {
+    background-color: rgb(62, 230, 224);
+}
+
+.estado--error .estado-punto {
+    background-color: rgb(245, 183, 49);
+}
+
+.estado--error .estado-texto {
+    color: rgb(245, 183, 49);
+}
+
+/* ── Cuerpo: columna izquierda · hueco de la planta · columna derecha ─────── */
+
+.cuerpo {
+    flex-grow: 1;
+    flex-direction: row;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.columna {
+    width: 320px;
+}
+
+.columna-derecha {
+    width: 340px;
+}
+
+.hueco {
+    flex-grow: 1;
+}
+
+/* ── Tarjetas plegables ───────────────────────────────────────────────────── */
+
+.tarjeta {
+    padding: 14px 16px 16px 18px;
+    margin-bottom: 16px;
+}
+
+.tarjeta-cabecera {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tarjeta-titulo {
+    font-size: 18px;
+}
+
+.boton-plegar {
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 17px;
+    -unity-text-align: middle-center;
+    transition-duration: 0.15s;
+}
+
+.boton-plegar:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.tarjeta-cuerpo {
+    margin-top: 12px;
+}
+
+.tarjeta--plegada .tarjeta-cuerpo {
+    display: none;
+}
+
+.marcador {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+}
+
+/* ── Salida del programa (abajo) ──────────────────────────────────────────── */
+
+.tarjeta-salida {
+    height: 210px;
+    margin-bottom: 0;
+}
+
+.tarjeta-salida.tarjeta--plegada {
+    height: auto;
+}
+
+.salida-scroll {
+    flex-grow: 1;
+}
+
+.salida-linea {
+    margin: 0;
+    padding: 1px 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.82);
+    white-space: normal;
+}
+
+.salida-linea--aviso {
+    color: rgb(212, 242, 60);
+}
+
+/* ── Lista desplegable de programas ───────────────────────────────────────── */
+
+.lista-programas {
+    position: absolute;
+    width: 400px;
+    max-height: 440px;
+    padding: 6px;
+    background-color: rgba(24, 26, 30, 0.97);
+}
+
+.lista-programas--oculta {
+    display: none;
+}
+
+.lista-item {
+    height: 34px;
+    margin: 0;
+    padding: 0 12px;
+    border-width: 0;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(242, 244, 245);
+    font-size: 14px;
+    -unity-text-align: middle-left;
+    transition-duration: 0.1s;
+}
+
+.lista-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.lista-item--elegido {
+    color: rgb(212, 242, 60);
+}

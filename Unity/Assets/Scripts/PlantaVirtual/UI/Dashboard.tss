@@ -1,0 +1,15 @@
+/* Dashboard.tss · Tema propio del dashboard (sin el tema por defecto de Unity).
+   Los estilos están en Dashboard.uss, que enlaza Dashboard.uxml. */
+
+:root {
+    font-size: 15px;
+}
+
+/* La raíz del UIDocument ocupa toda la pantalla (lo hacía el tema por defecto). */
+.unity-ui-document__root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}

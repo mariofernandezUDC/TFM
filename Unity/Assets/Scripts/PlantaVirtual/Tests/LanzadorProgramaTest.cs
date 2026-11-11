@@ -1,4 +1,4 @@
-// LanzadorProgramaTest.cs · Tests de PlayMode del lanzador (D008, pasos P2 y P3).
+// LanzadorProgramaTest.cs · Tests de PlayMode del lanzador y del dashboard (D008, P2, P3 y P4a).
 //
 // Hacen lo mismo que las pruebas a mano, sin tocar Unity. Cada test carga
 // PlantaVirtual.unity y llama a los mismos métodos que las teclas:
@@ -9,6 +9,7 @@
 // P3  Parar_CortaElLatido_YLaCintaSePara
 //     Cargar_ConUnProgramaEnMarcha_ParaElAnterior
 //     ErrorDelAlumno_TerminaConCodigo1_YLaCintaSePara
+// P4a Dashboard_CargarYParar_ConLosBotones (usa los botones del dashboard, no las teclas)
 //
 // Necesitan Mosquitto en marcha en el puerto de VirtualIO_TXT5 (1883).
 //
@@ -20,11 +21,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UIElements;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
@@ -298,6 +301,73 @@ namespace PlantaVirtual.Tests
             }
             yield return null;
             Assert.AreEqual(0f, VelocidadCinta, "La cinta sigue en marcha después del error");
+            SinErroresPropios();
+        }
+
+        // ── P4a ──────────────────────────────────────────────────────────────
+
+        /// <summary>Pulsa un botón de UI Toolkit como lo haría el alumno (evento de «submit»).</summary>
+        private static void Pulsar(Button boton)
+        {
+            Assert.IsNotNull(boton, "No encuentro el botón en el dashboard");
+            using (var e = NavigationSubmitEvent.GetPooled())
+            {
+                e.target = boton;
+                boton.SendEvent(e);
+            }
+        }
+
+        [UnityTest]
+        [Timeout(120000)]
+        public IEnumerator Dashboard_CargarYParar_ConLosBotones()
+        {
+            yield return CargarEscena();
+            var dashboard = Object.FindFirstObjectByType(Tipo("DashboardPlanta")) as Component;
+            Assert.IsNotNull(dashboard, "No hay DashboardPlanta en la escena");
+            VisualElement raiz = dashboard.GetComponent<UIDocument>().rootVisualElement;
+            Label estado = raiz.Q<Label>("estadoTexto");
+            yield return null;
+
+            // Desplegable: abrir y elegir soluciones/nivel4.py.
+            Pulsar(raiz.Q<Button>("programaSeleccionado"));
+            yield return null;
+            Assert.IsFalse(raiz.Q("listaProgramas").ClassListContains("lista-programas--oculta"), "La lista de programas no se abre");
+            var programas = ((IEnumerable)Leer(dashboard, "Programas")).Cast<string>().ToList();
+            Assert.Contains(Nivel4, programas, "La lista no tiene " + Nivel4);
+            Assert.IsFalse(programas.Any(p => p.Contains("pistas/")), "La lista no debe tener nada de pistas/ (D008-C)");
+            Pulsar(raiz.Q<Button>("programa:" + Nivel4));
+            yield return null;
+            Assert.AreEqual(Nivel4, Leer(dashboard, "programaElegido"));
+            Assert.IsTrue(raiz.Q("listaProgramas").ClassListContains("lista-programas--oculta"), "La lista no se cierra al elegir");
+
+            // Cargar.
+            Pulsar(raiz.Q<Button>("cargar"));
+            yield return null;
+            int pid = Pid;
+            Assert.Greater(pid, 0, "El botón Cargar no ha lanzado el programa");
+            Process proceso = Process.GetProcessById(pid);
+            yield return EsperarLatido(proceso);
+            StringAssert.StartsWith("En marcha", estado.text);
+
+            // La salida del programa llega a la caja de abajo.
+            float t0 = Time.realtimeSinceStartup;
+            while (!((string)Leer(dashboard, "TextoSalida")).Contains("Nivel 4 en marcha"))
+            {
+                Assert.Less(Time.realtimeSinceStartup - t0, 10f, "La salida del programa no aparece en el dashboard");
+                yield return null;
+            }
+
+            // Parar.
+            Pulsar(raiz.Q<Button>("parar"));
+            yield return null;
+            Assert.IsTrue(proceso.HasExited, "El botón Parar no ha parado el programa");
+            Assert.AreEqual("Parado", estado.text);
+            t0 = Time.realtimeSinceStartup;
+            while (!EstadoSeguro)
+            {
+                Assert.Less(Time.realtimeSinceStartup - t0, 3f, "Unity no pasa a estado seguro después de Parar");
+                yield return null;
+            }
             SinErroresPropios();
         }
 

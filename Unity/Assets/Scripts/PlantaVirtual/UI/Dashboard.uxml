@@ -1,0 +1,83 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="Dashboard.uss" />
+    <ui:VisualElement name="raiz" class="raiz" picking-mode="Ignore">
+
+        <ui:VisualElement name="barra" class="panel barra">
+            <ui:Label text="Planta virtual · SLD" class="barra-titulo texto-fuerte" />
+            <ui:VisualElement class="selector">
+                <ui:Button name="programaSeleccionado" class="selector-boton" tooltip="Elige el programa que quieres cargar">
+                    <ui:Label name="programaTexto" text="Elige un programa" class="selector-texto" picking-mode="Ignore" />
+                    <ui:VisualElement name="programaFlecha" class="icono" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:Button name="recargarProgramas" class="boton-icono" tooltip="Volver a leer la carpeta virtual/alumno">
+                    <ui:VisualElement name="recargarIcono" class="icono" picking-mode="Ignore" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:Button name="cargar" text="Cargar" class="pildora boton-cargar texto-fuerte" />
+            <ui:Button name="parar" text="Parar" class="pildora boton-parar texto-medio" />
+            <ui:VisualElement name="estado" class="estado">
+                <ui:VisualElement class="estado-punto" picking-mode="Ignore" />
+                <ui:Label name="estadoTexto" text="Parado" class="estado-texto texto-medio" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="cuerpo" class="cuerpo" picking-mode="Ignore">
+            <ui:VisualElement name="columnaIzquierda" class="columna" picking-mode="Ignore">
+                <ui:VisualElement name="tarjetaResultado" class="panel tarjeta">
+                    <ui:VisualElement class="tarjeta-cabecera">
+                        <ui:Label text="Resultado" class="tarjeta-titulo texto-fuerte" />
+                        <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="tarjeta-cuerpo">
+                        <ui:Label text="Piezas bien y mal clasificadas (P4c)" class="marcador" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="tarjetaRetos" class="panel tarjeta">
+                    <ui:VisualElement class="tarjeta-cabecera">
+                        <ui:Label text="Retos" class="tarjeta-titulo texto-fuerte" />
+                        <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="tarjeta-cuerpo">
+                        <ui:Label text="Ejercicios por niveles (P4c)" class="marcador" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="hueco" class="hueco" picking-mode="Ignore" />
+
+            <ui:VisualElement name="columnaDerecha" class="columna columna-derecha" picking-mode="Ignore">
+                <ui:VisualElement name="tarjetaCiclo" class="panel tarjeta">
+                    <ui:VisualElement class="tarjeta-cabecera">
+                        <ui:Label text="Ciclo por pieza" class="tarjeta-titulo texto-fuerte" />
+                        <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="tarjeta-cuerpo">
+                        <ui:Label text="Tiempo de entrada a rampa (P4c)" class="marcador" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="tarjetaSensores" class="panel tarjeta">
+                    <ui:VisualElement class="tarjeta-cabecera">
+                        <ui:Label text="Sensores y salidas" class="tarjeta-titulo texto-fuerte" />
+                        <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="tarjeta-cuerpo">
+                        <ui:Label text="E/S del TXT 5 (P4b)" class="marcador" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="tarjetaSalida" class="panel tarjeta tarjeta-salida">
+            <ui:VisualElement class="tarjeta-cabecera">
+                <ui:Label text="Salida" class="tarjeta-titulo texto-fuerte" />
+                <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
+            </ui:VisualElement>
+            <ui:ScrollView name="salida" class="tarjeta-cuerpo salida-scroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="listaProgramas" class="panel lista-programas lista-programas--oculta">
+            <ui:ScrollView name="listaProgramasScroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

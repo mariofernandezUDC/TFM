@@ -10,7 +10,8 @@
 // P3: Parar (tecla P) = matar el proceso (D008-D). Sin latido, VirtualIO_TXT pasa a
 //     estado seguro en 0,5 s (D006.5). Cargar con un programa en marcha para antes
 //     el anterior. Al terminar solo, se apunta el código de salida.
-// El panel y los errores en rojo llegan en P4–P5.
+// P4: el dashboard (DashboardPlanta) usa Lanzar(), Parar() y LineaSalida.
+//     Las teclas L y P quedan solo en el editor.
 //
 // Se lanza python.exe directamente, NO py.exe: py.exe abre python.exe como hijo,
 // y al matar py el hijo puede quedarse vivo con la cinta en marcha.
@@ -69,6 +70,10 @@ namespace PlantaVirtual
 
         private Ejecucion _actual;
 
+        /// <summary>Cada línea que escribe el programa (texto, esError = vino por stderr).
+        /// Se lanza desde Update(), en el hilo de Unity: se puede tocar la UI.</summary>
+        public event Action<string, bool> LineaSalida;
+
         // Las líneas y los avisos de fin llegan en hilos de .NET, no en el de Unity.
         // Se guardan aquí y se tratan desde Update(). esError = vino por stderr.
         private readonly ConcurrentQueue<(bool esError, string texto)> _salida =
@@ -81,12 +86,15 @@ namespace PlantaVirtual
 
         private void Update()
         {
+#if UNITY_EDITOR
+            // Teclas provisionales de P2/P3, solo en el editor: el alumno usa el dashboard.
             var k = Keyboard.current;
             if (k != null)
             {
                 if (k.lKey.wasPressedThisFrame) Lanzar();
                 if (k.pKey.wasPressedThisFrame) Parar();
             }
+#endif
 
             VaciarSalida();
             VaciarTerminados();
@@ -252,6 +260,7 @@ namespace PlantaVirtual
             {
                 if (linea.esError) Debug.LogError("[programa] " + linea.texto);
                 else Debug.Log("[programa] " + linea.texto);
+                LineaSalida?.Invoke(linea.texto, linea.esError);
             }
         }
 
