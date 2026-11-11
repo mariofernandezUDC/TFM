@@ -28,9 +28,18 @@ namespace PlantaVirtual
         [Tooltip("Líneas que guarda la caja de salida")]
         public int maxLineasSalida = 300;
 
+        [Header("Escala")]
+        [Tooltip("Resolución para la que está diseñado el dashboard (escala 1)")]
+        public Vector2 resolucionReferencia = new Vector2(1920, 1080);
+        [Tooltip("Ningún texto baja de este tamaño en pantalla, px")]
+        public float letraMinimaPantalla = 12f;
+        [Tooltip("Letra más pequeña del Dashboard.uss, px")]
+        public float letraMinimaUss = 14f;
+
         [Header("Estado")]
         [SoloLectura] public string programaElegido = "";
         [SoloLectura] public int programasEncontrados;
+        [SoloLectura] public float escala = 1f;
 
         public const string CarpetaAlumno = "virtual/alumno";
 
@@ -64,6 +73,7 @@ namespace PlantaVirtual
         private void OnEnable()
         {
             if (lanzador == null) lanzador = FindFirstObjectByType<LanzadorPrograma>();
+            UsarPanelPropio();
             _raiz = GetComponent<UIDocument>().rootVisualElement;
 
             _selector = _raiz.Q<Button>("programaSeleccionado");
@@ -101,13 +111,62 @@ namespace PlantaVirtual
             ActualizarEstado(forzar: true);
         }
 
+        private void OnDestroy()
+        {
+            if (_panelPropio != null) Destroy(_panelPropio);
+        }
+
         private void OnDisable()
         {
             if (lanzador != null) lanzador.LineaSalida -= AnadirLinea;
             if (_raiz != null) _raiz.UnregisterCallback<PointerDownEvent>(AlPulsarFuera, TrickleDown.TrickleDown);
         }
 
-        private void Update() => ActualizarEstado(forzar: false);
+        private void Update()
+        {
+            ActualizarEscala();
+            ActualizarEstado(forzar: false);
+        }
+
+        // ── Escala (texto legible en un portátil de 1366×768) ────────────────
+
+        private PanelSettings _panelPropio;
+
+        // El PanelSettings del asset escala con la pantalla sin límite inferior: a 1366×768
+        // queda en 0,71 y la letra de 14 px se ve de 10 px. Se usa una copia en tiempo de
+        // ejecución con tamaño de píxel constante, y la escala la pone ActualizarEscala().
+        // Así el asset no cambia al jugar en el editor.
+        private void UsarPanelPropio()
+        {
+            var doc = GetComponent<UIDocument>();
+            if (_panelPropio == null && doc.panelSettings != null)
+            {
+                _panelPropio = Instantiate(doc.panelSettings);
+                _panelPropio.name = doc.panelSettings.name + " (escala propia)";
+                _panelPropio.scaleMode = PanelScaleMode.ConstantPixelSize;
+                doc.panelSettings = _panelPropio;
+            }
+            ActualizarEscala();
+        }
+
+        /// <summary>
+        /// Escala = la que cabe en la pantalla respecto a la referencia, pero nunca menor que
+        /// letraMinimaPantalla / letraMinimaUss (12/14 ≈ 0,86).
+        /// </summary>
+        public static float CalcularEscala(float ancho, float alto, Vector2 referencia, float letraMinimaPantalla, float letraMinimaUss)
+        {
+            float cabe = Mathf.Min(ancho / referencia.x, alto / referencia.y);
+            return Mathf.Max(cabe, letraMinimaPantalla / letraMinimaUss);
+        }
+
+        private void ActualizarEscala()
+        {
+            if (_panelPropio == null) return;
+            float e = CalcularEscala(Screen.width, Screen.height, resolucionReferencia, letraMinimaPantalla, letraMinimaUss);
+            if (Mathf.Approximately(e, _panelPropio.scale)) return;
+            _panelPropio.scale = e;
+            escala = e;
+        }
 
         // ── Programas (D008-C) ───────────────────────────────────────────────
 

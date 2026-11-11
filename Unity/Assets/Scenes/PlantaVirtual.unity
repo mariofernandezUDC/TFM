@@ -30853,6 +30853,7 @@ GameObject:
   - component: {fileID: 1559529775}
   - component: {fileID: 1559529774}
   - component: {fileID: 1559529773}
+  - component: {fileID: 1559529777}
   m_Layer: 0
   m_Name: Dashboard
   m_TagString: Untagged
@@ -30897,8 +30898,12 @@ MonoBehaviour:
   lanzador: {fileID: 1500000103}
   programaInicial: ejercicios/nivel1_arrancar.py
   maxLineasSalida: 300
+  resolucionReferencia: {x: 1920, y: 1080}
+  letraMinimaPantalla: 12
+  letraMinimaUss: 14
   programaElegido: 
   programasEncontrados: 0
+  escala: 1
 --- !u!114 &1559529775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30937,6 +30942,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1559529777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559529772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85b532da039372842b56788a0012c27a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantaVirtual.SensoresDashboard
+  io: {fileID: 1282776253}
+  planta: {fileID: 1332950607}
+  camara: {fileID: 330585545}
+  contadorC1: {fileID: 3650412286286264863}
+  alturaEtiqueta: 0.035
 --- !u!1 &1565204128
 GameObject:
   m_ObjectHideFlags: 0

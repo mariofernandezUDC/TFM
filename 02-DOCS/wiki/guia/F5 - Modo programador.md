@@ -55,7 +55,7 @@ tags: [guía, F5]
 | P2 | `LanzadorPrograma.cs` y test automático | ✅ `752617f` … `027b87a` |
 | P3 | Parar, Cargar para el anterior, código de salida | ✅ `27defdc` |
 | P4a | Esqueleto del dashboard y ajustes | ✅ `4ced235`, `651ce47` |
-| P4b | Sensores visibles en el panel y sobre la planta | ⏳ |
+| P4b | Sensores visibles en el panel y sobre la planta; texto ≥ 12 px a 1366×768 | ✅ |
 | P4c | Resultado, ciclo por pieza y retos | ⏳ |
 | P5 | Errores visibles en rojo | ⏳ |
 | P6 | Broker portable en el puerto 18830 (pedir confirmación a Mario) | ⏳ |

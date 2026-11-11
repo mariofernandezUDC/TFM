@@ -10,6 +10,8 @@
 //     Cargar_ConUnProgramaEnMarcha_ParaElAnterior
 //     ErrorDelAlumno_TerminaConCodigo1_YLaCintaSePara
 // P4a Dashboard_CargarYParar_ConLosBotones (usa los botones del dashboard, no las teclas)
+// P4b Dashboard_EtiquetasSeEncienden_EnOrdenI1I3I7 (etiquetas 3D y panel de E/S)
+//     Dashboard_Escala_TextoNoBajaDe12px_A1366x768
 //
 // Necesitan Mosquitto en marcha en el puerto de VirtualIO_TXT5 (1883).
 //
@@ -378,6 +380,59 @@ namespace PlantaVirtual.Tests
                 yield return null;
             }
             SinErroresPropios();
+        }
+
+        // ── P4b ──────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Con nivel4 en marcha y una pieza roja, las etiquetas de la planta se encienden
+        /// por primera vez en el orden I1 → I3 → I7, y la fila I7 del panel también.
+        /// </summary>
+        [UnityTest]
+        [Timeout(120000)]
+        public IEnumerator Dashboard_EtiquetasSeEncienden_EnOrdenI1I3I7()
+        {
+            yield return CargarEscena();
+            var sensores = Object.FindFirstObjectByType(Tipo("SensoresDashboard")) as Component;
+            Assert.IsNotNull(sensores, "No hay SensoresDashboard en la escena");
+            bool Encendida(string codigo) => (bool)Llamar(sensores, "EtiquetaEncendida", codigo);
+            bool FilaEncendida(string codigo) => (bool)Llamar(sensores, "FilaEncendida", codigo);
+
+            Process proceso = Lanzar(Nivel4);
+            yield return EsperarLatido(proceso);
+            yield return null;
+            foreach (string c in new[] { "I1", "I3", "I6", "I7", "I8" })
+                Assert.IsFalse(Encendida(c), $"La etiqueta {c} está encendida sin piezas en la cinta");
+
+            object pieza = ColocarPieza("Roja");
+            var orden = new List<string>();
+            bool filaI7 = false;
+            float t0 = Time.realtimeSinceStartup;
+            while (Leer(pieza, "estado").ToString() != "EnRampa" || !orden.Contains("I7"))
+            {
+                foreach (string c in new[] { "I1", "I3", "I6", "I7", "I8" })
+                    if (!orden.Contains(c) && Encendida(c)) orden.Add(c);
+                filaI7 |= FilaEncendida("I7");
+                SinErroresPropios();
+                Assert.Less(Time.realtimeSinceStartup - t0, EsperaPorPieza_s, "La pieza roja no ha llegado a su rampa. Orden visto: " + string.Join(" → ", orden));
+                yield return null;
+            }
+            Debug.Log("[Test] Etiquetas encendidas en orden: " + string.Join(" → ", orden));
+            CollectionAssert.AreEqual(new[] { "I1", "I3", "I7" }, orden, "Orden de encendido de las etiquetas");
+            Assert.IsTrue(filaI7, "La fila I7 del panel «Sensores y salidas» no se ha encendido");
+            SinErroresPropios();
+        }
+
+        /// <summary>A 1366×768 la escala del dashboard no deja ningún texto por debajo de 12 px.</summary>
+        [Test]
+        public void Dashboard_Escala_TextoNoBajaDe12px_A1366x768()
+        {
+            var calcular = Tipo("DashboardPlanta").GetMethod("CalcularEscala", BindingFlags.Public | BindingFlags.Static);
+            var referencia = new Vector2(1920, 1080);
+            float e1366 = (float)calcular.Invoke(null, new object[] { 1366f, 768f, referencia, 12f, 14f });
+            float e1920 = (float)calcular.Invoke(null, new object[] { 1920f, 1080f, referencia, 12f, 14f });
+            Assert.GreaterOrEqual(14f * e1366, 12f - 1e-3f, $"A 1366×768 la letra de 14 px queda en {14f * e1366:F1} px");
+            Assert.AreEqual(1f, e1920, 1e-4f, "A 1920×1080 la escala tiene que ser 1");
         }
 
         // ── Utilidades ───────────────────────────────────────────────────────

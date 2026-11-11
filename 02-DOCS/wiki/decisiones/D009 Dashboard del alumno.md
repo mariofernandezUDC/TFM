@@ -43,7 +43,8 @@ Hay que decidir cinco cosas: qué ocupa el centro de la pantalla, con qué se ha
 - **Opacidad en espacio de color lineal:** el proyecto mezcla la UI en espacio lineal. Por eso un alfa de 0,6 se veía casi transparente sobre las piezas rojas y blancas. El panel usa negro con alfa 0,85, que a la vista equivale a un negro al ~60 % (ajuste del 2026-11-11).
 - **Encuadre:** vista a 55° hacia abajo desde el lado de los cilindros. Con el ángulo de la vista «Estación SLD» (162°) se miraba a lo largo de la cinta y salía en escorzo. Si se pliega un panel o crece la salida, la cámara se recoloca sola.
 - **Salida en 4 líneas:** por defecto solo se ve lo que imprime el programa del alumno y los errores. El log de la librería (fecha, hilo, `#vio.py:NNN`) queda tras «Ver detalle».
-- **Escalado:** la UI se escala desde 1920×1080. A 1366×768 el texto queda en ~10 px.
+- **Escalado:** la UI se escala desde 1920×1080, pero la escala nunca baja de 12/14 ≈ 0,86. La letra más pequeña del USS es de 14 px, así que en pantalla ningún texto baja de 12 px (P4b). A 1366×768 los paneles ocupan algo más y la planta se ve algo más pequeña.
+- **Sensores visibles (P4b):** etiquetas `I1`, `I2`, `I3`, `I6`, `I7`, `I8` y `C1` sobre la planta y lista de E/S en el panel. Encendido = cian. Las barreras de rampa siguen encendidas mientras haya piezas en la rampa, igual que en la maqueta.
 - **El panel de averías no va en el dashboard del alumno.** Es F4 y lo activa el profesor.
 
 Relacionado: [[D008 Lanzador desde Unity]], [[F5 - Modo programador]], [[Encargo - Lanzador desde Unity]], [[2026-11-11]].

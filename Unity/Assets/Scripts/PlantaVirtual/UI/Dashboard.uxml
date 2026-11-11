@@ -2,6 +2,9 @@
     <ui:Style src="Dashboard.uss" />
     <ui:VisualElement name="raiz" class="raiz" picking-mode="Ignore">
 
+        <!-- Etiquetas I1, I2… sobre la planta 3D (P4b). Va la primera para quedar debajo de los paneles. -->
+        <ui:VisualElement name="capaEtiquetas" class="capa-etiquetas" picking-mode="Ignore" />
+
         <ui:VisualElement name="barra" class="panel barra">
             <ui:Label text="Planta virtual · SLD" class="barra-titulo texto-fuerte" />
             <ui:VisualElement class="selector">
@@ -61,7 +64,7 @@
                         <ui:Button text="−" class="boton-plegar" tooltip="Plegar o desplegar" />
                     </ui:VisualElement>
                     <ui:VisualElement class="tarjeta-cuerpo">
-                        <ui:Label text="E/S del TXT 5 (P4b)" class="marcador" />
+                        <ui:VisualElement name="listaES" class="lista-es" />
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>

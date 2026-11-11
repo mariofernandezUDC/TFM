@@ -27,8 +27,9 @@ tags: [contexto, claude]
 - **Fase en curso: F5, lanzador «Cargar programa» desde Unity** (prioridad del tutor). Encargo: [[Encargo - Lanzador desde Unity]]. Último diario: [[2026-11-11]].
   - P1 ✅ [[D008 Lanzador desde Unity]] (`f14c4e8`). P2 ✅ `LanzadorPrograma.cs` y test automático (`752617f`, `d1ccf58`, `4bd36c4`, `027b87a`). P3 ✅ Parar y código de salida (`27defdc`).
   - P4a ✅ esqueleto del dashboard (`4ced235`) y ajustes tras la revisión de Mario (`651ce47`): soluciones y plantilla ocultas al alumno, SLD entera en el hueco central (vista 55°/90°), paneles negros con alfa 0,85, salida en 4 líneas con «Ver detalle». Diseño en [[D009 Dashboard del alumno]].
-  - **Siguiente: P4b** (panel «Sensores y salidas» y etiquetas `I1`, `I3`, `I6`… sobre la planta), luego P4c, P5 y P6 (P6 necesita la confirmación de Mario).
-  - 5 tests de PlayMode en verde (`Assets/Scripts/PlantaVirtual/Tests/LanzadorProgramaTest.cs`; necesitan Mosquitto en marcha). Tiempos a rampa 2,7 / 4,3 / 5,3 s; estado seguro a 0,50 s tras Parar.
+  - P4b ✅ panel «Sensores y salidas» y etiquetas `I1`…`C1` sobre la planta (cian = activa); escala mínima 12/14 para que el texto no baje de 12 px a 1366×768.
+  - **Siguiente: P4c**, luego P5 y P6 (P6 necesita la confirmación de Mario).
+  - 7 tests de PlayMode en verde (`Assets/Scripts/PlantaVirtual/Tests/LanzadorProgramaTest.cs`; necesitan Mosquitto en marcha). Tiempos a rampa 2,7 / 4,3 / 5,3 s; estado seguro a 0,50 s tras Parar.
   - **No tocar el guion de la reunión con el tutor** ([[Reunión tutor - Guion y comandos]]) hasta que P4 esté terminado.
 - **F0 en pausa** desde que el tutor priorizó «cargar código». F0.1, F0.3, F0.4 (hito 1), F0.5 y F0.7 ✅. F0.6 🟡: `SLD.py` clasifica las tres piezas; faltan las medidas reales 🔧. F0.2, F0.8 (versión corta) y F0.9 ⏳.
 - **F5:** F5.1 ✅ y F5.2 ✅ (2026-11-07). F5.3 ⏳ (prueba de ROBO Pro Coding 🔧). F5.4 🚧 lanzador desde Unity.
