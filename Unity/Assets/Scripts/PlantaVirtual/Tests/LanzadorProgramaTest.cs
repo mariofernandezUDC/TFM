@@ -1,13 +1,16 @@
-// LanzadorProgramaTest.cs · Test de PlayMode del lanzador (D008, paso P2).
+// LanzadorProgramaTest.cs · Tests de PlayMode del lanzador (D008, pasos P2 y P3).
 //
-// Hace lo mismo que la prueba a mano de P2, sin tocar Unity:
-//   1. carga PlantaVirtual.unity;
-//   2. LanzadorPrograma.Lanzar() con ejercicios/soluciones/nivel4.py (lo que hace la tecla L);
-//   3. mete la blanca, la roja y la azul con SLD_Planta.ColocarPieza (lo que hacen las teclas 1, 2 y 3);
-//   4. comprueba que cada pieza acaba en SU rampa;
-//   5. apaga el lanzador como al salir de Play (OnDisable) y comprueba que el python.exe ya no existe.
+// Hacen lo mismo que las pruebas a mano, sin tocar Unity. Cada test carga
+// PlantaVirtual.unity y llama a los mismos métodos que las teclas:
+//   L → LanzadorPrograma.Lanzar()     P → LanzadorPrograma.Parar()
+//   1, 2, 3 → SLD_Planta.ColocarPieza(Blanca / Roja / Azul)
 //
-// Necesita Mosquitto en marcha en el puerto de VirtualIO_TXT5 (1883).
+// P2  Nivel4_ClasificaLasTresPiezas_YNoDejaPythonHuerfano
+// P3  Parar_CortaElLatido_YLaCintaSePara
+//     Cargar_ConUnProgramaEnMarcha_ParaElAnterior
+//     ErrorDelAlumno_TerminaConCodigo1_YLaCintaSePara
+//
+// Necesitan Mosquitto en marcha en el puerto de VirtualIO_TXT5 (1883).
 //
 // Por qué reflexión: los scripts de la planta están en Assembly-CSharp (sin asmdef)
 // y un ensamblado de tests no puede referenciar Assembly-CSharp. Se buscan las
@@ -33,9 +36,18 @@ namespace PlantaVirtual.Tests
     public class LanzadorProgramaTest
     {
         private const string Escena = "Assets/Scenes/PlantaVirtual.unity";
-        private const string Programa = "ejercicios/soluciones/nivel4.py";
+        private const string Nivel4 = "ejercicios/soluciones/nivel4.py";
+        private const string FallaAMitad = "../tests/programas/falla_a_mitad.py"; // relativo a virtual/alumno/
         private const float EsperaPython_s = 20f;    // hasta que llega el primer latido de Python
         private const float EsperaPorPieza_s = 60f;  // de la entrada de la cinta a la rampa
+        private const float LatidoMaximo_s = 1.0f;   // D006.5: 0,5 s sin out → estado seguro (+ margen)
+        private const int CodigoParado = -1;         // LanzadorPrograma.CodigoParadoDesdeUnity
+        private const int SinCodigo = int.MinValue;  // LanzadorPrograma.SinCodigo
+
+        // Lo que deja preparado CargarEscena().
+        private Component _lanzador, _planta, _io;
+
+        // ── Utilidades de reflexión ──────────────────────────────────────────
 
         private static Type Tipo(string nombre) =>
             Type.GetType("PlantaVirtual." + nombre + ", Assembly-CSharp", throwOnError: true);
@@ -50,11 +62,21 @@ namespace PlantaVirtual.Tests
             return p.GetValue(o);
         }
 
+        private static void Escribir(object o, string campo, object valor) =>
+            o.GetType().GetField(campo, BindingFlags.Public | BindingFlags.Instance).SetValue(o, valor);
+
         private static object Llamar(object o, string metodo, params object[] args) =>
             o.GetType().GetMethod(metodo, BindingFlags.Public | BindingFlags.Instance).Invoke(o, args);
 
+        private int Pid => (int)Leer(_lanzador, "pid");
+        private int UltimoCodigo => (int)Leer(_lanzador, "ultimoCodigoSalida");
+        private bool EstadoSeguro => (bool)Leer(_io, "estadoSeguro");
+        private float VelocidadCinta => (float)Leer(Leer(_planta, "cinta"), "velocidad_mm_s");
+
+        // ── Errores en consola ───────────────────────────────────────────────
+
         // La escena es una copia de la de Adrián: sus scripts MQTT escriben errores
-        // (host CHANGE_ME sin configurar) que no tienen que ver con este test. Por
+        // (host CHANGE_ME sin configurar) que no tienen que ver con estos tests. Por
         // defecto el Test Framework falla con CUALQUIER Debug.LogError, así que se
         // desactiva esa regla y se vigilan solo los errores de la planta virtual.
         private static readonly string[] PrefijosPropios = { "[Lanzador]", "[programa]", "[vio]", "[SLD_Planta]", "[Pieza]" };
@@ -84,36 +106,44 @@ namespace PlantaVirtual.Tests
         private void SinErroresPropios() =>
             Assert.IsEmpty(_erroresPropios, "Errores de la planta virtual:\n" + string.Join("\n", _erroresPropios));
 
-        [UnityTest]
-        [Timeout(300000)]
-        public IEnumerator Nivel4_ClasificaLasTresPiezas_YNoDejaPythonHuerfano()
+        // ── Pasos comunes ────────────────────────────────────────────────────
+
+        private IEnumerator CargarEscena()
         {
 #if UNITY_EDITOR
-            // ── 1. Cargar la escena ──────────────────────────────────────────
             LogAssert.ignoreFailingMessages = true;
             var carga = EditorSceneManager.LoadSceneAsyncInPlayMode(Escena, new LoadSceneParameters(LoadSceneMode.Single));
             while (!carga.isDone) yield return null;
             yield return null; // un frame para que corran los Start()
             LogAssert.ignoreFailingMessages = true;
+#else
+            Assert.Ignore("Estos tests solo corren en el editor.");
+            yield break;
+#endif
+            _lanzador = Object.FindFirstObjectByType(Tipo("LanzadorPrograma")) as Component;
+            _planta = Object.FindFirstObjectByType(Tipo("SLD_Planta")) as Component;
+            _io = Object.FindFirstObjectByType(Tipo("VirtualIO_TXT")) as Component;
+            Assert.IsNotNull(_lanzador, "No hay LanzadorPrograma en la escena");
+            Assert.IsNotNull(_planta, "No hay SLD_Planta en la escena");
+            Assert.IsNotNull(_io, "No hay VirtualIO_TXT en la escena");
+        }
 
-            var lanzador = Object.FindFirstObjectByType(Tipo("LanzadorPrograma")) as Component;
-            var planta = Object.FindFirstObjectByType(Tipo("SLD_Planta")) as Component;
-            var io = Object.FindFirstObjectByType(Tipo("VirtualIO_TXT")) as Component;
-            Assert.IsNotNull(lanzador, "No hay LanzadorPrograma en la escena");
-            Assert.IsNotNull(planta, "No hay SLD_Planta en la escena");
-            Assert.IsNotNull(io, "No hay VirtualIO_TXT en la escena");
-
-            // ── 2. Lanzar el programa (lo mismo que la tecla L) ──────────────
-            lanzador.GetType().GetField("programa").SetValue(lanzador, Programa);
-            Llamar(lanzador, "Lanzar");
-            int pid = (int)Leer(lanzador, "pid");
+        /// <summary>Lanza un programa (lo que hace la tecla L) y devuelve su proceso.</summary>
+        private Process Lanzar(string programa)
+        {
+            Escribir(_lanzador, "programa", programa);
+            Llamar(_lanzador, "Lanzar");
+            int pid = Pid;
             Assert.Greater(pid, 0, "Lanzar() no ha arrancado ningún proceso (mira la consola)");
-            Process proceso = Process.GetProcessById(pid);
-            Debug.Log($"[Test] Python lanzado, PID {pid}");
+            Debug.Log($"[Test] {programa} lanzado, PID {pid}");
+            return Process.GetProcessById(pid);
+        }
 
-            // Python está listo cuando su latido saca a Unity del estado seguro (D006.5).
+        /// <summary>Python está listo cuando su latido saca a Unity del estado seguro (D006.5).</summary>
+        private IEnumerator EsperarLatido(Process proceso)
+        {
             float t0 = Time.realtimeSinceStartup;
-            while ((bool)Leer(io, "estadoSeguro"))
+            while (EstadoSeguro)
             {
                 SinErroresPropios();
                 Assert.IsFalse(proceso.HasExited, $"Python ha terminado antes de tiempo (código {SafeExit(proceso)})");
@@ -121,19 +151,46 @@ namespace PlantaVirtual.Tests
                     "No llega el latido de Python. ¿Está Mosquitto en marcha en el 1883?");
                 yield return null;
             }
+        }
 
-            // ── 3 y 4. Blanca, roja y azul: cada una a su rampa ──────────────
-            Type tColor = Tipo("ColorPieza");
+        private object ColocarPieza(string color)
+        {
+            object valor = Enum.Parse(Tipo("ColorPieza"), color);
+            Assert.IsTrue((bool)Llamar(_planta, "ColocarPieza", valor), $"No se ha podido colocar la pieza {color}");
+            object pieza = null;
+            foreach (var p in (IEnumerable)Leer(_planta, "Piezas")) pieza = p; // la última es la recién colocada
+            return pieza;
+        }
+
+        private IEnumerator EsperarCintaEnMarcha(Process proceso)
+        {
+            float t0 = Time.realtimeSinceStartup;
+            while (VelocidadCinta == 0f)
+            {
+                SinErroresPropios();
+                Assert.IsFalse(proceso.HasExited, "Python ha terminado antes de arrancar la cinta");
+                Assert.Less(Time.realtimeSinceStartup - t0, 10f, "La cinta no arranca");
+                yield return null;
+            }
+        }
+
+        // ── P2 ───────────────────────────────────────────────────────────────
+
+        [UnityTest]
+        [Timeout(300000)]
+        public IEnumerator Nivel4_ClasificaLasTresPiezas_YNoDejaPythonHuerfano()
+        {
+            yield return CargarEscena();
+            Process proceso = Lanzar(Nivel4);
+            int pid = proceso.Id;
+            yield return EsperarLatido(proceso);
+
+            // Blanca, roja y azul: cada una a su rampa.
             foreach (string color in new[] { "Blanca", "Roja", "Azul" })
             {
-                object valor = Enum.Parse(tColor, color);
-                Assert.IsTrue((bool)Llamar(planta, "ColocarPieza", valor), $"No se ha podido colocar la pieza {color}");
-                var piezas = (IEnumerable)Leer(planta, "Piezas");
-                object pieza = null;
-                foreach (var p in piezas) pieza = p; // la última es la recién colocada
+                object pieza = ColocarPieza(color);
                 string nombre = ((Component)pieza).name;
-
-                t0 = Time.realtimeSinceStartup;
+                float t0 = Time.realtimeSinceStartup;
                 while (Leer(pieza, "estado").ToString() != "EnRampa")
                 {
                     SinErroresPropios();
@@ -149,24 +206,102 @@ namespace PlantaVirtual.Tests
                           $"descentrado {Leer(pieza, "descentrado_mm")} mm");
             }
 
-            // ── 5. Salir de Play: no queda python.exe ────────────────────────
-            // Al salir de Play Unity desactiva los objetos y llama a OnDisable(), que es
+            // Salir de Play: Unity desactiva los objetos y llama a OnDisable(), que es
             // donde LanzadorPrograma mata el proceso. Aquí se fuerza ese mismo camino.
-            lanzador.gameObject.SetActive(false);
+            _lanzador.gameObject.SetActive(false);
             yield return null;
 
             SinErroresPropios();
             Assert.IsTrue(proceso.HasExited, $"El proceso {pid} sigue vivo después de OnDisable()");
             string tareas = Tasklist(pid);
-            StringAssert.DoesNotContain("python", tareas.ToLowerInvariant(),
-                $"tasklist todavía ve el PID {pid}:\n{tareas}");
+            StringAssert.DoesNotContain("python", tareas.ToLowerInvariant(), $"tasklist todavía ve el PID {pid}:\n{tareas}");
             Debug.Log($"[Test] PID {pid} terminado. tasklist: {tareas.Trim()}");
-            proceso.Dispose();
-#else
-            Assert.Ignore("Este test solo corre en el editor.");
-            yield break;
-#endif
         }
+
+        // ── P3 ───────────────────────────────────────────────────────────────
+
+        [UnityTest]
+        [Timeout(120000)]
+        public IEnumerator Parar_CortaElLatido_YLaCintaSePara()
+        {
+            yield return CargarEscena();
+            Process proceso = Lanzar(Nivel4);
+            yield return EsperarLatido(proceso);
+            ColocarPieza("Blanca");
+            yield return EsperarCintaEnMarcha(proceso);
+
+            // Lo que hace la tecla P.
+            float t0 = Time.realtimeSinceStartup;
+            Llamar(_lanzador, "Parar");
+            Assert.IsTrue(proceso.HasExited, "Parar() ha vuelto y el proceso sigue vivo");
+            Assert.AreEqual(-1, Pid, "Después de Parar() no tiene que quedar PID");
+            Assert.AreEqual(CodigoParado, UltimoCodigo, "Parar() tiene que apuntar el código de «parado desde Unity»");
+
+            // Sin latido, VirtualIO_TXT pasa a estado seguro (D006.5).
+            while (!EstadoSeguro)
+            {
+                Assert.Less(Time.realtimeSinceStartup - t0, 3f, "Unity no pasa a estado seguro después de Parar()");
+                yield return null;
+            }
+            float tSeguro = Time.realtimeSinceStartup - t0;
+            yield return null; // un frame para que la planta aplique el estado seguro
+            Debug.Log($"[Test] Estado seguro {tSeguro:F2} s después de Parar(). Cinta a {VelocidadCinta} mm/s.");
+
+            SinErroresPropios();
+            Assert.LessOrEqual(tSeguro, LatidoMaximo_s, "El estado seguro ha tardado demasiado");
+            Assert.AreEqual(0f, VelocidadCinta, "La cinta sigue en marcha en estado seguro");
+        }
+
+        [UnityTest]
+        [Timeout(120000)]
+        public IEnumerator Cargar_ConUnProgramaEnMarcha_ParaElAnterior()
+        {
+            yield return CargarEscena();
+            Process primero = Lanzar(Nivel4);
+            yield return EsperarLatido(primero);
+
+            Process segundo = Lanzar(Nivel4); // segundo Cargar sin haber parado
+            Assert.IsTrue(primero.HasExited, $"El primer programa (PID {primero.Id}) sigue vivo");
+            Assert.AreNotEqual(primero.Id, segundo.Id, "No se ha lanzado un proceso nuevo");
+            Assert.IsFalse(segundo.HasExited, "El segundo programa no está en marcha");
+            yield return EsperarLatido(segundo);
+
+            Llamar(_lanzador, "Parar");
+            Assert.IsTrue(segundo.HasExited, "El segundo programa sigue vivo después de Parar()");
+            SinErroresPropios();
+        }
+
+        [UnityTest]
+        [Timeout(120000)]
+        public IEnumerator ErrorDelAlumno_TerminaConCodigo1_YLaCintaSePara()
+        {
+            yield return CargarEscena();
+            Process proceso = Lanzar(FallaAMitad); // arranca la cinta y en I3 llama a set_sped
+            yield return EsperarLatido(proceso);
+            ColocarPieza("Blanca");
+
+            float t0 = Time.realtimeSinceStartup;
+            while (UltimoCodigo == SinCodigo) // lo apunta Update() cuando llega el evento Exited
+            {
+                Assert.Less(Time.realtimeSinceStartup - t0, 30f, "El programa con error no termina");
+                yield return null;
+            }
+            Debug.Log($"[Test] falla_a_mitad.py ha terminado con código {UltimoCodigo}");
+            Assert.AreEqual(1, UltimoCodigo, "Un error del alumno tiene que terminar con código 1");
+
+            // run_virtual.py para las salidas antes de salir, y sin latido Unity pasa a estado seguro.
+            t0 = Time.realtimeSinceStartup;
+            while (!EstadoSeguro)
+            {
+                Assert.Less(Time.realtimeSinceStartup - t0, 3f, "Unity no pasa a estado seguro");
+                yield return null;
+            }
+            yield return null;
+            Assert.AreEqual(0f, VelocidadCinta, "La cinta sigue en marcha después del error");
+            SinErroresPropios();
+        }
+
+        // ── Utilidades ───────────────────────────────────────────────────────
 
         private static string SafeExit(Process p)
         {

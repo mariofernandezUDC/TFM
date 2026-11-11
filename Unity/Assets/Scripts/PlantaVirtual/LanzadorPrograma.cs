@@ -1,4 +1,4 @@
-// LanzadorPrograma.cs · Lanza el programa del alumno desde Unity (F5, paso P2 de D008).
+// LanzadorPrograma.cs · Lanza y para el programa del alumno desde Unity (F5, D008).
 //
 // Unity ejecuta virtual/run_virtual.py --programa <ruta> como un PROCESO APARTE
 // (02-DOCS/wiki/decisiones/D008 Lanzador desde Unity.md, D008-A). Entre los dos
@@ -6,8 +6,11 @@
 //   - vio por MQTT (D006), que ya lleva VirtualIO_TXT;
 //   - la salida estándar del proceso, que aquí se lee y se pasa a la consola de Unity.
 //
-// P2: un programa fijo y una tecla (L) para lanzarlo. Parar, el panel y los
-// errores en rojo llegan en P3–P5.
+// P2: un programa fijo y una tecla (L) para lanzarlo.
+// P3: Parar (tecla P) = matar el proceso (D008-D). Sin latido, VirtualIO_TXT pasa a
+//     estado seguro en 0,5 s (D006.5). Cargar con un programa en marcha para antes
+//     el anterior. Al terminar solo, se apunta el código de salida.
+// El panel y los errores en rojo llegan en P4–P5.
 //
 // Se lanza python.exe directamente, NO py.exe: py.exe abre python.exe como hijo,
 // y al matar py el hijo puede quedarse vivo con la cinta en marcha.
@@ -25,6 +28,11 @@ namespace PlantaVirtual
 {
     public class LanzadorPrograma : MonoBehaviour
     {
+        /// <summary>Código que se apunta en ultimoCodigoSalida cuando el programa se para desde Unity.</summary>
+        public const int CodigoParadoDesdeUnity = -1;
+        /// <summary>Código que se apunta mientras no ha terminado ningún programa.</summary>
+        public const int SinCodigo = int.MinValue;
+
         [Header("Python")]
         [Tooltip("Ruta del python.exe real (no py.exe). Si está vacía, se pregunta a «py -3.12» al primer Cargar de cada Play (cada PC tiene la suya)")]
         public string rutaPython = "";
@@ -39,16 +47,34 @@ namespace PlantaVirtual
         [Tooltip("De aquí salen el broker y el puerto que se pasan a run_virtual.py. Vacío = se busca en la escena")]
         public VirtualIO_TXT io;
 
+        [Header("Parada")]
+        [Tooltip("Tiempo máximo que Parar() espera a que el proceso termine después de Kill(), ms")]
+        public int esperaParada_ms = 2000;
+
         [Header("Estado")]
         [SoloLectura] public bool enMarcha;
         [SoloLectura] public int pid = -1;
+        [SoloLectura, Tooltip("0 = bien, 1 = error del alumno, 2 = no encuentra el programa, -1 = parado desde Unity")]
+        public int ultimoCodigoSalida = SinCodigo;
 
-        private Process _proceso;
+        /// <summary>Un programa lanzado. Cada lanzamiento tiene el suyo, así el aviso de
+        /// fin de un programa viejo no se confunde con el del nuevo.</summary>
+        private sealed class Ejecucion
+        {
+            public Process proceso;
+            public int pid;
+            public string programa;
+            public volatile bool paradaPedida; // la pone Parar() antes de Kill()
+        }
 
-        // Las líneas llegan en hilos de .NET, no en el de Unity. Se guardan aquí
-        // y se pasan a Debug.Log desde Update(). esError = vino por stderr.
+        private Ejecucion _actual;
+
+        // Las líneas y los avisos de fin llegan en hilos de .NET, no en el de Unity.
+        // Se guardan aquí y se tratan desde Update(). esError = vino por stderr.
         private readonly ConcurrentQueue<(bool esError, string texto)> _salida =
             new ConcurrentQueue<(bool, string)>();
+        private readonly ConcurrentQueue<(Ejecucion ejecucion, int codigo)> _terminados =
+            new ConcurrentQueue<(Ejecucion, int)>();
 
         /// <summary>Raíz del repositorio: Unity/Assets → ../.. (en la build cambia, F6).</summary>
         private static string RaizRepo => Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
@@ -56,22 +82,33 @@ namespace PlantaVirtual
         private void Update()
         {
             var k = Keyboard.current;
-            if (k != null && k.lKey.wasPressedThisFrame) Lanzar();
+            if (k != null)
+            {
+                if (k.lKey.wasPressedThisFrame) Lanzar();
+                if (k.pKey.wasPressedThisFrame) Parar();
+            }
 
             VaciarSalida();
+            VaciarTerminados();
             enMarcha = SigueVivo();
         }
 
-        private void OnDisable() => Matar();
-        private void OnApplicationQuit() => Matar();
+        // Al salir de Play (o al desactivar el objeto) no puede quedar ningún Python huérfano.
+        private void OnDisable()
+        {
+            Parar();
+            VaciarSalida();
+        }
 
-        /// <summary>Lanza el programa fijo. Si ya hay uno en marcha, no hace nada (Parar llega en P3).</summary>
+        private void OnApplicationQuit() => Parar();
+
+        /// <summary>Lanza el programa. Si ya hay uno en marcha, primero lo para.</summary>
         public void Lanzar()
         {
             if (SigueVivo())
             {
-                Debug.LogWarning("[Lanzador] Ya hay un programa en marcha (PID " + pid + "). Sal de Play para pararlo.");
-                return;
+                Debug.Log("[Lanzador] Hay un programa en marcha: lo paro antes de cargar el nuevo.");
+                Parar();
             }
 
             if (!ResolverPython()) return;
@@ -105,10 +142,12 @@ namespace PlantaVirtual
             psi.EnvironmentVariables["PYTHONUNBUFFERED"] = "1";
             psi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
 
-            var p = new Process { StartInfo = psi };
-            // Estos dos eventos llegan en OTRO hilo: aquí solo se encola, sin tocar nada de Unity.
+            var p = new Process { StartInfo = psi, EnableRaisingEvents = true };
+            var ej = new Ejecucion { proceso = p, programa = programa };
+            // Estos tres eventos llegan en OTRO hilo: aquí solo se encola, sin tocar nada de Unity.
             p.OutputDataReceived += (_, e) => { if (e.Data != null) _salida.Enqueue((false, e.Data)); };
             p.ErrorDataReceived += (_, e) => { if (e.Data != null) _salida.Enqueue((true, e.Data)); };
+            p.Exited += (_, __) => AlTerminar(ej);
 
             try
             {
@@ -117,45 +156,92 @@ namespace PlantaVirtual
             catch (Exception ex)
             {
                 Debug.LogError("[Lanzador] No he podido arrancar Python (" + rutaPython + "): " + ex.Message);
-                p.Dispose();
                 return;
             }
             p.BeginOutputReadLine();
             p.BeginErrorReadLine();
 
-            _proceso = p;
-            pid = p.Id;
+            ej.pid = p.Id;
+            _actual = ej;
+            pid = ej.pid;
             enMarcha = true;
+            ultimoCodigoSalida = SinCodigo;
             Debug.Log($"[Lanzador] En marcha: {programa} (PID {pid}, broker {broker}:{puerto})");
         }
 
-        /// <summary>Mata el proceso si sigue vivo, para que no quede ningún Python huérfano.</summary>
-        private void Matar()
+        /// <summary>
+        /// Para el programa matando el proceso (D008-D). Espera como mucho esperaParada_ms
+        /// a que termine. Sin latido, Unity pasa a estado seguro en 0,5 s (D006.5).
+        /// </summary>
+        public void Parar()
         {
-            if (_proceso == null) return;
+            var ej = _actual;
+            if (ej == null) return;
+            _actual = null;
+            pid = -1;
+            enMarcha = false;
+
             try
             {
-                if (!_proceso.HasExited)
-                {
-                    _proceso.Kill();
-                    _proceso.WaitForExit(1000);
-                    Debug.Log("[Lanzador] Programa parado (PID " + pid + ").");
-                }
+                if (ej.proceso.HasExited) return; // ya había terminado solo: su código llega por AlTerminar
+                ej.paradaPedida = true;
+                ej.proceso.Kill();
+                if (ej.proceso.WaitForExit(esperaParada_ms))
+                    Debug.Log($"[Lanzador] Programa parado (PID {ej.pid}).");
+                else
+                    Debug.LogWarning($"[Lanzador] He matado el PID {ej.pid}, pero no ha terminado en {esperaParada_ms} ms.");
+                ultimoCodigoSalida = CodigoParadoDesdeUnity;
             }
             catch (Exception ex)
             {
                 Debug.LogWarning("[Lanzador] Al parar el programa: " + ex.Message);
             }
-            VaciarSalida();
-            _proceso.Dispose();
-            _proceso = null;
-            pid = -1;
-            enMarcha = false;
+        }
+
+        /// <summary>
+        /// Evento Exited: corre en OTRO hilo. Espera a que llegue toda la salida
+        /// (así el aviso de fin sale después de la última línea) y lo encola.
+        /// </summary>
+        private void AlTerminar(Ejecucion ej)
+        {
+            int codigo;
+            try
+            {
+                ej.proceso.WaitForExit(); // sin tiempo: espera también a que se vacíe la salida
+                codigo = ej.proceso.ExitCode;
+            }
+            catch (Exception)
+            {
+                codigo = SinCodigo;
+            }
+            // El Process no se cierra con Dispose(): Parar() puede estar usándolo a la vez
+            // desde el hilo de Unity. Se libera solo cuando nadie lo referencia.
+            _terminados.Enqueue((ej, codigo));
+        }
+
+        /// <summary>Apunta en la consola cómo ha terminado cada programa. Solo desde el hilo de Unity.</summary>
+        private void VaciarTerminados()
+        {
+            while (_terminados.TryDequeue(out var fin))
+            {
+                if (fin.ejecucion.paradaPedida) continue; // ya lo ha dicho Parar()
+                ultimoCodigoSalida = fin.codigo;
+                string queEs = fin.codigo switch
+                {
+                    0 => "ha terminado bien",
+                    1 => "ha terminado con un error (mira el bloque entre líneas de =)",
+                    2 => "no se ha podido cargar (programa no encontrado)",
+                    _ => "ha terminado",
+                };
+                string texto = $"[Lanzador] {fin.ejecucion.programa} {queEs}. Código de salida {fin.codigo} (PID {fin.ejecucion.pid}).";
+                if (fin.codigo == 0) Debug.Log(texto);
+                else Debug.LogWarning(texto); // es un error del programa del alumno, no de Unity
+            }
         }
 
         private bool SigueVivo()
         {
-            try { return _proceso != null && !_proceso.HasExited; }
+            try { return _actual != null && !_actual.proceso.HasExited; }
             catch (InvalidOperationException) { return false; }
         }
 
