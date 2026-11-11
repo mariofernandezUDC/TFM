@@ -44,7 +44,7 @@ Hay que decidir cuatro cosas: cómo ejecuta Unity el Python (A), qué broker se 
 
 ## Por qué
 - **A1 mantiene el aislamiento de [[D001 Sustituir el hardware, no la lógica]].** El programa del alumno corre igual que en el TXT: un proceso de Python que solo habla con la planta por E/S. Unity no sabe qué hay dentro; solo ve `vio`. Si Python va dentro de Unity (A2), la lógica y la planta comparten proceso y ese aislamiento se rompe.
-- **A2 traería de vuelta los problemas del GIL.** El retraso de 105 ms en recibir las imágenes se resolvió con `sys.setswitchinterval(0.001)` en el proceso de Python (`run_virtual.py`, función `preparar`). Con Python dentro de Unity, el GIL lo compartirían el hilo de Unity y los hilos del alumno, y habría que volver a medirlo y resolverlo.
+- **Con A2 no se puede parar un programa colgado.** Un hilo de Python no se puede matar desde fuera. Si el alumno escribe un `while True:` sin salida, con Python dentro de Unity la única forma de pararlo sería cerrar Unity entero. Con un proceso aparte (A1) basta con matar ese proceso, y Unity sigue en marcha.
 - **A1 sirve también si el tutor elige PLC.** Si los alumnos programan en PLC en vez de Python ([[Preguntas para el tutor]]), Unity lanzaría otro proceso que hable `vio`. La arquitectura no cambia.
 - **B1 ya funciona hoy.** Es lo que se usa desde F0. B2 hace que el paquete del alumno sea autónomo ([[D004 Paquete autónomo para el alumno]]) y el puerto 18830 evita chocar con un Mosquitto que el alumno ya tenga en 1883.
 - **B3 y B4 se descartan.** B3 mete otra DLL en Unity, y ahora solo está el cliente M2Mqtt (`Unity/Assets/Plugins/M2Mqtt.Net.dll`). B4 sería un broker hecho a mano, sin la fiabilidad de Mosquitto.
