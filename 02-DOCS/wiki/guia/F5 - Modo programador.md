@@ -62,7 +62,7 @@ tags: [guía, F5]
 | P6 | Broker portable en el puerto 18830 (pedir confirmación a Mario) | ⏳ |
 
 - **Dónde:** `Unity/Assets/Scripts/PlantaVirtual/LanzadorPrograma.cs` y `UI/` (`DashboardPlanta.cs`, `EncuadreCamara.cs`, `Dashboard.uxml`, `Dashboard.uss`), en la escena `PlantaVirtual.unity`.
-- **Cómo comprobarlo:** con Mosquitto en marcha, los tests de PlayMode de `LanzadorProgramaTest` (13 en verde el 2026-11-11). A mano: Play → elegir `ejemplos/clasificar_por_color.py` → Cargar → píldoras Blanca, Roja y Azul (o teclas 1, 2, 3) → las piezas acaban en su rampa → Parar.
+- **Cómo comprobarlo:** con Mosquitto en marcha, los tests de PlayMode de `LanzadorProgramaTest` (14 en verde el 2026-11-11). A mano: Play → elegir `ejemplos/clasificar_por_color.py` → Cargar → píldoras Blanca, Roja y Azul (o teclas 1, 2, 3) → las piezas acaban en su rampa → Parar.
 - El comando de PowerShell (F5.1) sigue funcionando como plan B.
 - Capturas: [[2026-11-11]].
 - **❓ Comprobación:** si el programa del alumno entra en un `while True:` sin salida, ¿qué pasa al pulsar Parar y por qué la planta queda segura?

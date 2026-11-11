@@ -275,6 +275,9 @@ namespace PlantaVirtual
             ProgramaCargado?.Invoke(programaElegido);
             lanzador.programa = programaElegido;
             lanzador.Lanzar();
+            // El reloj vuelve a 00:00. Con otro programa en marcha, el lanzador pasa de uno
+            // a otro sin dejar de estar «en marcha» ningún frame y ActualizarEstado no lo ve.
+            _inicioMarcha = Time.realtimeSinceStartup;
             ActualizarEstado(forzar: true);
         }
 

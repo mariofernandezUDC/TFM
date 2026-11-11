@@ -10,6 +10,7 @@
 //     Cargar_ConUnProgramaEnMarcha_ParaElAnterior
 //     ErrorDelAlumno_TerminaConCodigo1_YLaCintaSePara
 // P4a Dashboard_CargarYParar_ConLosBotones (usa los botones del dashboard, no las teclas)
+//     Dashboard_Cargar_PoneElRelojA0 (Cargar con otro programa en marcha)
 // P4b Dashboard_EtiquetasSeEncienden_EnOrdenI1I3I7 (etiquetas 3D y panel de E/S)
 //     Dashboard_Escala_TextoNoBajaDe12px_A1366x768
 // P4c Dashboard_Resultado_Nivel4_TresBienCeroMal (cuenta por pieza, no por I6–I8)
@@ -385,6 +386,44 @@ namespace PlantaVirtual.Tests
                 Assert.Less(Time.realtimeSinceStartup - t0, 3f, "Unity no pasa a estado seguro después de Parar");
                 yield return null;
             }
+            SinErroresPropios();
+        }
+
+        /// <summary>
+        /// Cargar con un programa ya en marcha pone el reloj del estado a 00:00.
+        /// Antes seguía contando: el lanzador pasa de un programa a otro sin dejar
+        /// de estar «en marcha» ningún frame.
+        /// </summary>
+        [UnityTest]
+        [Timeout(60000)]
+        public IEnumerator Dashboard_Cargar_PoneElRelojA0()
+        {
+            yield return CargarEscena();
+            var dashboard = Object.FindFirstObjectByType(Tipo("DashboardPlanta")) as Component;
+            VisualElement raiz = dashboard.GetComponent<UIDocument>().rootVisualElement;
+            Label estado = raiz.Q<Label>("estadoTexto");
+            yield return null;
+            Llamar(dashboard, "Elegir", Ejemplo);
+
+            Pulsar(raiz.Q<Button>("cargar"));
+            yield return null;
+            Process primero = Process.GetProcessById(Pid);
+            yield return EsperarLatido(primero);
+            float t0 = Time.realtimeSinceStartup;
+            while (estado.text != "En marcha · 00:02")
+            {
+                Assert.Less(Time.realtimeSinceStartup - t0, 10f, $"El reloj no llega a 00:02 (marca «{estado.text}»)");
+                yield return null;
+            }
+
+            Pulsar(raiz.Q<Button>("cargar"));
+            yield return null;
+            Assert.AreNotEqual(primero.Id, Pid, "Cargar no ha lanzado un programa nuevo");
+            Assert.AreEqual("En marcha · 00:00", estado.text, "Al pulsar Cargar el reloj no vuelve a 00:00");
+
+            Pulsar(raiz.Q<Button>("parar"));
+            yield return null;
+            Assert.AreEqual("Parado", estado.text);
             SinErroresPropios();
         }
 

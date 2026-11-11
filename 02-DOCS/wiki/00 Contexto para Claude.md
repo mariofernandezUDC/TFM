@@ -33,7 +33,7 @@ tags: [contexto, claude]
   - P5 ✅ errores en rojo en «Salida»: el bloque de `mostrar_error` (archivo y línea, también de un hilo), la salida se amplía sola y el estado pasa a «Error». Si el programa no llega a arrancar (Python o programa no encontrado), aviso en rojo y código −2 (evento `LanzadorPrograma.NoArranca`).
   - 🏁 Hito para el tutor: «Cargar programa» se puede enseñar. Guion de la reunión al día (demo con el dashboard; PowerShell como plan B).
   - **Siguiente: P6** (broker portable en 18830): pedir antes la confirmación de Mario.
-  - 13 tests de PlayMode en verde (`Assets/Scripts/PlantaVirtual/Tests/LanzadorProgramaTest.cs`; necesitan Mosquitto en marcha). Tiempos a rampa 2,7 / 4,3 / 5,3 s; estado seguro a 0,50 s tras Parar.
+  - 14 tests de PlayMode en verde (`Assets/Scripts/PlantaVirtual/Tests/LanzadorProgramaTest.cs`; necesitan Mosquitto en marcha). Tiempos a rampa 2,7 / 4,3 / 5,3 s; estado seguro a 0,50 s tras Parar.
 - **F0 en pausa** desde que el tutor priorizó «cargar código». F0.1, F0.3, F0.4 (hito 1), F0.5 y F0.7 ✅. F0.6 🟡: `SLD.py` clasifica las tres piezas; faltan las medidas reales 🔧. F0.2, F0.8 (versión corta) y F0.9 ⏳.
 - **F5:** F5.1 ✅ y F5.2 ✅ (2026-11-07). F5.3 ⏳ (prueba de ROBO Pro Coding 🔧). F5.4 🚧 lanzador desde Unity.
 - **Lo último medido (2026-11-11):** en el test de P2 la roja paró a −8,8 mm. Entra en la tolerancia provisional de 10 mm (con 8 mm habría fallado). La tolerancia definitiva sale de la medida en la maqueta 🔧.
