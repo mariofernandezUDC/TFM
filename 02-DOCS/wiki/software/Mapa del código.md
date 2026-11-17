@@ -6,7 +6,8 @@ tags: [software, mapa]
 
 ```
 TFM-UNITY/
-├── GUIA_CONEXION.md            ← puesta en marcha con la planta real (Mosquitto 1884, WiFi GII). Fuera del repositorio
+├── planta_real/               ← fuera del repositorio (llevan la IP del PC): GUIA_CONEXION.md (puesta en marcha con la planta real,
+│                                 Mosquitto 1884, WiFi GII), mosquitto_1884.conf, .ft del TXT y vídeos
 └── Github/TFM/                 ← el repositorio (rama de trabajo: planta-virtual)
     ├── 01-TOOLS/               ← herramientas del harness
     ├── 02-DOCS/

@@ -38,7 +38,7 @@ virtual, el servicio de siempre) y el 1884 (planta real). **No pares el 1883.**
 ### V0 · Conexión
 1. Arranca el broker 1884 (ventana de Administrador, déjala abierta):
    ```
-   "C:\Program Files\mosquitto\mosquitto.exe" -c C:\Users\Mario\Desktop\TFM-UNITY\mosquitto_1884.conf -v
+   "C:\Program Files\mosquitto\mosquitto.exe" -c C:\Users\Mario\Desktop\TFM-UNITY\planta_real\mosquitto_1884.conf -v
    ```
    (Si no existe, crea `mosquitto_1884.conf` con dos líneas: `listener 1884 0.0.0.0` y `allow_anonymous true`,
    y abre el puerto: `netsh advfirewall firewall add rule name="Mosquitto 1884" dir=in action=allow protocol=TCP localport=1884`.)

@@ -15,7 +15,7 @@ La planta real publica la SLD por `dt/sld/belt` y `dt/sld/cylinder` (`vscode/lib
 
 ### 1. Dos brokers a la vez
 - **1883** (servicio de Windows, `localhost`): planta virtual (`vio`). No se toca.
-- **1884** (`0.0.0.0`, anónimo): planta real. Se arranca a mano en una ventana de Administrador con `TFM-UNITY\mosquitto_1884.conf` (fuera del repo), que además escribe un log para ver quién se conecta. Regla de firewall «Mosquitto 1884».
+- **1884** (`0.0.0.0`, anónimo): planta real. Se arranca a mano en una ventana de Administrador con `TFM-UNITY\planta_real\mosquitto_1884.conf` (fuera del repo), que además escribe un log para ver quién se conecta. Regla de firewall «Mosquitto 1884».
 - **No** se usa el `net stop mosquitto` de la guía de conexión: apagaría el 1883.
 - El host del TXT es la IP del PC en la wifi GII, que **cambia de un día para otro**. No va al repo: va en `lib/MQTT.py` del proyecto del TXT y, para los scripts, en `virtual/validacion/config_local.json` (en `.gitignore`).
 
@@ -65,6 +65,6 @@ I1 → cinta ON (512) → I3 → cinta OFF → **cinta ON (350, contando C1)** �
 - [ ] Umbral 1460 en la virtual y en los ejercicios: [[D012 Umbral de color y sensor de color virtual realista]] (propuesta, decide Mario).
 - [ ] Por qué el proyecto del alumno no se conectó al broker (falta la línea de consola `MQTT con el PC: ...`). Sin eso, V7 no tiene traza.
 - [ ] `a_eventos.py`: modo alumno (rampa sin evento de cilindro: `nivel4.py` no escribe `sld_cylinder_state`).
-- [ ] Copia de seguridad del FactoryMain que hay en el TXT (`TFM-UNITY\FactoryMain_TXT_2026-11-17.ft`): confirmar que se exportó.
+- [x] Copia de seguridad del FactoryMain que hay en el TXT: `TFM-UNITY\planta_real\FactoryMain_planta_real.ft`.
 
 Relacionado: [[D006 Protocolo vio]], [[D007 Quién mueve la escena]], [[SLD - Clasificadora]], [[F0 - Prueba de concepto SLD]].
