@@ -1,0 +1,62 @@
+{"cabecera": {"origen": "real", "color": "blanca", "broker": "localhost", "puerto": 1884, "topics": ["dt/sld/#"], "inicio": "2026-11-17T20:37:39.862"}}
+{"t_pc": 1794944261.9037526, "topic": "dt/sld/belt", "retain": true, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:37:12.772Z"}}
+{"t_pc": 1794944261.9037526, "topic": "dt/sld/cylinder", "retain": true, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:37:20.883Z", "is_white": false}}
+{"t_pc": 1794944284.7914877, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:38:06.937Z"}}
+{"t_pc": 1794944285.041669, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:38:07.188Z"}}
+{"t_pc": 1794944285.6906226, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:38:07.843Z"}}
+{"t_pc": 1794944289.7485573, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": true, "speed": 350, "ts": "2026-11-17T19:38:11.860Z"}}
+{"t_pc": 1794944290.0205803, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:38:12.093Z", "is_white": false}}
+{"t_pc": 1794944290.6098554, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 350, "ts": "2026-11-17T19:38:12.740Z"}}
+{"t_pc": 1794944290.8407035, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:38:12.969Z"}}
+{"t_pc": 1794944291.0549464, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": true, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:38:13.186Z", "is_white": false}}
+{"t_pc": 1794944291.269512, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": true, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:38:13.403Z", "is_white": true}}
+{"t_pc": 1794944291.4987428, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:38:13.622Z", "is_white": true}}
+{"t_pc": 1794944301.5966022, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:38:23.745Z", "is_white": false}}
+{"t_pc": 1794944320.7361233, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:38:42.873Z"}}
+{"t_pc": 1794944320.952432, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:38:43.084Z"}}
+{"t_pc": 1794944321.4993498, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:38:43.591Z"}}
+{"t_pc": 1794944325.7650244, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": true, "speed": 0, "ts": "2026-11-17T19:38:47.619Z"}}
+{"t_pc": 1794944325.9001803, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:38:47.748Z", "is_white": false}}
+{"t_pc": 1794944325.9754736, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": true, "speed": 350, "ts": "2026-11-17T19:38:48.041Z"}}
+{"t_pc": 1794944326.357212, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 350, "ts": "2026-11-17T19:38:48.506Z"}}
+{"t_pc": 1794944326.604853, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:38:48.726Z"}}
+{"t_pc": 1794944326.8163629, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": true, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:38:48.729Z", "is_white": false}}
+{"t_pc": 1794944326.8163629, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": true, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:38:48.944Z", "is_white": true}}
+{"t_pc": 1794944327.2100976, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:38:49.264Z", "is_white": true}}
+{"t_pc": 1794944334.3619177, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:38:56.446Z", "is_white": false}}
+{"t_pc": 1794944361.880299, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:39:23.928Z"}}
+{"t_pc": 1794944362.023542, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:39:24.164Z"}}
+{"t_pc": 1794944362.2733433, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:39:24.395Z"}}
+{"t_pc": 1794944366.4299638, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": true, "speed": 350, "ts": "2026-11-17T19:39:28.568Z"}}
+{"t_pc": 1794944366.4755466, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:39:28.595Z", "is_white": false}}
+{"t_pc": 1794944367.3260477, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 350, "ts": "2026-11-17T19:39:29.478Z"}}
+{"t_pc": 1794944367.5687072, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:39:29.705Z"}}
+{"t_pc": 1794944367.8135915, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": true, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:39:29.931Z", "is_white": true}}
+{"t_pc": 1794944368.2306204, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:39:30.363Z", "is_white": true}}
+{"t_pc": 1794944376.1591918, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:39:38.293Z", "is_white": false}}
+{"t_pc": 1794944405.3414118, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:40:07.462Z"}}
+{"t_pc": 1794944405.5690851, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:40:07.694Z"}}
+{"t_pc": 1794944407.7695477, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:40:09.892Z"}}
+{"t_pc": 1794944408.2061174, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:40:10.306Z"}}
+{"t_pc": 1794944408.4279377, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:40:10.566Z"}}
+{"t_pc": 1794944412.499972, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": true, "speed": 0, "ts": "2026-11-17T19:40:14.645Z"}}
+{"t_pc": 1794944412.572845, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:40:14.706Z", "is_white": false}}
+{"t_pc": 1794944412.8122451, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": true, "speed": 350, "ts": "2026-11-17T19:40:14.926Z"}}
+{"t_pc": 1794944413.2819817, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 350, "ts": "2026-11-17T19:40:15.379Z"}}
+{"t_pc": 1794944413.7826195, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:40:15.889Z"}}
+{"t_pc": 1794944413.8093972, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": true, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:40:15.907Z", "is_white": false}}
+{"t_pc": 1794944414.0075567, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": true, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:40:16.157Z", "is_white": true}}
+{"t_pc": 1794944414.2788794, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:40:16.396Z", "is_white": true}}
+{"t_pc": 1794944425.1739895, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:40:23.614Z", "is_white": false}}
+{"t_pc": 1794944501.908669, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:41:44.044Z"}}
+{"t_pc": 1794944502.1945333, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": true, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:41:44.303Z"}}
+{"t_pc": 1794944503.0605118, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 512, "ts": "2026-11-17T19:41:45.195Z"}}
+{"t_pc": 1794944507.1108825, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": true, "speed": 512, "ts": "2026-11-17T19:41:49.169Z"}}
+{"t_pc": 1794944507.316471, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": true, "speed": 350, "ts": "2026-11-17T19:41:49.452Z"}}
+{"t_pc": 1794944507.3372157, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:41:49.481Z", "is_white": false}}
+{"t_pc": 1794944507.8069649, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 350, "ts": "2026-11-17T19:41:49.949Z"}}
+{"t_pc": 1794944508.2487323, "topic": "dt/sld/belt", "retain": false, "payload": {"entry_sensor": false, "cylinder_sensor": false, "speed": 0, "ts": "2026-11-17T19:41:50.392Z"}}
+{"t_pc": 1794944508.3477328, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": true, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:41:50.396Z", "is_white": false}}
+{"t_pc": 1794944508.6866128, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": true, "is_red": false, "cyl_color": "WHITE", "is_blue": false, "ts": "2026-11-17T19:41:50.818Z", "is_white": true}}
+{"t_pc": 1794944508.9821377, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:41:51.086Z", "is_white": true}}
+{"t_pc": 1794944516.0404963, "topic": "dt/sld/cylinder", "retain": false, "payload": {"active": false, "is_red": false, "cyl_color": null, "is_blue": false, "ts": "2026-11-17T19:41:58.181Z", "is_white": false}}
