@@ -1,0 +1,16 @@
+pieza;color;color_min_consola;umbral_blanco_rojo;umbral_rojo_azul;rampa_real;notas
+1;blanca;;1150;1400;;
+2;blanca;;1150;1400;;
+3;blanca;;1150;1400;;
+4;blanca;;1150;1400;;
+5;blanca;;1150;1400;;
+1;roja;;1150;1400;;
+2;roja;;1150;1400;;
+3;roja;;1150;1400;;
+4;roja;;1150;1400;;
+5;roja;;1150;1400;;
+1;azul;;1150;1400;;
+2;azul;;1150;1400;;
+3;azul;;1150;1400;;
+4;azul;;1150;1400;;
+5;azul;;1150;1400;;

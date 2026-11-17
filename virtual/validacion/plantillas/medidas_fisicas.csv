@@ -1,0 +1,10 @@
+magnitud;valor;unidad;como_se_mide;notas
+velocidad_cinta_512;;mm/s;regla + video: mm recorridos entre dos fotogramas;
+velocidad_cinta_350;;mm/s;regla + video;
+distancia_I1_I3;;mm;regla sobre la cinta;
+distancia_I3_cilindro_blanco;;mm;regla;
+distancia_I3_cilindro_rojo;;mm;regla;
+distancia_I3_cilindro_azul;;mm;regla;
+mm_por_cambio_C1;;mm;distancia recorrida / cambios de C1 (o distancia I3-azul / 26);
+posicion_parada_roja;;mm;desplazamiento de la pieza respecto al eje del cilindro rojo (+ pasada, - corta);
+duracion_empujon_cilindro;;s;video;
