@@ -28,6 +28,8 @@ def main(argv=None):
   p.add_argument("--n", type=int, default=10)
   p.add_argument("--espera", type=float, default=2.0, help="segundos máximos para cada pong")
   a = p.parse_args(argv)
+  if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")  # la consola de Windows (cp1252) no sabe escribir algunos símbolos
 
   import paho.mqtt.client as mqtt
   from paho.mqtt.enums import CallbackAPIVersion

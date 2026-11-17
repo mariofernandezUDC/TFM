@@ -72,6 +72,8 @@ def main(argv=None):
   p.add_argument("--segundos", type=float, default=0, help="0 = hasta Ctrl+C")
   p.add_argument("--salida", help="por defecto trazas/<origen>_<color>_<fecha>.jsonl")
   a = p.parse_args(argv)
+  if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")  # la consola de Windows (cp1252) no sabe escribir algunos símbolos
 
   import paho.mqtt.client as mqtt
   from paho.mqtt.enums import CallbackAPIVersion
