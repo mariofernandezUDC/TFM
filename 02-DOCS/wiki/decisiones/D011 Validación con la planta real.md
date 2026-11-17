@@ -44,12 +44,13 @@ I1 → cinta ON (512) → I3 → cinta OFF → **cinta ON (350, contando C1)** �
 ### 5. Umbral rojo/azul: 1460, no 1400
 - FactoryMain carga la calibración y `set_calib_data_SLD()` (`vscode/lib/SLD.py:155-170`) **ignora el archivo y fija `thresh_red_blue = 1460`**. Los 1400 de `SLD.py:54` y de `data/FactoryCalibDefault.json` solo valen hasta que se carga la calibración.
 - `virtual/alumno/ejercicios/soluciones/nivel4.py` usa **1400** («los mismos que usa la fábrica»): no es verdad para la planta real.
-- La virtual tiene que usar el mismo umbral que el programa que se compara. Pendiente de decidir si los ejercicios pasan a 1460.
+- **Confirmado en la maqueta:** `nivel4.py` con 1400 → rojas 0/3; el mismo `nivel4.py` con 1460 (solo en la copia del TXT) → **rojas 3/3**.
+- La virtual tiene que usar el mismo umbral que el programa que se compara. Propuesta: [[D012 Umbral de color y sensor de color virtual realista]].
 
 ## Resultados de hoy (detalle en `02-DOCS/attachments/validacion/2026-11-17_V2_resultados_reales.md`)
 - **FactoryMain:** blancas 5/5, azules 5/5, **rojas 7/11** en su rampa (4 a la azul: una pieza que leía mal y otra en el límite, según Mario). Secuencia OK en **21/21** ciclos.
 - **Tiempos reales** (media): I1→I3 ≈ 4,7-4,9 s; I3→cilindro 1,26 / 2,79 / 4,83 s (blanca / roja / azul); I1→rampa 6,3 / 8,1 / 9,8 s.
-- **Programa del alumno** (`nivel4.py` sin cambiar ninguna línea, proyecto `SLD_alumno_real.ft` fuera del repo): blancas 3/3, azules 3/3, **rojas 0/3** (todas a la azul). Explicado por el punto 5. Sin trazas: el TXT no se conectó al broker durante esta prueba; resultado contado mirando las rampas.
+- **Programa del alumno** (`nivel4.py` sin cambiar ninguna línea, proyecto `SLD_alumno_real.ft` fuera del repo): blancas 3/3, azules 3/3, **rojas 0/3** (todas a la azul) con el umbral 1400 de los ejercicios. **Causa confirmada:** con 1460, **rojas 3/3** (9/9 en total). Vídeos en `TFM-UNITY\planta_real\videos\` (fuera del repo). Sin trazas: el TXT no se conectó al broker durante esta prueba; resultado contado mirando las rampas.
 - **BME680:** para que arrancara el proyecto del alumno, Mario envolvió en `try/except` la línea 58 de `lib/controller.py` (el sensor ambiental de la SSC no responde en el bus I2C), **solo en la copia del TXT**. El repo y el código del alumno no cambian.
 
 ## Por qué
@@ -61,7 +62,7 @@ I1 → cinta ON (512) → I3 → cinta OFF → **cinta ON (350, contando C1)** �
 - [ ] V3: misma prueba en la virtual (5 + 5 + 5, `run_virtual.py`, broker 1883). Antes, repetir la batería de `virtual/tests` con Unity parado (hoy 9 fallos por tener Unity en Play en el 1883 a la vez).
 - [ ] V5: `comparar_trazas.py` real vs virtual → `proyecto/Validación planta real.md`.
 - [ ] Medidas físicas y vídeo (`virtual/validacion/plantillas/medidas_fisicas.csv`, `video_real.csv`).
-- [ ] Umbral 1460 en la virtual y en los ejercicios: decidir con Mario.
+- [ ] Umbral 1460 en la virtual y en los ejercicios: [[D012 Umbral de color y sensor de color virtual realista]] (propuesta, decide Mario).
 - [ ] Por qué el proyecto del alumno no se conectó al broker (falta la línea de consola `MQTT con el PC: ...`). Sin eso, V7 no tiene traza.
 - [ ] `a_eventos.py`: modo alumno (rampa sin evento de cilindro: `nivel4.py` no escribe `sld_cylinder_state`).
 - [ ] Copia de seguridad del FactoryMain que hay en el TXT (`TFM-UNITY\FactoryMain_TXT_2026-11-17.ft`): confirmar que se exportó.
