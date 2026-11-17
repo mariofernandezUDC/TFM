@@ -134,6 +134,18 @@ class TestEventos(unittest.TestCase):
       self.assertEqual(c["color_rampa"], "roja")
       self.assertAlmostEqual(c["eventos"]["I3_on"], 3.0, delta=0.21)
 
+  def test_mano_tapa_i1_antes_de_la_pieza(self):
+    """La mano tapa y destapa I1 al colocar la pieza: el ciclo empieza en el I1 de la pieza, no en el de la mano."""
+    m = traza_real("blanca", piezas=1)
+    for t, e in ((-2.4, True), (-2.2, False)):
+      m.append({"t_pc": t + 0.05, "topic": "dt/sld/belt", "retain": False,
+                "payload": {"ts": ts(t), "entry_sensor": e, "cylinder_sensor": False, "speed": 0}})
+    m.sort(key=lambda x: ae.ts_a_segundos(x["payload"]["ts"]))
+    ciclos = ae.partir_en_ciclos(ae.eventos_real(m))
+    self.assertEqual(len(ciclos), 1)
+    self.assertTrue(ae.secuencia_correcta(ciclos[0]), ciclos[0])
+    self.assertAlmostEqual(ciclos[0]["eventos"]["cinta_on_1"], 0.4, delta=0.21)
+
   def test_retenidos_no_dan_eventos(self):
     ev = ae.eventos_real(traza_real("blanca", piezas=1))
     self.assertTrue(all(t > T0.timestamp() - 1 for t, _, _ in ev))

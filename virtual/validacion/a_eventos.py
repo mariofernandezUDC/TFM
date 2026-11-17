@@ -139,10 +139,15 @@ def partir_en_ciclos(eventos):
   ciclos, actual = [], None
   for t, nombre, dato in eventos:
     if nombre == "I1_on":
-      # Un rebote de I1 justo después del anterior (la pieza aún no ha llegado a I3) no abre ciclo nuevo.
+      nuevo = {"t0": t, "eventos": {"I1_on": 0.0}, "vel1": None, "color_cilindro": None, "color_rampa": None}
       if actual is not None and "I3_on" not in actual["eventos"]:
+        if "cinta_on_1" not in actual["eventos"]:
+          # La cinta aún no ha arrancado: el I1 anterior fue la mano al colocar la pieza.
+          # El ciclo empieza en este I1, que es el que dispara SLD.py (traza real 2026-11-17, blanca 4).
+          ciclos[-1] = actual = nuevo
+        # Con la cinta ya en marcha y sin llegar a I3, es un rebote de I1: no abre ciclo nuevo.
         continue
-      actual = {"t0": t, "eventos": {"I1_on": 0.0}, "vel1": None, "color_cilindro": None, "color_rampa": None}
+      actual = nuevo
       ciclos.append(actual)
       continue
     if actual is None:
