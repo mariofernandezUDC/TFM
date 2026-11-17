@@ -8,6 +8,8 @@ Guion para enseñar al tutor lo hecho en F0 y en F5 (actualizado el 2026-11-11).
 
 > **Ensaya la demo entera una vez el día antes, desde el ordenador apagado.** Si algo falla en directo, no lo depures delante del tutor: usa el plan B o enseña la captura (`02-DOCS/attachments/F5/`) y sigue.
 
+> **Acta de la reunión del 2026-11-17:** [[Reunión tutor 2026-11-17 - Acta]].
+
 Relacionado: [[Preguntas para el tutor]], [[F0 - Prueba de concepto SLD]], [[F5 - Modo programador]], [[2026-11-07]], [[2026-11-11]].
 
 ---
