@@ -1,5 +1,11 @@
 # Log
 
+## [2026-11-17] decision | Sesión 7: validación con la planta real (F7), D011 y D012
+- Código fuera de la wiki: `virtual/validacion/` y `virtual/tests/test_validacion.py` (parches V1–V5 y arreglos `19abf85`, `6e46ca0`, `f3d7f9a`), trazas reales en `virtual/validacion/trazas/` (`28ff966`).
+- Nuevas: [D011 Validación con la planta real](decisiones/D011%20Validaci%C3%B3n%20con%20la%20planta%20real.md), [D012 Umbral de color y sensor de color virtual realista](decisiones/D012%20Umbral%20de%20color%20y%20sensor%20de%20color%20virtual%20realista.md) (propuesta), [Acta de la reunión con el tutor](proyecto/Reuni%C3%B3n%20tutor%202026-11-17%20-%20Acta.md), diario [2026-11-17](diario/2026-11-17.md).
+- Actualizadas: Plan de trabajo (F7 adelantada), Reunión tutor - Guion (enlace al acta), 00 Contexto para Claude, index.
+- Anexos en `02-DOCS/attachments/validacion/` (ping y resultados reales). Vídeos fuera del repo: `TFM-UNITY\planta_real\videos\`.
+
 ## [2026-11-11] guía | Capturas de más de 1 MB a JPG
 - 6 PNG de `attachments/F5/` (P4a y ajustes a 1920×1080) pasados a JPG con calidad 85; enlaces del diario 2026-11-11 actualizados.
 - D003: los PNG de más de 1 MB se guardan como JPG con calidad 85. Rutina Git: `m_Value` de las barras de desplazamiento en «Ruido de Unity».
