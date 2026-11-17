@@ -40,7 +40,7 @@
   ],
   "agents": [],
   "ownSkills": [],
-  "catalogVersion": "4.1.2",
+  "catalogVersion": "4.1.7",
   "tier": null,
   "optOuts": [
     "knowledge-sync",
