@@ -223,6 +223,8 @@ def ciclos_de_archivo(ruta):
 
 def main(argv=None):
   argv = sys.argv[1:] if argv is None else argv
+  if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")  # la consola de Windows (cp1252) no sabe escribir algunos símbolos
   if not argv:
     print(__doc__)
     return 1

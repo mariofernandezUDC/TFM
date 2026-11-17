@@ -223,6 +223,8 @@ def main(argv=None):
   p.add_argument("--salida", help="archivo Markdown donde escribir el informe")
   p.add_argument("--grafica", help="PNG con la comparación de tiempos (necesita matplotlib)")
   a = p.parse_args(argv)
+  if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")  # la consola de Windows (cp1252) no sabe escribir «≤»
 
   real, virtual = cargar(a.real), cargar(a.virtual)
   video = cargar([a.video]) if a.video else []
