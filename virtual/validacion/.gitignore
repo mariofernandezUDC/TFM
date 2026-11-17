@@ -1,0 +1,3 @@
+# Configuración local con el broker de la planta real: no va al repositorio
+config_local.json
+__pycache__/

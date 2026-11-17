@@ -1,0 +1,6 @@
+{
+  "broker": "localhost",
+  "puerto": 1884,
+  "usuario": null,
+  "clave": null
+}
